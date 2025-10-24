@@ -11,25 +11,4 @@
         public string? PhoneNumber { get; set; }
         public string? Email { get; set; } 
     }
-
-    public class HealthFacilityType : Entity
-    {
-
-        public string Name { get; set; } = null!;
-        public string? Description { get; set; }
-        
-    }
-
-    public class PrivateHospital : HealthFacility
-    {
-
-        
-
-    }
-    public class Bed : Entity
-    {
-
-
-
-    }
 }
