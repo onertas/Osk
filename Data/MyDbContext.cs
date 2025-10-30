@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OskApi.Entities;
+using OskApi.Entities.HealthFacilities;
 using OskApi.Entities.User;
 
 namespace OskApi.Data
@@ -12,7 +13,10 @@ namespace OskApi.Data
         public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) { }
 
 
-        public DbSet<Product> Products { get; set; } = null!;
+        public DbSet<Product> Products { get; set; } 
+        public DbSet<HealthFacility> HealthFacilities { get; set; }
+        public DbSet<IcBedName> IcBedNames { get; set; } = null!;
+        public DbSet<IcBed> IcBeds { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
