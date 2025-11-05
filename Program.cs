@@ -13,6 +13,10 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>

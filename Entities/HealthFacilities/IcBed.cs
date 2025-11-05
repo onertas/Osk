@@ -64,7 +64,7 @@ namespace OskApi.Entities.HealthFacilities
     }
 
 
-    public class IcBedRegLevel : SmartEnum<IcBedRegType>
+    public class IcBedRegLevel : SmartEnum<IcBedRegLevel>
     {
 
         public static readonly IcBedRegLevel Seviye1 = new(nameof(Seviye1), 1, "Seviye 1");
