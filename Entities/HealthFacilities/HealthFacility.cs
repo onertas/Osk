@@ -3,7 +3,7 @@
     public class HealthFacility:Entity
     {
 
-        public int HealthFacilityTypeId { get; set; }
+        public Guid HealthFacilityTypeId { get; set; }
         public HealthFacilityType? HealthFacilityType { get; set; }
         public string Name { get; set; }=null!;
         public string? Code { get; set; }
