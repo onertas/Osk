@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using OskApi.Data;
 using OskApi.Entities.User;
 using OskApi.Services;
+using OskApi.Services.HealthFacilities;
 using OskApi.Services.Jwt;
 using OskApi.Services.OpenAI;
 using System.Text;
@@ -21,7 +22,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("https://localhost:4200", "http://localhost:4200") // React uygulamanızın adresi
+        policy.WithOrigins("https://localhost", "http://localhost") // React uygulamanızın adresi
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials(); // Cookie'lerin gönderilmesine izin ver
@@ -80,7 +81,7 @@ builder.Services.AddAuthentication(options =>
 
 // Services
 builder.Services.AddScoped<IUnitOfWork>(srv => srv.GetRequiredService<MyDbContext>());
-builder.Services.AddScoped<IProductService,ProductService>();
+builder.Services.AddScoped<IHealthFacilityService, HealthFacilityService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ChatService>();
 

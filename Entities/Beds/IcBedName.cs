@@ -1,4 +1,4 @@
-﻿namespace OskApi.Entities.HealthFacilities
+﻿namespace OskApi.Entities.Beds
 {
     public class IcBedName : Entity
     {

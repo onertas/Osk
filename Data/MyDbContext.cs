@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OskApi.Entities;
+using OskApi.Entities.Beds;
 using OskApi.Entities.HealthFacilities;
 using OskApi.Entities.User;
 using System;

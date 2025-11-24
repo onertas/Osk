@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OskApi.Entities.HealthFacilities;
+using OskApi.Entities.Beds;
 
 namespace OskApi.Data.Configurations;
 
