@@ -22,7 +22,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("https://localhost", "http://localhost") // React uygulamanızın adresi
+        policy.WithOrigins("https://localhost", "http://localhost", "http://localhost:4200") // React uygulamanızın adresi
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials(); // Cookie'lerin gönderilmesine izin ver
