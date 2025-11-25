@@ -24,7 +24,7 @@ namespace OskApi.Controllers;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetHealthFacilityTypes()
+    public async Task<IActionResult> GetHealthFacilities()
     {
         var list = await _healthFacilityService.GetAll().ToListAsync();
 
