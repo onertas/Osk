@@ -24,9 +24,9 @@ namespace OskApi.Controllers;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetHealthFacilities()
+    public async Task<IActionResult> GetHealthFacilities(Guid Id)
     {
-        var list = await _healthFacilityService.GetAll().ToListAsync();
+        var list = await _healthFacilityService.GetAll().Where(x=>x.HealthFacilityTypeId==Id).ToListAsync();
 
 
         var res=Result<List<HealthFacility>>.Ok(list,"Veri Eklendi");

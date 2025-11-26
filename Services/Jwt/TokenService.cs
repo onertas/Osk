@@ -45,7 +45,7 @@ namespace OskApi.Services.Jwt
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims,
-                expires: DateTime.UtcNow.AddMinutes(60), // kısa ömürlü access token
+                expires: DateTime.UtcNow.AddSeconds(30), // kısa ömürlü access token
                 signingCredentials: creds
             );
 

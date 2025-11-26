@@ -10,6 +10,7 @@ using OskApi.Services.HealthFacilities;
 using OskApi.Services.Jwt;
 using OskApi.Services.OpenAI;
 using System.Text;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -89,7 +90,10 @@ builder.Services.AddScoped<ChatService>();
 // Add services to the container.
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(o =>
+{
+    o.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
