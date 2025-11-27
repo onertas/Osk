@@ -80,7 +80,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 
-// Services
+// Services DI
 builder.Services.AddScoped<IUnitOfWork>(srv => srv.GetRequiredService<MyDbContext>());
 builder.Services.AddScoped<IHealthFacilityService, HealthFacilityService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
