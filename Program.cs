@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OskApi.Data;
 using OskApi.Entities.User;
+using OskApi.ServiceRegisration;
 using OskApi.Services;
 using OskApi.Services.HealthFacilities;
 using OskApi.Services.Jwt;
@@ -31,19 +32,8 @@ builder.Services.AddCors(options =>
 });
 
 
-// Db
-builder.Services.AddDbContext<MyDbContext>(options =>
-options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-
-
-// Identity with Guid keys
-builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
-{
-    options.User.RequireUniqueEmail = true;
-})
-.AddEntityFrameworkStores<MyDbContext>()
-.AddDefaultTokenProviders();
-
+// 🔥 Tüm servis kayıtlarını tek satırda aldık
+builder.Services.AddProjectServices(configuration);
 
 // JWT
 var jwtSettings = configuration.GetSection("Jwt");
@@ -80,14 +70,8 @@ builder.Services.AddAuthentication(options =>
 });
 
 
-// Services DI
-builder.Services.AddScoped<IUnitOfWork>(srv => srv.GetRequiredService<MyDbContext>());
-builder.Services.AddScoped<IHealthFacilityService, HealthFacilityService>();
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<ChatService>();
 
 
-// Add services to the container.
 
 
 builder.Services.AddControllers().AddJsonOptions(o =>

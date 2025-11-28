@@ -18,13 +18,13 @@ namespace OskApi.Controllers
     public class HomeController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IProductService _productService;
+
         private readonly ITokenService _tokenService;
         private readonly UserManager<AppUser> _userManager;
-        public HomeController(IUnitOfWork unitOfWork, IProductService productService, UserManager<AppUser> userManager, ITokenService tokenService)
+        public HomeController(IUnitOfWork unitOfWork,  UserManager<AppUser> userManager, ITokenService tokenService)
         {
             _unitOfWork = unitOfWork;
-            _productService = productService;
+       
             _userManager = userManager;
             _tokenService = tokenService;
         }
@@ -34,7 +34,7 @@ namespace OskApi.Controllers
         public async Task<IActionResult> Add(Product model)
         {
          
-            await  _productService.AddAsync(model);
+   
             await _unitOfWork.SaveChangesAsync();
 
 
@@ -47,10 +47,10 @@ namespace OskApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetList()
         {
-            var list = await _productService.GetAll().ToListAsync();
+           
 
 
-            var res=Result<List<Product>>.Ok(list,"Veri Eklendi");
+            var res=Result<List<Product>>.Ok();
 
             return Ok(res);
         }
