@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OskApi.Dtos.HealthFacilities;
 using OskApi.Entities.HealthFacilities;
 using OskApi.Services.HealthFacilities;
 using OskApi.Shared.Result;
@@ -26,10 +27,17 @@ namespace OskApi.Controllers;
     [HttpGet]
     public async Task<IActionResult> GetHealthFacilities(Guid Id)
     {
-        var list = await _healthFacilityService.GetAll().Where(x=>x.HealthFacilityTypeId==Id).ToListAsync();
+        var list = await _healthFacilityService.GetAll().Include(i=>i.HealthFacilityType).Where(x=>x.HealthFacilityTypeId==Id).ToListAsync();
 
+      var listdto=  list.Select(x => new HealthFacilityListDto
+        {
+            Id = x.Id,
+            Name = x.Name,
+            TypeName = x.HealthFacilityType!.Name,
 
-        var res=Result<List<HealthFacility>>.Ok(list,"Veri Eklendi");
+      }).ToList();
+
+        var res=Result<List<HealthFacilityListDto>>.Ok(listdto,"Veri Eklendi");
         return Ok(res);
     }
 
