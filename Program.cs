@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using OskApi.Data;
 using OskApi.Entities.User;
@@ -31,6 +32,10 @@ builder.Services.AddCors(options =>
     });
 });
 
+
+//automapper
+
+builder.Services.AddAutoMapper(typeof(Program));
 
 // 🔥 Tüm servis kayıtlarını tek satırda aldık
 builder.Services.AddProjectServices(configuration);

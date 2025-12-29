@@ -1,4 +1,5 @@
-﻿using GenericRepository;
+﻿using AutoMapper;
+using GenericRepository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,13 +16,14 @@ namespace OskApi.Controllers;
     public class HealthFacilityController : ControllerBase
     {
 
-
+    private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IHealthFacilityService _healthFacilityService;
-    public HealthFacilityController(IUnitOfWork unitOfWork, IHealthFacilityService healthFacilityService)
+    public HealthFacilityController(IUnitOfWork unitOfWork, IHealthFacilityService healthFacilityService, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _healthFacilityService = healthFacilityService;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -40,6 +42,19 @@ namespace OskApi.Controllers;
         var res=Result<List<HealthFacilityListDto>>.Ok(listdto,"Veri Eklendi");
         return Ok(res);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> Add(CreateHealthFacilityDto model)
+    {
+
+        var entity=_mapper.Map<HealthFacility>(model);
+
+
+        await _healthFacilityService.AddAsync(entity);
+        await _unitOfWork.SaveChangesAsync();
+     
+        return Ok(Result.Ok("Eklendi"));
+    }   
 
 }
 
