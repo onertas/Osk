@@ -29,7 +29,16 @@ namespace OskApi.Controllers;
     [HttpGet]
     public async Task<IActionResult> GetHealthFacilities(Guid Id)
     {
-        var list = await _healthFacilityService.GetAll().Include(i=>i.HealthFacilityType).Where(x=>x.HealthFacilityTypeId==Id).ToListAsync();
+
+
+
+        var list = await _healthFacilityService.GetAll().Include(i=>i.HealthFacilityType).ToListAsync();
+
+        if(Id==Guid.Empty==false)
+        {
+            list=list.Where(x=>x.HealthFacilityTypeId==Id).ToList();
+        }
+
 
       var listdto=  list.Select(x => new HealthFacilityListDto
         {
