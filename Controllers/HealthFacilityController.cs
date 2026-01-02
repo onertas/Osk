@@ -26,6 +26,19 @@ namespace OskApi.Controllers;
         _mapper = mapper;
     }
 
+    [HttpPost]
+    public async Task<IActionResult> Add(CreateHealthFacilityDto model)
+    {
+
+        var entity = _mapper.Map<HealthFacility>(model);
+
+
+        await _healthFacilityService.AddAsync(entity);
+        await _unitOfWork.SaveChangesAsync();
+
+        return Ok(Result.Ok("Eklendi"));
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetHealthFacilities(Guid Id)
     {
@@ -52,18 +65,7 @@ namespace OskApi.Controllers;
         return Ok(res);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Add(CreateHealthFacilityDto model)
-    {
-
-        var entity=_mapper.Map<HealthFacility>(model);
-
-
-        await _healthFacilityService.AddAsync(entity);
-        await _unitOfWork.SaveChangesAsync();
-     
-        return Ok(Result.Ok("Eklendi"));
-    }   
+   
 
 }
 
