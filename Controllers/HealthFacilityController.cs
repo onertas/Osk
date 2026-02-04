@@ -1,20 +1,18 @@
 ﻿using AutoMapper;
 using GenericRepository;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OskApi.Dtos.HealthFacilities;
 using OskApi.Entities.HealthFacilities;
 using OskApi.Services.HealthFacilities;
 using OskApi.Shared.Result;
-
 namespace OskApi.Controllers;
 
-    [Route("api/[controller]/[action]")]
-    [ApiController]
+[Route("api/[controller]/[action]")]
+[ApiController]
 
-    public class HealthFacilityController : ControllerBase
-    {
+public class HealthFacilityController : ControllerBase
+{
 
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -42,30 +40,26 @@ namespace OskApi.Controllers;
     [HttpGet]
     public async Task<IActionResult> GetHealthFacilities(Guid Id)
     {
+        var list = await _healthFacilityService.GetAll().Include(i => i.HealthFacilityType).ToListAsync();
 
-
-
-        var list = await _healthFacilityService.GetAll().Include(i=>i.HealthFacilityType).ToListAsync();
-
-        if(Id==Guid.Empty==false)
+        if (Id == Guid.Empty == false)
         {
-            list=list.Where(x=>x.HealthFacilityTypeId==Id).ToList();
+            list = list.Where(x => x.HealthFacilityTypeId == Id).ToList();
         }
 
-
-      var listdto=  list.Select(x => new HealthFacilityListDto
+        var listdto = list.Select(x => new HealthFacilityListDto
         {
             Id = x.Id,
             Name = x.Name,
             TypeName = x.HealthFacilityType!.Name,
 
-      }).ToList();
+        }).ToList();
 
-        var res=Result<List<HealthFacilityListDto>>.Ok(listdto,"Veri Eklendi");
+        var res = Result<List<HealthFacilityListDto>>.Ok(listdto, "Veri Eklendi");
         return Ok(res);
     }
 
-   
+
 
 }
 
