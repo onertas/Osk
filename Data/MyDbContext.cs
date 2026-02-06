@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using OskApi.Entities;
 using OskApi.Entities.Beds;
 using OskApi.Entities.HealthFacilities;
+using OskApi.Entities.Personnel;
 using OskApi.Entities.User;
 using System;
 using System.Reflection.Emit;
@@ -19,6 +20,9 @@ namespace OskApi.Data
         public DbSet<HealthFacility> HealthFacilities { get; set; }
         public DbSet<IcBedName> IcBedNames { get; set; } = null!;
         public DbSet<IcBed> IcBeds { get; set; }
+        public DbSet<Title> Titles { get; set; }
+        public DbSet<Branch> Branches { get; set; }
+
 
 
 
