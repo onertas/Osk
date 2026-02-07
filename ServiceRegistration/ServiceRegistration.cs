@@ -1,6 +1,7 @@
 ﻿using GenericRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using OskApi.Data;
 using OskApi.Entities.User;
 using OskApi.Services.HealthFacilities;
@@ -14,9 +15,13 @@ namespace OskApi.ServiceRegisration
         public static IServiceCollection AddProjectServices(this IServiceCollection services, IConfiguration configuration)
         {
             // Db
-            services.AddDbContext<MyDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+           // services.AddDbContext<MyDbContext>(options =>
+              // options.UseSqlServer(configuration.GetConnectionString("DefaultConnection1")));
 
+
+            services.AddDbContext<MyDbContext>(options =>
+        options.UseMySql(configuration.GetConnectionString("DefaultConnection"), ServerVersion.AutoDetect(configuration.GetConnectionString("DefaultConnection")))); ;
+             
             // Identity
             services
                 .AddIdentity<AppUser, IdentityRole<Guid>>(options =>

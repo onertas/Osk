@@ -1,4 +1,5 @@
 ﻿using GenericRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace OskApi.Controllers;
         _healthFacilityTypeService = healthFacilityTypeService;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetHealthFacilityTypes()
     {
@@ -33,6 +35,7 @@ namespace OskApi.Controllers;
         return Ok(res);
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Add(HealthFacilityType model)
     {

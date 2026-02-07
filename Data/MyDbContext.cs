@@ -29,7 +29,17 @@ namespace OskApi.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfigurationsFromAssembly(typeof(MyDbContext).Assembly);
-
+            foreach (var entityType in builder.Model.GetEntityTypes())
+            {
+                foreach (var property in entityType.GetProperties())
+                {
+                    if (property.ClrType == typeof(Guid))
+                    {
+                        property.SetColumnType("char(36)");
+                        property.SetMaxLength(36);
+                    }
+                }
+            }
             base.OnModelCreating(builder);
             // Identity tabloların isimlerini değiştirmek istersen burada yap
         }

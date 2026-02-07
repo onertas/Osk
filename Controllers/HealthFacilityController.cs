@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GenericRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OskApi.Dtos.HealthFacilities;
@@ -24,6 +25,8 @@ public class HealthFacilityController : ControllerBase
         _mapper = mapper;
     }
 
+
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Add(CreateHealthFacilityDto model)
     {
