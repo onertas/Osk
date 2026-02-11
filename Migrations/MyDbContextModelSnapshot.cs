@@ -287,7 +287,7 @@ namespace OskApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HealthFacilityType");
+                    b.ToTable("HealthFacilityTypes");
                 });
 
             modelBuilder.Entity("OskApi.Entities.Personnel.Branch", b =>

@@ -29,16 +29,7 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> CreateUser(CreateUserDto dto)
     {
 
-        var anyuser = await _userManager.Users.CountAsync();
-        
-        if(anyuser==0)
-        {
-           var r= await _userManager.CreateAsync(new AppUser
-            {
-                UserName = "admin",
-                Email = "admin@admin.com"
-            }, "Admin123*");
-        }
+              
 
         await _userManager.CreateAsync(new AppUser
         {

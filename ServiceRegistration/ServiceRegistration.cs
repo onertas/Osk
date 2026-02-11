@@ -24,7 +24,7 @@ namespace OskApi.ServiceRegisration
              
             // Identity
             services
-                .AddIdentity<AppUser, IdentityRole<Guid>>(options =>
+                .AddIdentity<AppUser, AppRole>(options =>
                 {
                     options.User.RequireUniqueEmail = true;
                 })

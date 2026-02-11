@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OskApi.Migrations
 {
     /// <inheritdoc />
-    public partial class initialcatalog : Migration
+    public partial class mig1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -73,7 +73,7 @@ namespace OskApi.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "HealthFacilityType",
+                name: "HealthFacilityTypes",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", maxLength: 36, nullable: false, collation: "ascii_general_ci"),
@@ -85,7 +85,7 @@ namespace OskApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HealthFacilityType", x => x.Id);
+                    table.PrimaryKey("PK_HealthFacilityTypes", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -283,9 +283,9 @@ namespace OskApi.Migrations
                 {
                     table.PrimaryKey("PK_HealthFacilities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_HealthFacilities_HealthFacilityType_HealthFacilityTypeId",
+                        name: "FK_HealthFacilities_HealthFacilityTypes_HealthFacilityTypeId",
                         column: x => x.HealthFacilityTypeId,
-                        principalTable: "HealthFacilityType",
+                        principalTable: "HealthFacilityTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -436,7 +436,7 @@ namespace OskApi.Migrations
                 name: "Titles");
 
             migrationBuilder.DropTable(
-                name: "HealthFacilityType");
+                name: "HealthFacilityTypes");
 
             migrationBuilder.DropTable(
                 name: "IcBedNames");

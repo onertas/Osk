@@ -12,8 +12,8 @@ using OskApi.Data;
 namespace OskApi.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20260207205315_initialcatalog")]
-    partial class initialcatalog
+    [Migration("20260211072339_mig1")]
+    partial class mig1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -290,7 +290,7 @@ namespace OskApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HealthFacilityType");
+                    b.ToTable("HealthFacilityTypes");
                 });
 
             modelBuilder.Entity("OskApi.Entities.Personnel.Branch", b =>

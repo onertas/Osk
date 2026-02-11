@@ -11,13 +11,14 @@ using System;
 using System.Reflection.Emit;
 namespace OskApi.Data
 {
-    public class MyDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>, IUnitOfWork
+    public class MyDbContext : IdentityDbContext<AppUser, AppRole, Guid>, IUnitOfWork
     {
         public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) { }
 
 
         public DbSet<Product> Products { get; set; }
         public DbSet<HealthFacility> HealthFacilities { get; set; }
+        public DbSet<HealthFacilityType> HealthFacilityTypes { get; set; }
         public DbSet<IcBedName> IcBedNames { get; set; } = null!;
         public DbSet<IcBed> IcBeds { get; set; }
         public DbSet<Title> Titles { get; set; }
