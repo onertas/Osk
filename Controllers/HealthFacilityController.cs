@@ -41,14 +41,18 @@ public class HealthFacilityController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetHealthFacilities(Guid Id)
+    public async Task<IActionResult> GetHealthFacilities(string code)
     {
-        var list = await _healthFacilityService.GetAll().Include(i => i.HealthFacilityType).ToListAsync();
+       
 
-        if (Id == Guid.Empty == false)
+     
+         var list = await _healthFacilityService.GetAll().Where(w=>w.HealthFacilityType!.Code==code).Include(i => i.HealthFacilityType).ToListAsync();
+
+        if (list == null || list.Count == 0)
         {
-            list = list.Where(x => x.HealthFacilityTypeId == Id).ToList();
+            return NotFound(Result.Fail("Veri bulunamadı"));
         }
+
 
         var listdto = list.Select(x => new HealthFacilityListDto
         {
@@ -58,7 +62,7 @@ public class HealthFacilityController : ControllerBase
 
         }).ToList();
 
-        var res = Result<List<HealthFacilityListDto>>.Ok(listdto, "Veri Eklendi");
+        var res = Result<List<HealthFacilityListDto>>.Ok(listdto, "Veri Listelendi");
         return Ok(res);
     }
 

@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using OskApi.Dtos.User;
 using OskApi.Entities.User;
 using OskApi.Services.Jwt;
+using OskApi.Shared.Result;
+using System.Security.Claims;
 
 namespace OskApi.Controllers;
 
@@ -99,39 +101,63 @@ public class AuthController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Logout()
     {
-        // Kullanıcıyı al
-        var username = User.Identity?.Name;
-        if (username == null)
-            return Unauthorized();
+        //// Kullanıcıyı al
+        //var username = User.Identity?.Name;
+        //if (username == null)
+        //    return Unauthorized();
 
-        var user = await _userManager.FindByNameAsync(username);
-        if (user != null)
+        //var user = await _userManager.FindByNameAsync(username);
+        //if (user != null)
+        //{
+        //    // Refresh token sıfırla
+        //    user.RefreshToken = null;
+        //    user.RefreshTokenExpiryTime = DateTime.Now.AddDays(-1);
+        //    await _userManager.UpdateAsync(user);
+        //}
+
+
+        //// Cookie'leri SİL - boş string veya Delete kullan
+        //Response.Cookies.Delete("accessToken", new CookieOptions
+        //{
+        //    HttpOnly = true,
+        //    Secure = true, // production: true
+        //    SameSite = SameSiteMode.None,
+
+        //});
+
+        //Response.Cookies.Delete("refreshToken", new CookieOptions
+        //{
+        //    HttpOnly = true,
+        //    Secure = true, // production: true
+        //    SameSite = SameSiteMode.None,
+
+        //});
+        var refreshToken = Request.Cookies["refreshToken"];
+        if (!string.IsNullOrEmpty(refreshToken))
         {
-            // Refresh token sıfırla
-            user.RefreshToken = null;
-            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(-1);
-            await _userManager.UpdateAsync(user);
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+            if (user != null)
+            {
+                user.RefreshToken = null;
+                user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(-1);
+                await _userManager.UpdateAsync(user);
+            }
         }
 
-
-        // Cookie'leri SİL - boş string veya Delete kullan
-        Response.Cookies.Delete("accessToken", new CookieOptions
+        // Cookie'leri her halükarda temizle
+        var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
-            Secure = true, // production: true
+            Secure = true,
             SameSite = SameSiteMode.None,
-           
-        });
+            Expires = DateTime.UtcNow.AddDays(-1) // Geçmiş bir tarih
+        };
 
-        Response.Cookies.Delete("refreshToken", new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true, // production: true
-            SameSite = SameSiteMode.None,
-            
-        });
+        Response.Cookies.Delete("accessToken", cookieOptions);
+        Response.Cookies.Delete("refreshToken", cookieOptions);
 
         return Ok(new { message = "Çıkış yapıldı" });
+       
     }
 
     [HttpGet]
@@ -140,6 +166,25 @@ public class AuthController : ControllerBase
         if (User.Identity?.IsAuthenticated == true)
             return Ok();
         return Unauthorized();
+    }
+    [Authorize]
+    [HttpGet]
+    public IActionResult Me()
+    {
+        var username = User.Identity?.Name;
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var roles = User.FindAll(ClaimTypes.Role).Select(x => x.Value);
+
+        return Ok(new Result<object>
+        {
+            Data = new
+            {
+                userId,
+                username,
+                roles
+            },
+            Success = true
+        });
     }
     private void CreateCookie(string name,string token,DateTime express )
     {
