@@ -24,7 +24,7 @@ namespace OskApi.Data
         public DbSet<Title> Titles { get; set; }
         public DbSet<Branch> Branches { get; set; }
 
-
+        public DbSet<PersonnelBranch> PersonnelBranches { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

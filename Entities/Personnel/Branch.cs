@@ -13,6 +13,8 @@ public class Branch : Entity
     public bool IsMainSpecialty { get; set; }
 
     public int BranchTypeId { get; set; }
+
+    public ICollection<PersonnelBranch>? PersonnelBranches { get; set; }
 }
 
 
