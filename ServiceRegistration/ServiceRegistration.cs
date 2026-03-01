@@ -18,26 +18,19 @@ namespace OskApi.ServiceRegisration
             // services.AddDbContext<MyDbContext>(options =>
             // options.UseSqlServer(configuration.GetConnectionString("DefaultConnection1")));
 
-
-
-
             services.AddDbContext<MyDbContext>(options =>
-             options.UseMySql(
-         configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(8, 0, 0)), // Sunucu versiyonuna göre ayarla
-        mySqlOptions => mySqlOptions.EnableRetryOnFailure(
-            maxRetryCount: 10,           // 10 kez denesin
-            maxRetryDelay: TimeSpan.FromSeconds(5), // Aralarda 5 sn beklesin
-            errorNumbersToAdd: null
-        )
-    ));
+                options.UseMySql(configuration.GetConnectionString("DefaultConnection"), 
+                new MySqlServerVersion(new Version(8, 0, 0)), // Sunucu versiyonuna göre ayarla
+                    mySqlOptions => mySqlOptions.EnableRetryOnFailure(
+                      maxRetryCount: 10,           // 10 kez denesin
+                      maxRetryDelay: TimeSpan.FromSeconds(5), // Aralarda 5 sn beklesin
+                      errorNumbersToAdd: null)));
 
-        //    services.AddDbContext<MyDbContext>(options =>
-        //options.UseMySql(configuration.GetConnectionString("DefaultConnection"), ServerVersion.AutoDetect(configuration.GetConnectionString("DefaultConnection")))); ;
-             
+            //    services.AddDbContext<MyDbContext>(options =>
+            //options.UseMySql(configuration.GetConnectionString("DefaultConnection"), ServerVersion.AutoDetect(configuration.GetConnectionString("DefaultConnection")))); ;
+
             // Identity
-            services
-                .AddIdentity<AppUser, AppRole>(options =>
+            services.AddIdentity<AppUser, AppRole>(options =>
                 {
                     options.User.RequireUniqueEmail = true;
                 })

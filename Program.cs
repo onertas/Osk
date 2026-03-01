@@ -1,16 +1,7 @@
-﻿using GenericRepository;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using OskApi.Data;
-using OskApi.Entities.User;
 using OskApi.ServiceRegisration;
-using OskApi.Services;
-using OskApi.Services.HealthFacilities;
-using OskApi.Services.Jwt;
-using OskApi.Services.OpenAI;
 using System.Text;
 using System.Text.Json;
 
