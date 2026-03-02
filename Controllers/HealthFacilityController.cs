@@ -43,9 +43,7 @@ public class HealthFacilityController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetHealthFacilities(string code)
     {
-       
-
-     
+            
          var list = await _healthFacilityService.GetAll().Where(w=>w.HealthFacilityType!.Code==code).Include(i => i.HealthFacilityType).ToListAsync();
 
         if (list == null || list.Count == 0)

@@ -42,6 +42,8 @@ namespace OskApi.ServiceRegisration
 
             // Custom Services
             services.AddScoped<IHealthFacilityService, HealthFacilityService>();
+            services.AddScoped<ITitleService, TitleService>();
+            services.AddScoped<IBranchService, BranchService>();
             services.AddScoped<IHealthFacilityTypeService, HealthFacilityTypeService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ChatService>();
