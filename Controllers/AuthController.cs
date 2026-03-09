@@ -160,11 +160,13 @@ public class AuthController : ControllerBase
        
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public IActionResult IsAuthenticated()
     {
         if (User.Identity?.IsAuthenticated == true)
-            return Ok();
+        return Ok();
+
         return Unauthorized();
     }
     [Authorize]
@@ -194,6 +196,11 @@ public class AuthController : ControllerBase
             Secure = true,
             SameSite = SameSiteMode.None,
             Expires = express
+
+
+
+
+
         });
 
     }
