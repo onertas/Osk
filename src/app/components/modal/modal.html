@@ -1,0 +1,32 @@
+<div class="modal fade" [id]="name" style="display: none" aria-hidden="true">
+  <div class="modal-dialog modal-{{modalSize}}">
+    <div class="modal-content">
+      <div
+        style=" padding: 0.3rem"
+        class="modal-header bg-dark"
+      >
+        <h6 class="modal-title ttt ml-2">
+          <i class="fa fa-angle-double-right fa-sm ml"></i> {{ title }}
+        </h6>
+        @if(isCloseButton) {
+
+
+        <button
+    
+          type="button"
+          class="btn btn-dark btn-sm"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fa fa-times" style="color: white" aria-hidden="true"></i>
+        </button>
+        }
+      </div>
+      <div class="modal-body">
+        <ng-content></ng-content>
+
+      </div>
+
+    </div>
+  </div>
+</div>
