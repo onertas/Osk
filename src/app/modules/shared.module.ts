@@ -11,6 +11,8 @@ import { FormvalidationDirective } from "../directives/formvalidation.directive"
 import { GrupMenuComponent } from "../components/grup-menu-component/grup-menu-component";
 
 
+
+
 @NgModule({
   declarations: [],
   imports: [
@@ -21,7 +23,9 @@ import { GrupMenuComponent } from "../components/grup-menu-component/grup-menu-c
     Section,
     FormsModule,
     FormvalidationDirective,
-    GrupMenuComponent
+    GrupMenuComponent,
+   
+    
   ],
   exports:[
     CommonModule,

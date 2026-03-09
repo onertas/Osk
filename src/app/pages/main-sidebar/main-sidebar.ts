@@ -7,8 +7,8 @@ import { GenericHttpService } from '../../services/generic.http.service';
 import { SwalService } from '../../services/swall.service';
 import { StringService } from '../../services/string.service';
 import {  Menus } from '../../constants/menu';
-import { Auth } from '../../services/auth';
 import { SharedModule } from '../../modules/shared.module';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-main-sidebar',
@@ -21,7 +21,7 @@ export class MainSidebar {
 @ViewChild(Modal) modalCom: Modal | undefined;
 
   constructor(
-   public authState: Auth,
+   public authState: AuthService,
     private router: Router,
     private http: GenericHttpService,
     private swallSer: SwalService,

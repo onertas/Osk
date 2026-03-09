@@ -9,7 +9,7 @@ export interface CurrentUser {
 @Injectable({
   providedIn: 'root',
 })
-export class Auth {
+export class AuthService {
   private userSubject = new BehaviorSubject<CurrentUser | null>(null);
   user$ = this.userSubject.asObservable();
 

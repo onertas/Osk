@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit,} from '@angular/core';
 import { Blank } from "../../components/blank/blank";
 import { Section } from "../../components/section/section";
+
 
 @Component({
   selector: 'app-home',
@@ -8,6 +9,16 @@ import { Section } from "../../components/section/section";
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
-export class Home {
+export class Home implements OnInit{
+ngOnInit(): void {
+ 
+ 
+
+}
+
+
+
+
+
 
 }

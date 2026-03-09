@@ -35,7 +35,7 @@ private baseUrl: string = api
     }
 
     return this.http
-      .get<Result<T>>(url, { headers, params: httpParams })
+      .get<Result<T>>(url, { headers, params: httpParams,withCredentials: true })
       .pipe(catchError(this.handleError));
   }
 
@@ -57,7 +57,7 @@ private baseUrl: string = api
     }
 
     return this.http
-      .post<Result<T>>(url, body, { headers, params: httpParams })
+      .post<Result<T>>(url, body, { headers, params: httpParams,withCredentials: true })
       .pipe(catchError(this.handleError));
   }
 }
