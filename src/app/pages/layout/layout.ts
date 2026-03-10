@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { Navbar } from '../navbar/navbar';
-import { MainSidebar } from '../main-sidebar/main-sidebar';
-import { ControlSidebar } from '../control-sidebar/control-sidebar';
-import { Footer } from '../footer/footer';
+import { Navbar } from './navbar/navbar';
+import { MainSidebar } from './main-sidebar/main-sidebar';
+import { ControlSidebar } from './control-sidebar/control-sidebar';
+import { Footer } from './footer/footer';
 import { Router, RouterOutlet } from '@angular/router';
 
 @Component({

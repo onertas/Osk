@@ -1,0 +1,48 @@
+<app-blank title="Kuruluş Listesi">
+  <app-section title="{{healthFacilities[0]?.typeName}} Listesi">
+    <div style="min-height: 700px" class="table-responsive">
+      <table  class="table table-sm fontstil13 table-striped">
+        <thead>
+          <tr>
+            <th >#</th>
+            <th >Adı</th>
+            <th >Türü</th>
+          
+              <th ></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of healthFacilities; track $index) {
+
+          <tr>
+            <td>{{ $index + 1 }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.typeName }}</td>
+   
+          
+            <td style="text-align: right">
+              <app-grup-menu-component>
+                <a
+                  routerLink="/hf-detail/{{ item.id }}"
+                  style="
+                    cursor: pointer;
+                    border-bottom: 1px solid rgb(233, 226, 226);
+                  "
+                  class="dropdown-item"
+                >
+                  <i style="width: 15px" class="fas fa-edit text-primary"></i>
+                  Detay
+                </a>
+                
+              </app-grup-menu-component>
+            </td>
+            
+          </tr>
+
+          }
+        </tbody>
+      </table>
+    </div>
+  </app-section>
+</app-blank>
+

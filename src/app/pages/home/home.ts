@@ -10,11 +10,9 @@ import { Section } from "../../components/section/section";
   styleUrl: './home.css',
 })
 export class Home implements OnInit{
-ngOnInit(): void {
- 
- 
-
-}
+  ngOnInit(): void {
+   
+  }
 
 
 

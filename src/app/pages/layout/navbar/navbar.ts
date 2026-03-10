@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { SharedModule } from '../../modules/shared.module';
-import { HttpApiService } from '../../services/http-api-service';
+import { SharedModule } from '../../../modules/shared.module';
+import { HttpApiService } from '../../../services/http-api-service';
 
 @Component({
   selector: 'app-navbar',

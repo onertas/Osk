@@ -1,1 +1,18 @@
-<p>grup-menu-component works!</p>
+<div class="btn-group">
+  <span
+    style="cursor: pointer; padding:0 5px;"
+    data-toggle="dropdown"
+    aria-expanded="false"
+  >
+    <i class="fa fa-ellipsis-v"></i>
+  </span>
+
+  <div
+    class="dropdown-menu dropdown-menu-sm"
+    data-boundary="window"
+    style="padding:0px; font-size:14px;"
+  >
+    <ng-content></ng-content>
+  </div>
+</div>
+

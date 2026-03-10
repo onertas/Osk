@@ -30,19 +30,13 @@ export const Menus: MenuModel[] = [
         name: 'Özel Hastaneler',
         isTitle: false,
         icon: 'fas fa-project-diagram',
-        url: '/health-facilities/OH',
+        url: '/hf/OH',
         roles: ['All'],
         show: true,
         subMenus: [],
       },
-
     ],
   },
-
-
-
-
-
 
   {
     name: 'Yetkili İşlemleri',
@@ -55,7 +49,7 @@ export const Menus: MenuModel[] = [
       {
         name: 'Kuruluş Tipleri',
         icon: 'fa fa-chevron-right fa-xs',
-        url: '/health-facility-types',
+        url: '/hf-types',
         isTitle: false,
         roles: ['All'],
         show: true,
@@ -64,16 +58,14 @@ export const Menus: MenuModel[] = [
       {
         name: 'Kuruluşlar',
         icon: 'fa fa-chevron-right fa-xs',
-        url: '/health-facility-management',
+        url: '/hf-management',
         isTitle: false,
         roles: ['All'],
         show: true,
         subMenus: [],
       },
-
     ],
   },
-
 
   {
     name: 'Raporlar',

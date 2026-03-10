@@ -13,7 +13,10 @@ export class AuthService {
   private userSubject = new BehaviorSubject<CurrentUser | null>(null);
   user$ = this.userSubject.asObservable();
 
-  constructor(private http: HttpApiService) {}
+  constructor(private http: HttpApiService) {
+
+    
+  }
 
   loadUser() {
     this.http.get<CurrentUser>('auth/me').subscribe({

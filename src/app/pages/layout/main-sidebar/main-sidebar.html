@@ -10,17 +10,19 @@
     <br />
     <span class="brand-text font-weight-light">Mevada Personel Takip</span>
   </a> -->
-<!-- Sidebar Header -->
-<div class="sidebar-header mb-2">
-  <div class="logo-area">
-    <div class="logo-icon">KSM</div>
-    <div class="logo-text">
-      <span class="title">Özel Hastaneler Birimi</span>
-      <span class="subtitle">sdds</span>
-
-    </div>""
+  <!-- Sidebar Header -->
+  <div class="sidebar-header mb-2">
+    <div class="logo-area">
+      <div class="logo-icon">KSM</div>
+      <div class="logo-text">
+        <span class="title">Özel Hastaneler Birimi</span>
+        @if (user$ | async; as user) {
+          <span class="subtitle">{{ user.username }}</span>
+        }
+      </div>
+      ""
+    </div>
   </div>
-</div>
   <!-- <a class="brand-link">
     <img
       src="/assets/dist/img/ComfyTexC.png"
@@ -52,13 +54,13 @@
     <div class="form-inline">
       <div class="input-group" data-widget="sidebar-search">
         <form autocomplete="off">
-        <input
-          class="form-control form-control-sidebar"
-          type="search"
-          placeholder="Menude Ara"
-          aria-label="Search"
-        />
-      </form>
+          <input
+            class="form-control form-control-sidebar"
+            type="search"
+            placeholder="Menude Ara"
+            aria-label="Search"
+          />
+        </form>
         <div class="input-group-append">
           <button class="btn btn-sidebar">
             <i class="fas fa-search fa-fw"></i>
@@ -74,67 +76,62 @@
         role="menu"
         data-accordion="true"
       >
-        @for(menu of menus;track menu) {
-
-          @if(menu.isTitle==true && menu.show) {
-
-        <li style="color: #76818d" class="nav-header">
-          <i class="fa fa-key"></i> {{ menu.name.toLocaleUpperCase() }}
-        </li>
-
-        } @else if(menu.subMenus.length>0 && menu.show){
-
-        <!--ÇOKLU MENU-->
-        <li class="nav-item">
-          <a  (click)="menuac($event)" href="#" class="nav-link">
-            <i class="fas fa-folder-open text-info"></i>
-            <p style="margin-left: 2px">
-              {{ menu.name }}<i class="right fas fa-angle-left"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            @for(sub of menu.subMenus ;track sub){
-
-            <li *ngIf="sub.show" class="nav-item">
+        @for (menu of menus; track menu) {
+          @if (menu.isTitle == true && menu.show) {
+            <li style="color: #76818d" class="nav-header">
+              <i class="fa fa-key"></i> {{ menu.name.toLocaleUpperCase() }}
+            </li>
+          } @else if (menu.subMenus.length > 0 && menu.show) {
+            <!--ÇOKLU MENU-->
+            <li class="nav-item">
+              <a (click)="menuac($event)" href="#" class="nav-link">
+                <i class="fas fa-folder-open text-info"></i>
+                <p style="margin-left: 2px">
+                  {{ menu.name }}<i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                @for (sub of menu.subMenus; track sub) {
+                  <li *ngIf="sub.show" class="nav-item">
+                    <a
+                      href="#"
+                      (click)="x($event)"
+                      [routerLink]="sub.url"
+                      routerLinkActive="active"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="nav-link"
+                    >
+                      <i style="margin-left: 10px" class="{{ sub.icon }}"></i>
+                      <p style="margin-left: 5px">{{ sub.name }}</p>
+                    </a>
+                  </li>
+                }
+              </ul>
+            </li>
+            <!--ÇOKLU MENU-->
+          } @else {
+            <!--TEK MENU-->
+            <li *ngIf="menu.show" class="nav-item">
               <a
                 href="#"
                 (click)="x($event)"
-                [routerLink]="sub.url"
+                [routerLink]="menu.url"
                 routerLinkActive="active"
                 [routerLinkActiveOptions]="{ exact: true }"
                 class="nav-link"
               >
-                <i style="margin-left: 10px" class="{{ sub.icon }}"></i>
-                <p style="margin-left: 5px">{{ sub.name }}</p>
+                <i class="{{ menu.icon }} text-white"></i>
+                <p style="margin-left: 7px">{{ menu.name }}</p>
               </a>
             </li>
-            }
-          </ul>
-        </li>
-        <!--ÇOKLU MENU-->
-        } @else {
-        <!--TEK MENU-->
-        <li *ngIf="menu.show" class="nav-item">
-          <a
-            href="#"
-            (click)="x($event)"
-            [routerLink]="menu.url"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            class="nav-link "
-          >
-            <i class="{{menu.icon}} text-white"></i>
-            <p style="margin-left: 7px">{{ menu.name }}</p>
-          </a>
-        </li>
-        <!--TEK MENU-->
-        } }
+            <!--TEK MENU-->
+          }
+        }
       </ul>
     </nav>
     <!-- /.sidebar-menu -->
   </div>
   <!-- /.sidebar -->
-
 </aside>
 
 <!-- MODAL update
@@ -196,4 +193,3 @@
     </div>
   </form>
 </app-modal> -->
-

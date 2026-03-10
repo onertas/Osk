@@ -1,8 +1,11 @@
+import { SwalService } from './../services/swall.service';
 import { HttpClient, HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, catchError, filter, switchMap, take, throwError } from 'rxjs';
 import { api } from '../constants/static';
+import Swal from 'sweetalert2';
+import { SweetAlertService } from '../services/sweetAlert.Service';
 
 let isRefreshing = false;
 const refreshTokenSubject = new BehaviorSubject<boolean>(false);
@@ -10,7 +13,7 @@ const refreshTokenSubject = new BehaviorSubject<boolean>(false);
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const http = inject(HttpClient);
-  // const api = 'https://api.seninsiten.com'; // API URL'in
+  const swal = inject(SweetAlertService);
 
   // Credentials (Cookie) desteği ekle
   const cloned = req.clone({ withCredentials: true });
@@ -19,6 +22,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       // 1. Sunucuya erişilemiyor (Network Error)
       if (error.status === 0) {
+        swal.showError('Sunucuya bağlanılamıyor. Lütfen internet bağlantınızı kontrol edin.');
         return throwError(() => error);
       }
 
@@ -38,7 +42,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           switchMap(() => {
             isRefreshing = false;
             refreshTokenSubject.next(true); // Bekleyen isteklere "yol açık" sinyali ver
-            return next(req.clone({ withCredentials: true }));
+            return next(cloned);
           }),
           catchError((err) => {
             isRefreshing = false;
@@ -53,7 +57,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         return refreshTokenSubject.pipe(
           filter((success) => success === true), // Sadece refresh başarıyla bitince devam et
           take(1),
-          switchMap(() => next(req.clone({ withCredentials: true }))),
+          switchMap(() => next(cloned)),
         );
       }
 
