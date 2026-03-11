@@ -8,7 +8,7 @@ import { LoadingService } from '../services/loading.service';
   template: `
     @if (loadingService.isLoading()) {
       <div class="spinner-overlay">
-       <div class="spinner-grow text-danger" role="status">
+       <div class="spinner-grow text-white" role="status">
   <span class="sr-only">Loading...</span>
 </div>
       </div>

@@ -66,3 +66,37 @@ img {
 .p-datepicker-calendar td {
   padding: 0.1rem !important;
 }
+
+/* Inputları AdminLTE stili yerine bizim tanımladığımız boyutlara zorla */
+.p-inputtext, 
+.p-dropdown, 
+.p-datepicker input {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.85rem !important;
+    height: auto !important; /* AdminLTE'nin height zorlamasını kırar */
+}
+
+/* DatePicker kutucuklarını küçült */
+.p-datepicker table td {
+    padding: 0.2rem !important;
+}
+
+/* MultiSelect bileşenini hedef al ve küçült */
+.p-multiselect {
+    padding: 0.2rem 0.5rem !important; /* Dış boşlukları daralt */
+    height: 32px !important;           /* Sabit yükseklik ver */
+    font-size: 0.85rem !important;     /* Yazı boyutunu küçült */
+    display: flex !important;
+    align-items: center !important;    /* İçeriği dikeyde ortala */
+}
+
+/* Seçilen etiketlerin (chips) boyutunu küçült */
+.p-multiselect .p-multiselect-label {
+    padding: 0 !important;
+    font-size: 0.85rem !important;
+}
+
+/* Dropdown butonunun boyutunu ayarla */
+.p-multiselect .p-multiselect-trigger {
+    width: 2.5rem !important;
+}

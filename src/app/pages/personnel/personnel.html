@@ -1,1 +1,6 @@
 <p>personnel works!</p>
+<p-button label="Check" />
+
+<p-inputmask mask="99-999999"  placeholder="99-999999" />
+<p-datepicker size="small" [(ngModel)]="date" />
+<p-multiselect  [options]="cities" [(ngModel)]="selectedCities" optionLabel="name" placeholder="Select Cities" [maxSelectedLabels]="3" />
