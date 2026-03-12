@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OskApi.Data;
 
@@ -11,9 +12,11 @@ using OskApi.Data;
 namespace OskApi.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260312133009_120320261629")]
+    partial class _120320261629
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -359,114 +362,6 @@ namespace OskApi.Migrations
                     b.ToTable("PersonnelBranches");
                 });
 
-            modelBuilder.Entity("OskApi.Entities.Personnel.PersonnelMovement", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(36)
-                        .HasColumnType("char(36)");
-
-                    b.Property<int>("AfiliatedUnitId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("BranchId")
-                        .HasMaxLength(36)
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTime?>("ContractFinish")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("ContractStart")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime?>("Finish")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<Guid>("HealthFacilityId")
-                        .HasMaxLength(36)
-                        .HasColumnType("char(36)");
-
-                    b.Property<bool>("IsDeteled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsSgk")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsUsingQuota")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<Guid>("PersonnelId")
-                        .HasMaxLength(36)
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("PmTypeId")
-                        .HasMaxLength(36)
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("Start")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BranchId");
-
-                    b.HasIndex("HealthFacilityId");
-
-                    b.HasIndex("PersonnelId");
-
-                    b.HasIndex("PmTypeId");
-
-                    b.ToTable("PersonnelMovements");
-                });
-
-            modelBuilder.Entity("OskApi.Entities.Personnel.PmType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(36)
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("IsBeforeStartStaff")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsDeteled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsFaaliyet2Control")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsManager")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsOnlyOneStatu")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsUsingStaff")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StatusQuota")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PmTypes");
-                });
-
             modelBuilder.Entity("OskApi.Entities.Personnel.Title", b =>
                 {
                     b.Property<Guid>("Id")
@@ -712,41 +607,6 @@ namespace OskApi.Migrations
                     b.Navigation("Branch");
 
                     b.Navigation("Personnel");
-                });
-
-            modelBuilder.Entity("OskApi.Entities.Personnel.PersonnelMovement", b =>
-                {
-                    b.HasOne("OskApi.Entities.Personnel.Branch", "Branch")
-                        .WithMany()
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OskApi.Entities.HealthFacilities.HealthFacility", "HealthFacility")
-                        .WithMany()
-                        .HasForeignKey("HealthFacilityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OskApi.Entities.Personnel.Personnel", "Personnel")
-                        .WithMany()
-                        .HasForeignKey("PersonnelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OskApi.Entities.Personnel.PmType", "PmType")
-                        .WithMany()
-                        .HasForeignKey("PmTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Branch");
-
-                    b.Navigation("HealthFacility");
-
-                    b.Navigation("Personnel");
-
-                    b.Navigation("PmType");
                 });
 
             modelBuilder.Entity("OskApi.Entities.Personnel.Branch", b =>

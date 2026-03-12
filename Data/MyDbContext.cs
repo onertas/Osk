@@ -25,6 +25,12 @@ namespace OskApi.Data
         public DbSet<Branch> Branches { get; set; }
 
         public DbSet<PersonnelBranch> PersonnelBranches { get; set; }
+        public DbSet<Personnel> Personnel { get; set; }
+        public DbSet<PersonnelMovement> PersonnelMovements { get; set; }
+        public DbSet<PmType> PmTypes { get; set; }
+
+
+
 
 
         protected override void OnModelCreating(ModelBuilder builder)

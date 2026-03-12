@@ -1,5 +1,4 @@
-﻿using OskApi.Entities.HealthFacilities;
-using System.Collections;
+﻿using System.Collections;
 
 namespace OskApi.Entities.Personnel;
 
@@ -14,41 +13,6 @@ public class Personnel : Entity
     public ICollection<PersonnelBranch>? PersonnelBranches { get; set; }
 
 
-}
-
-public class PersonnelMovement : Entity
-{
-    public DateTime Start { get; set; }
-    public DateTime? Finish { get; set; }
-    public DateTime? ContractStart { get; set; }
-    public DateTime? ContractFinish { get; set; }
-    public string Description { get; set; }
-
-
-    public int PmTypeId { get; set; }
-    public virtual PmType PmType { get; set; }
-
-    public int BranchId { get; set; }
-    public virtual Branch Branch { get; set; }
-
-    public int HealthFacilityId { get; set; }
-    public virtual HealthFacility HealthFacility { get; set; }
-    public int AfiliatedUnitId { get; set; }
-
-
-    public int PersonnelId { get; set; }
-    public virtual Personnel Personnel { get; set; }
-
-    public bool IsUsingQuota { get; set; }
-    public bool IsSgk { get; set; } = true;
-
-}
-
-public class PmType : Entity
-{
-    public string Code { get; set; }
-    public string Name { get; set; }
-   
 }
 
 
