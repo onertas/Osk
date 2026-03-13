@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OskApi.Dtos.HealthFacilities;
 using OskApi.Entities.HealthFacilities;
-using OskApi.Services.HealthFacilities;
+using OskApi.Services.Abstract;
 using OskApi.Shared.Result;
 namespace OskApi.Controllers;
 

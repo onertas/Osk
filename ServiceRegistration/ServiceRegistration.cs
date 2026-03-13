@@ -1,12 +1,10 @@
 ﻿using GenericRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using OskApi.Data;
 using OskApi.Entities.User;
-using OskApi.Services.HealthFacilities;
-using OskApi.Services.Jwt;
 using OskApi.Services.OpenAI;
+using System.Reflection;
 
 namespace OskApi.ServiceRegisration
 {
@@ -15,40 +13,52 @@ namespace OskApi.ServiceRegisration
         public static IServiceCollection AddProjectServices(this IServiceCollection services, IConfiguration configuration)
         {
             // Db
-            // services.AddDbContext<MyDbContext>(options =>
-            // options.UseSqlServer(configuration.GetConnectionString("DefaultConnection1")));
-
             services.AddDbContext<MyDbContext>(options =>
-                options.UseMySql(configuration.GetConnectionString("DefaultConnection"), 
-                new MySqlServerVersion(new Version(8, 0, 0)), // Sunucu versiyonuna göre ayarla
+                options.UseMySql(
+                    configuration.GetConnectionString("DefaultConnection"),
+                    new MySqlServerVersion(new Version(8, 0, 0)),
                     mySqlOptions => mySqlOptions.EnableRetryOnFailure(
-                      maxRetryCount: 10,           // 10 kez denesin
-                      maxRetryDelay: TimeSpan.FromSeconds(5), // Aralarda 5 sn beklesin
-                      errorNumbersToAdd: null)));
-
-            //    services.AddDbContext<MyDbContext>(options =>
-            //options.UseMySql(configuration.GetConnectionString("DefaultConnection"), ServerVersion.AutoDetect(configuration.GetConnectionString("DefaultConnection")))); ;
+                        maxRetryCount: 10,
+                        maxRetryDelay: TimeSpan.FromSeconds(5),
+                        errorNumbersToAdd: null)));
 
             // Identity
             services.AddIdentity<AppUser, AppRole>(options =>
-                {
-                    options.User.RequireUniqueEmail = true;
-                })
-                .AddEntityFrameworkStores<MyDbContext>()
-                .AddDefaultTokenProviders();
+            {
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddEntityFrameworkStores<MyDbContext>()
+            .AddDefaultTokenProviders();
 
-            // Unit of Work
-            services.AddScoped<IUnitOfWork>(srv => srv.GetRequiredService<MyDbContext>());
+            // Unit Of Work
+            services.AddScoped<IUnitOfWork>(srv =>
+                srv.GetRequiredService<MyDbContext>());
 
-            // Custom Services
-            services.AddScoped<IHealthFacilityService, HealthFacilityService>();
-            services.AddScoped<ITitleService, TitleService>();
-            services.AddScoped<IBranchService, BranchService>();
-            services.AddScoped<IHealthFacilityTypeService, HealthFacilityTypeService>();
-            services.AddScoped<ITokenService, TokenService>();
+            // 🔵 Service otomatik register
+            RegisterServices(services);
+
+            // Interface olmayan servisler
             services.AddScoped<ChatService>();
 
             return services;
+        }
+
+        private static void RegisterServices(IServiceCollection services)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+
+            var serviceTypes = assembly.GetTypes()
+                .Where(t => t.IsClass && !t.IsAbstract && t.Name.EndsWith("Service"));
+
+            foreach (var implementation in serviceTypes)
+            {
+                var interfaceType = implementation.GetInterface($"I{implementation.Name}");
+
+                if (interfaceType != null)
+                {
+                    services.AddScoped(interfaceType, implementation);
+                }
+            }
         }
     }
 }
