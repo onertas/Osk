@@ -70,6 +70,44 @@ namespace OskApi.Data
 
                 await context.SaveChangesAsync();
             }
+
+            if (!context.PmTypes.Any())
+            {
+               
+                context.PmTypes.AddRange(
+                    new PmType
+                    {
+                        Name = "Kadrolu",
+                        Description = "Kadrolu personel",
+                        Order = 1,
+                        IsUsingStaff = true,
+                        IsBeforeStartStaff = false,
+                        IsManager = false,
+                        IsFaaliyet2Control = false,
+                        IsOnlyOneStatu = true,
+                        StatusQuota = 1,
+                        
+
+
+                    },
+                      new PmType
+                      {
+                          Name = "16/3 Geçici Kadro",
+                          Description = "Kadrolu personel",
+                          Order = 1,
+                          IsUsingStaff = true,
+                          IsBeforeStartStaff = false,
+                          IsManager = false,
+                          IsFaaliyet2Control = false,
+                          IsOnlyOneStatu = true,
+                          StatusQuota = 1
+
+                      }
+
+                );
+
+                await context.SaveChangesAsync();
+            }
         }
     }
 }
