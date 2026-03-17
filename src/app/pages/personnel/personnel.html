@@ -1,6 +1,40 @@
-<p>personnel works!</p>
-<p-button (onClick)="Add()" label="Check" />
 
-<p-inputmask mask="99-999999"  placeholder="99-999999" />
-<p-datepicker size="small" [(ngModel)]="date" />
-<p-multiselect  [options]="cities" [(ngModel)]="selectedCities" optionLabel="name" placeholder="Select Cities" [maxSelectedLabels]="3" />
+
+<div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
+  <button data-toggle="modal"
+          data-target="#ac" class="btn btn-sm btn-dark"><i class="fas fa-plus"></i> Yeni Personel</button>
+  <input pInputText #globalFilter placeholder="Global filter" type="text" (input)="onGlobalFilter($event)" style="max-width:280px;" />
+</div>
+ 
+
+
+<p-table #dt [value]="personnel" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5,10,20]" [sortMode]="'multiple'" [responsiveLayout]="'scroll'" [globalFilterFields]="['firstName','lastName','email','phone']" exportFilename="personnel">
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="firstName">First Name <p-sortIcon field="firstName"></p-sortIcon></th>
+      <th pSortableColumn="lastName">Last Name <p-sortIcon field="lastName"></p-sortIcon></th>
+      <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
+      <th pSortableColumn="phone">Phone <p-sortIcon field="phone"></p-sortIcon></th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-person>
+    <tr>
+      <td>{{ person.firstName }}</td>
+      <td>{{ person.lastName }}</td>
+      <td>{{ person.email }}</td>
+      <td>{{ person.phone }}</td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="4">No personnel found.</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+
+<app-modal name="ac" title="Personel Detayı">
+  <p>Personel detayları burada gösterilecek.</p>
+</app-modal>

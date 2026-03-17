@@ -6,7 +6,7 @@ import { Personnel } from '../personnel/personnel';
 @Component({
   selector: 'app-hf-detail',
   standalone: true,
-  imports: [SharedModule, Modal,Personnel],
+  imports: [SharedModule, Personnel],
   templateUrl: './hf-detail.html',
   styleUrl: './hf-detail.css',
 })
