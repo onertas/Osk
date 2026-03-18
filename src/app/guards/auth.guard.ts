@@ -6,7 +6,6 @@ import { firstValueFrom } from "rxjs";
 export const authGuard: CanActivateFn = async (route, state) => {
   const router = inject(Router);
   const http = inject(HttpApiService);
-
   try {
     await firstValueFrom(http.get<any>('auth/IsAuthenticated'));
     return true;

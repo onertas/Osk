@@ -7,11 +7,11 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-    "skipTests": true
-  },
-  "@schematics/angular:service": {
-    "skipTests": true
-  }
+          "skipTests": true
+        },
+        "@schematics/angular:service": {
+          "skipTests": true
+        }
       },
       "root": "",
       "sourceRoot": "src",
@@ -21,9 +21,7 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
@@ -32,7 +30,19 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "public/dist/css/adminlte.min.css",
+              "public/plugins/fontawesome-free/css/all.min.css",
+              "public/plugins/summernote/summernote-bs4.min.css",
+              "public/dist/css/customCss.css"
+            ],
+            "scripts": [
+             "public/plugins/jquery/jquery.min.js",
+  "public/plugins/jquery-ui/jquery-ui.min.js", 
+  "public/plugins/bootstrap/js/bootstrap.bundle.min.js",
+  "public/plugins/bootstrap-switch/js/bootstrap-switch.min.js",
+  "public/plugins/summernote/summernote-bs4.min.js",
+  "public/dist/js/adminlte.min.js"
             ]
           },
           "configurations": {
@@ -77,31 +87,22 @@
         "test": {
           "builder": "@angular/build:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
-             "src/favicon.ico",
-  "src/assets",
-  {
-    "glob": "**/*",
-    "input": "node_modules/admin-lte/dist/img",
-    "output": "assets/img"
-  }
+              "src/favicon.ico",
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/admin-lte/dist/img",
+                "output": "assets/img"
+              }
             ],
-            "styles": [
-
-
-  
-  "src/styles.css"
-            ],
-"scripts": [
-"node_modules/jquery/dist/jquery.min.js",
-  "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
-  "node_modules/admin-lte/dist/js/adminlte.min.js"
-]
+            "styles": ["src/styles.css"],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+            ]
           }
         }
       }
