@@ -101,37 +101,7 @@ public class AuthController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Logout()
     {
-        //// Kullanıcıyı al
-        //var username = User.Identity?.Name;
-        //if (username == null)
-        //    return Unauthorized();
-
-        //var user = await _userManager.FindByNameAsync(username);
-        //if (user != null)
-        //{
-        //    // Refresh token sıfırla
-        //    user.RefreshToken = null;
-        //    user.RefreshTokenExpiryTime = DateTime.Now.AddDays(-1);
-        //    await _userManager.UpdateAsync(user);
-        //}
-
-
-        //// Cookie'leri SİL - boş string veya Delete kullan
-        //Response.Cookies.Delete("accessToken", new CookieOptions
-        //{
-        //    HttpOnly = true,
-        //    Secure = true, // production: true
-        //    SameSite = SameSiteMode.None,
-
-        //});
-
-        //Response.Cookies.Delete("refreshToken", new CookieOptions
-        //{
-        //    HttpOnly = true,
-        //    Secure = true, // production: true
-        //    SameSite = SameSiteMode.None,
-
-        //});
+        
         var refreshToken = Request.Cookies["refreshToken"];
         if (!string.IsNullOrEmpty(refreshToken))
         {
@@ -196,10 +166,6 @@ public class AuthController : ControllerBase
             Secure = true,
             SameSite = SameSiteMode.None,
             Expires = express
-
-
-
-
 
         });
 
