@@ -1,14 +1,15 @@
-
-
 <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
-  <button data-toggle="modal"
-          data-target="#ac" class="btn btn-sm btn-dark"><i class="fas fa-plus"></i> Yeni Personel</button>
-  <input pInputText #globalFilter placeholder="Global filter" type="text" (input)="onGlobalFilter($event)" style="max-width:280px;" />
+  <button data-toggle="modal" data-target="#ac" class="btn btn-sm btn-dark"><i class="fas fa-plus"></i> Yeni
+    Personel</button>
+  <input pInputText #globalFilter placeholder="Global filter" type="text" (input)="onGlobalFilter($event)"
+    style="max-width:280px;" />
 </div>
- 
 
 
-<p-table #dt [value]="personnel" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5,10,20]" [sortMode]="'multiple'" [responsiveLayout]="'scroll'" [globalFilterFields]="['firstName','lastName','email','phone']" exportFilename="personnel">
+
+<p-table #dt [value]="personnel" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5,10,20]" [sortMode]="'multiple'"
+  [responsiveLayout]="'scroll'" [globalFilterFields]="['firstName','lastName','email','phone']"
+  exportFilename="personnel">
   <ng-template pTemplate="header">
     <tr>
       <th pSortableColumn="firstName">First Name <p-sortIcon field="firstName"></p-sortIcon></th>
@@ -35,6 +36,46 @@
 </p-table>
 
 
-<app-modal name="ac" title="Personel Detayı">
-  <p>Personel detayları burada gösterilecek.</p>
+<app-modal name="ac" title="Yeni Personel Ekle">
+  <form #addForm="ngForm" (ngSubmit)="Add(addForm)">
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Kimlik Numarası</label>
+        <input type="text" class="form-control" name="identityNumber" [(ngModel)]="newPersonnel.identityNumber"
+          required>
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Telefon Numarası</label>
+        <p-inputMask mask="(999) 999-9999" [(ngModel)]="newPersonnel.phoneNumber" name="phoneNumber"
+          placeholder="(555) 555-5555" styleClass="form-control w-100"></p-inputMask>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Ad</label>
+        <input type="text" class="form-control" name="firstName" [(ngModel)]="newPersonnel.firstName" required>
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Soyad</label>
+        <input type="text" class="form-control" name="lastName" [(ngModel)]="newPersonnel.lastName" required>
+      </div>
+    </div>
+    <div class="form-group mb-2">
+      <label>Email</label>
+      <input type="email" class="form-control" name="email" [(ngModel)]="newPersonnel.email" required>
+    </div>
+    <div class="form-group mb-2 mt-3 form-check">
+      <input type="checkbox" class="form-check-input" id="isBanned" name="isBanned" [(ngModel)]="newPersonnel.isBanned">
+      <label class="form-check-label" for="isBanned">Yasaklı mı?</label>
+    </div>
+
+
+
+    <hr>
+    <div class="text-right d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!addForm.valid"><i class="fa fa-save"></i>
+        Kaydet</button>
+    </div>
+  </form>
 </app-modal>
