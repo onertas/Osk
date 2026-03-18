@@ -1,4 +1,4 @@
-﻿using GenericRepository;
+using GenericRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -55,5 +55,11 @@ namespace OskApi.Controllers
             return Ok(res);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            return Ok(users);
+        }
     }
 }

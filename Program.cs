@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using OskApi.Data;
 using OskApi.ServiceRegisration;
+using OskApi.Shared.Mapping;
 using System.Text;
 using System.Text.Json;
 
@@ -25,8 +26,12 @@ builder.Services.AddCors(options =>
 
 
 //automapper
-
-builder.Services.AddAutoMapper(typeof(Program));
+// Register AutoMapper profiles by specifying the assembly that contains them.
+// Use the assembly of MappingProfile so the AddAutoMapper overload is resolved correctly.
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<MappingProfile>();
+});
 
 // 🔥 Tüm servis kayıtlarını tek satırda aldık
 builder.Services.AddProjectServices(configuration);

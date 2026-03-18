@@ -1,40 +1,70 @@
-﻿using GenericRepository;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using GenericRepository;
+
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 using OskApi.Dtos.Personnel;
 using OskApi.Entities.Personnel;
 using OskApi.Services.Abstract;
+using OskApi.Shared.Result;
 
-namespace OskApi.Controllers
+namespace OskApi.Controllers;
+
+[Route("api/[controller]/[action]")]
+[ApiController]
+public class PersonnelController : ControllerBase
 {
-    [Route("api/[controller]/[action]")]
-    [ApiController]
-    public class PersonnelController : ControllerBase
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IPersonnelService _personnelService;
+    private readonly IMapper _mapper;
+    public PersonnelController(IUnitOfWork unitOfWork, IPersonnelService personnelService, IMapper mapper)
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IPersonnelService _personnelService;
-        public PersonnelController(IUnitOfWork unitOfWork, IPersonnelService personnelService)
+        _unitOfWork = unitOfWork;
+        _personnelService = personnelService;
+        _mapper = mapper;
+    }
+
+
+    [HttpPost]
+    public async Task<IActionResult> Add(CreatePersonnelDto model)
+    {
+        var entity = new Personnel
         {
-            _unitOfWork = unitOfWork;
-            _personnelService = personnelService;
-        }
+            FirstName = model.FirstName,
+            LastName = model.LastName,
+        };
 
-
-        [HttpPost]
-        public async Task<IActionResult> Add(CreatePersonnelDto model)
+        try
         {
-            var entity = new Personnel
-            {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-            };
-
-
             await _personnelService.AddAsync(entity);
             await _unitOfWork.SaveChangesAsync();
-            return Ok(Results.Ok("Eklendi"));
         }
+        catch (Exception e)
+        {
+
+            Console.WriteLine(e);
+        }
+
+
+
+        return Ok(Results.Ok("Eklendi"));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var list = await _personnelService.GetAll().ToListAsync();
+
+        var mappedlist= _mapper.Map<List<ListPersonnelDto>>(list);
+        
+        var result=Result<List<ListPersonnelDto>>.Ok(mappedlist);
+
+        return Ok(result);
 
 
     }
 }
+
+
+

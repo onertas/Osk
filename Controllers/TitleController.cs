@@ -10,6 +10,7 @@ using OskApi.Services.Abstract;
 using OskApi.Shared.Result;
 namespace OskApi.Controllers;
 
+[Authorize]
 [Route("api/[controller]/[action]")]
 [ApiController]
 
