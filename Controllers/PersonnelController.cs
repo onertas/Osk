@@ -54,7 +54,7 @@ public class PersonnelController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var list = await _personnelService.GetAll().ToListAsync();
+        var list = await _personnelService.GetAll().Include(i=>i.PersonnelBranches!).ThenInclude(i=>i.Branch!).ThenInclude(i=>i.Title).ToListAsync();
 
         var mappedlist= _mapper.Map<List<ListPersonnelDto>>(list);
         

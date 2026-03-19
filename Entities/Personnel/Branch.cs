@@ -10,8 +10,6 @@ public class Branch : Entity
     public Guid TitleId { get; set; }
     public Title Title { get; set; } = null!;
 
-    public bool IsMainSpecialty { get; set; }
-
     public int BranchTypeId { get; set; }
 
     public ICollection<PersonnelBranch>? PersonnelBranches { get; set; }

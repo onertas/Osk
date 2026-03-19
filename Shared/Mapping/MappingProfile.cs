@@ -6,10 +6,15 @@ namespace OskApi.Shared.Mapping
 {
     public class MappingProfile:Profile
     {
-        public MappingProfile()
+       
+             public MappingProfile()
         {
-            CreateMap<Personnel,ListPersonnelDto>();
-           
+            CreateMap<Personnel, ListPersonnelDto>().ForMember(dest => dest.Title, opt => opt.MapFrom(src =>
+        src.PersonnelBranches!.Select(pb => pb.Branch!.Title!.Name)
+           .FirstOrDefault()));
+
         }
+
     }
+    
 }
