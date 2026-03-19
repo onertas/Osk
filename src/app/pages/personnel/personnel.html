@@ -64,6 +64,10 @@
       <label>Email</label>
       <input type="email" class="form-control" name="email" [(ngModel)]="newPersonnel.email" required>
     </div>
+    <div class="form-group mb-2">
+      <label>Şubeler</label>
+      <p-multiSelect [options]="branches" [(ngModel)]="newPersonnel.personnelBranches" optionLabel="name" optionValue="id" name="branches" placeholder="Şube Seçin" styleClass="w-100"></p-multiSelect>
+    </div>
     <div class="form-group mb-2 mt-3 form-check">
       <input type="checkbox" class="form-check-input" id="isBanned" name="isBanned" [(ngModel)]="newPersonnel.isBanned">
       <label class="form-check-label" for="isBanned">Yasaklı mı?</label>

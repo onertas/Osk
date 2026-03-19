@@ -32,11 +32,13 @@ export class Personnel implements OnInit {
   date: Date = new Date();
   newPersonnel: CreatePersonnelDto = new CreatePersonnelDto();
   personnel: ListPersonnelDto[] = [];
+  branches: any[] = [];
   //#endregion
 
   //#region METHODS
   ngOnInit(): void {
     this.GetAll();
+    this.GetBranches();
   }
 
   onGlobalFilter(event: Event) {
@@ -47,7 +49,7 @@ export class Personnel implements OnInit {
 
     this.http.post('personnel/add', this.newPersonnel).subscribe({
       next: (response) => {
-        console.log('Personnel added successfully', response);
+
         this.modalCom?.close('ac');
         form.resetForm();
         this.newPersonnel = new CreatePersonnelDto();
@@ -61,10 +63,18 @@ export class Personnel implements OnInit {
 
   GetAll() {
     this.http.get<ListPersonnelDto[]>('personnel/getall').subscribe(res => {
-      
+
       if (res.success && res.data) {
         this.personnel = res.data;
+        console.log(res.data);
+      }
+    });
+  }
 
+  GetBranches() {
+    this.http.get<any[]>('branch/getall').subscribe(res => {
+      if (res.success && res.data) {
+        this.branches = res.data;
       }
     });
   }
