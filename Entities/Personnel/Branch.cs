@@ -1,4 +1,5 @@
 ﻿using Ardalis.SmartEnum;
+using System.Collections.Generic;
 
 namespace OskApi.Entities.Personnel;
 
@@ -8,11 +9,10 @@ public class Branch : Entity
     public string Name { get; set; }=string.Empty;
 
     public Guid TitleId { get; set; }
-    public Title Title { get; set; } = null!;
+    public Title? Title { get; set; } = null!;
 
     public int BranchTypeId { get; set; }
 
-    public ICollection<PersonnelBranch>? PersonnelBranches { get; set; }
 }
 
 

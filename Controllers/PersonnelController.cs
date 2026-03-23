@@ -33,6 +33,14 @@ public class PersonnelController : ControllerBase
         {
             FirstName = model.FirstName,
             LastName = model.LastName,
+            PersonnelBranches = model.PersonnelBranches?.Select(i => new PersonnelBranch
+            {
+                BranchId = i
+            }).ToList(),
+            Email = model.Email,
+            PhoneNumber = model.PhoneNumber,
+            IdentityNumber = model.IdentityNumber,
+
         };
 
         try
@@ -54,11 +62,12 @@ public class PersonnelController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var list = await _personnelService.GetAll().Include(i=>i.PersonnelBranches!).ThenInclude(i=>i.Branch!).ThenInclude(i=>i.Title).ToListAsync();
+        var list = await _personnelService.GetAll().Include(i => i.PersonnelBranches!)
+            .ThenInclude(i => i.Branch!).ThenInclude(i => i.Title).ToListAsync();
 
-        var mappedlist= _mapper.Map<List<ListPersonnelDto>>(list);
-        
-        var result=Result<List<ListPersonnelDto>>.Ok(mappedlist);
+        var mappedlist = _mapper.Map<List<ListPersonnelDto>>(list);
+
+        var result = Result<List<ListPersonnelDto>>.Ok(mappedlist);
 
         return Ok(result);
 

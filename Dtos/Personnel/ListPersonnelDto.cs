@@ -10,6 +10,7 @@
         public string PhoneNumber { get; set; } = string.Empty;
         public bool IsBanned { get; set; } = false;
         public string Title { get; set; } = string.Empty;
+        public List<string>? Branches { get; set; } 
 
 
 

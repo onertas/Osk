@@ -29,7 +29,8 @@ public class PersonnelBranchConfiguration : IEntityTypeConfiguration<PersonnelBr
             .HasForeignKey(pb => pb.PersonnelId);
 
         builder.HasOne(pb => pb.Branch)
-            .WithMany(b => b.PersonnelBranches)
+            .WithMany()
+
             .HasForeignKey(pb => pb.BranchId);
     }
 }

@@ -9,9 +9,11 @@ namespace OskApi.Shared.Mapping
        
              public MappingProfile()
         {
-            CreateMap<Personnel, ListPersonnelDto>().ForMember(dest => dest.Title, opt => opt.MapFrom(src =>
-        src.PersonnelBranches!.Select(pb => pb.Branch!.Title!.Name)
-           .FirstOrDefault()));
+            CreateMap<Personnel, ListPersonnelDto>()
+                .ForMember(dest => dest.Title, opt => opt.MapFrom(src =>
+                        src.PersonnelBranches!.Select(pb => pb.Branch!.Title!.Name).FirstOrDefault()))
+                .ForMember(dest => dest.Branches, opt => opt.MapFrom(src =>
+                        src.PersonnelBranches!.Select(pb => pb.Branch!.Name).ToList()));
 
         }
 
