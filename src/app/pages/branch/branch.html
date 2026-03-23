@@ -1,0 +1,59 @@
+<app-blank title="Branşlar">
+  <app-section title="Branş Listesi">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+      <button data-toggle="modal" data-target="#addBranchModal" class="btn btn-sm btn-dark">
+        <i class="fas fa-plus"></i> Yeni Branş
+      </button>
+      <input pInputText #globalFilter placeholder="Global filter" type="text" (input)="onGlobalFilter($event)"
+        style="max-width:280px;" />
+    </div>
+    <p-table #dt [value]="branches" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,20,50]" [sortMode]="'multiple'" [responsiveLayout]="'scroll'" [globalFilterFields]="['name', 'titleName']" exportFilename="branches">
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="name">Branş Adı <p-sortIcon field="name"></p-sortIcon></th>
+          <th pSortableColumn="titleName">Ünvan <p-sortIcon field="titleName"></p-sortIcon></th>
+          <th pSortableColumn="branchTypeId">Branş Tipi <p-sortIcon field="branchTypeId"></p-sortIcon></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-branch>
+        <tr>
+          <td>{{ branch.name }}</td>
+          <td>{{ branch.title?.name || branch.titleName || '-' }}</td>
+          <td>{{ getBranchTypeName(branch.branchTypeId) }}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="3">Kayıt bulunamadı.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </app-section>
+</app-blank>
+
+<app-modal name="addBranchModal" title="Yeni Branş Ekle">
+  <form #addForm="ngForm" (ngSubmit)="Add(addForm)">
+    <div class="form-group mb-2">
+      <label>Branş Adı</label>
+      <input type="text" class="form-control" name="name" [(ngModel)]="newBranch.name" required>
+    </div>
+    <div class="form-group mb-2">
+      <label>Ünvan</label>
+      <select class="form-control" name="titleId" [(ngModel)]="newBranch.titleId" required>
+        <option value="" disabled selected>Ünvan Seçin</option>
+        <option *ngFor="let title of titles" [value]="title.id">{{ title.name }}</option>
+      </select>
+    </div>
+    <div class="form-group mb-2">
+      <label>Branş Tipi</label>
+      <select class="form-control" name="branchTypeId" [(ngModel)]="newBranch.branchTypeId" required>
+        <option *ngFor="let bt of branchTypes" [value]="bt.value">{{ bt.label }}</option>
+      </select>
+    </div>
+    <hr>
+    <div class="text-right d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!addForm.valid"><i class="fa fa-save"></i> Kaydet</button>
+    </div>
+  </form>
+</app-modal>

@@ -7,6 +7,7 @@ import { Login } from './pages/login/login';
 import { HfHome } from './pages/hf-home/hf-home';
 import { HfDetailComponent } from './pages/hf-detail/hf-detail';
 import { ErrorComponent } from './components/error-component/error-component';
+import { Personnel } from './pages/personnel/personnel';
 
 export const routes: Routes = [
   {
@@ -28,8 +29,20 @@ export const routes: Routes = [
         component: HfHome,
       },
       {
+        path: 'personnel',
+        component: Personnel,
+      },
+      {
         path: 'hf-detail/:id',
         component: HfDetailComponent,
+      },
+      {
+        path: 'title',
+        loadComponent: () => import('./pages/title/title').then(m => m.TitleComponent)
+      },
+      {
+        path: 'branch',
+        loadComponent: () => import('./pages/branch/branch').then(m => m.BranchComponent)
       },
       { path: '**', component: ErrorComponent },
       { path: 'errorpage', component: ErrorComponent },

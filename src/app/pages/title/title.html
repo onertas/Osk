@@ -1,0 +1,42 @@
+<app-blank title="Ünvanlar">
+  <app-section title="Ünvan Listesi">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+      <button data-toggle="modal" data-target="#addTitleModal" class="btn btn-sm btn-dark">
+        <i class="fas fa-plus"></i> Yeni Ünvan
+      </button>
+      <input pInputText #globalFilter placeholder="Global filter" type="text" (input)="onGlobalFilter($event)"
+        style="max-width:280px;" />
+    </div>
+    <p-table #dt [value]="titles" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,20,50]" [sortMode]="'multiple'" [responsiveLayout]="'scroll'" [globalFilterFields]="['name']" exportFilename="titles">
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="name">Ünvan Adı <p-sortIcon field="name"></p-sortIcon></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-title>
+        <tr>
+          <td>{{ title.name }}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="1">Kayıt bulunamadı.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </app-section>
+</app-blank>
+
+<app-modal name="addTitleModal" title="Yeni Ünvan Ekle">
+  <form #addForm="ngForm" (ngSubmit)="Add(addForm)">
+    <div class="form-group mb-2">
+      <label>Ünvan Adı</label>
+      <input type="text" class="form-control" name="name" [(ngModel)]="newTitle.name" required>
+    </div>
+    <hr>
+    <div class="text-right d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!addForm.valid"><i class="fa fa-save"></i> Kaydet</button>
+    </div>
+  </form>
+</app-modal>

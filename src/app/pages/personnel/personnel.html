@@ -1,21 +1,24 @@
-<div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
+
+<app-blank title="Personel">
+  <app-section title="Personel Listesi">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
   <button data-toggle="modal" data-target="#ac" class="btn btn-sm btn-dark"><i class="fas fa-plus"></i> Yeni
     Personel</button>
   <input pInputText #globalFilter placeholder="Global filter" type="text" (input)="onGlobalFilter($event)"
     style="max-width:280px;" />
 </div>
-
-
-
-<p-table #dt [value]="personnel" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5,10,20]" [sortMode]="'multiple'"
+<p-table #dt [value]="personnel" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5,10,20]" 
+[sortMode]="'multiple'"
   [responsiveLayout]="'scroll'" [globalFilterFields]="['firstName','lastName','email','phone']"
   exportFilename="personnel">
   <ng-template pTemplate="header">
     <tr>
-      <th pSortableColumn="firstName">First Name <p-sortIcon field="firstName"></p-sortIcon></th>
-      <th pSortableColumn="lastName">Last Name <p-sortIcon field="lastName"></p-sortIcon></th>
-      <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
-      <th pSortableColumn="phone">Phone <p-sortIcon field="phone"></p-sortIcon></th>
+      <th pSortableColumn="firstName">Adı <p-sortIcon field="firstName"></p-sortIcon></th>
+      <th pSortableColumn="lastName">Soyadı <p-sortIcon field="lastName"></p-sortIcon></th>
+      <th pSortableColumn="email">E-posta <p-sortIcon field="email"></p-sortIcon></th>
+      <th pSortableColumn="phoneNumber">Telefon <p-sortIcon field="phoneNumber"></p-sortIcon></th>
+      <th pSortableColumn="title">Ünvan <p-sortIcon field="title"></p-sortIcon></th>
+      <th pSortableColumn="branches">Branş <p-sortIcon field="branches"></p-sortIcon></th>
     </tr>
   </ng-template>
 
@@ -24,7 +27,10 @@
       <td>{{ person.firstName }}</td>
       <td>{{ person.lastName }}</td>
       <td>{{ person.email }}</td>
-      <td>{{ person.phone }}</td>
+      <td>{{ person.phoneNumber }}</td>
+      <td>{{ person.title }}</td>
+      <td>{{ person.branches.join(', ') }}</td>
+
     </tr>
   </ng-template>
 
@@ -34,6 +40,9 @@
     </tr>
   </ng-template>
 </p-table>
+  </app-section>
+</app-blank>
+
 
 
 <app-modal name="ac" title="Yeni Personel Ekle">
@@ -65,8 +74,9 @@
       <input type="email" class="form-control" name="email" [(ngModel)]="newPersonnel.email" required>
     </div>
     <div class="form-group mb-2">
-      <label>Şubeler</label>
-      <p-multiSelect [options]="branches" [(ngModel)]="newPersonnel.personnelBranches" optionLabel="name" optionValue="id" name="branches" placeholder="Şube Seçin" styleClass="w-100"></p-multiSelect>
+      <label>Branşlar</label>
+      <p-multiSelect [options]="branches" [(ngModel)]="newPersonnel.personnelBranches" optionLabel="name" 
+      optionValue="id" name="branches" placeholder="Branş Seçin" styleClass="w-100"></p-multiSelect>
     </div>
     <div class="form-group mb-2 mt-3 form-check">
       <input type="checkbox" class="form-check-input" id="isBanned" name="isBanned" [(ngModel)]="newPersonnel.isBanned">

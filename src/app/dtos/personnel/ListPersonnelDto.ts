@@ -7,4 +7,5 @@ export class ListPersonnelDto {
     phoneNumber: string = '';
     isBanned: boolean = false;
     title: string = '';
+    branches: string[] = [];
 }

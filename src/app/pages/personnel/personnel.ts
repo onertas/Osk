@@ -11,6 +11,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { TableModule, Table } from 'primeng/table';
 import { HttpApiService } from '../../services/http-api-service';
 import { ListPersonnelDto } from '../../dtos/personnel/ListPersonnelDto';
+import { SwalService } from '../../services/swall.service';
 
 
 
@@ -26,6 +27,7 @@ export class Personnel implements OnInit {
 
   //#region DEPENDENCIES AND VARIABLES
   http = inject(HttpApiService);
+  swal=inject(SwalService);
   @ViewChild('dt') table!: Table;
   @ViewChild(Modal) modalCom: Modal | undefined;
 
@@ -47,6 +49,11 @@ export class Personnel implements OnInit {
   }
   Add(form: any) {
 
+if(!this.newPersonnel.personnelBranches || this.newPersonnel.personnelBranches.length == 0){
+ this.swal.showWarning("Lütfen en az bir branş seçin");
+  return;
+}
+
     this.http.post('personnel/add', this.newPersonnel).subscribe({
       next: (response) => {
 
@@ -66,7 +73,7 @@ export class Personnel implements OnInit {
 
       if (res.success && res.data) {
         this.personnel = res.data;
-        console.log(res.data);
+       
       }
     });
   }
