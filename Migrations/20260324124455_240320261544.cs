@@ -10,6 +10,7 @@ namespace OskApi.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+
             migrationBuilder.AlterColumn<string>(
                 name: "Code",
                 table: "Titles",
