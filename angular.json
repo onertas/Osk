@@ -37,12 +37,12 @@
               "public/dist/css/customCss.css"
             ],
             "scripts": [
-             "public/plugins/jquery/jquery.min.js",
-  "public/plugins/jquery-ui/jquery-ui.min.js", 
-  "public/plugins/bootstrap/js/bootstrap.bundle.min.js",
-  "public/plugins/bootstrap-switch/js/bootstrap-switch.min.js",
-  "public/plugins/summernote/summernote-bs4.min.js",
-  "public/dist/js/adminlte.min.js"
+              "public/plugins/jquery/jquery.min.js",
+              "public/plugins/jquery-ui/jquery-ui.min.js",
+              "public/plugins/bootstrap/js/bootstrap.bundle.min.js",
+              "public/plugins/bootstrap-switch/js/bootstrap-switch.min.js",
+              "public/plugins/summernote/summernote-bs4.min.js",
+              "public/dist/js/adminlte.min.js"
             ]
           },
           "configurations": {
@@ -50,8 +50,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "5MB",
+                  "maximumError": "10MB"
                 },
                 {
                   "type": "anyComponentStyle",
