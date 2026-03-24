@@ -1,7 +1,7 @@
 import { isDevMode } from "@angular/core";
 
-var adres = 'https://api.onertas.com:5000/api'; // Sunucudaki API portun 5000 olduğu için
-var surl = 'https://api.onertas.com:5000';
+var adres = 'https://api.onertas.com/api'; // Sunucudaki API portun 5000 olduğu için
+var surl = 'https://api.onertas.com'; // Sunucudaki API portun 5000 olduğu için
 
 
 if(isDevMode()){
