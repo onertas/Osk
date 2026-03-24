@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OskApi.Data;
 using OskApi.ServiceRegisration;
@@ -17,7 +18,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("https://localhost:4200", "http://localhost:4200") // React uygulamanızın adresi
+        policy.WithOrigins("https://localhost:4200", "http://localhost:4200", "http://141.98.51.177") // React uygulamanızın adresi
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials(); // Cookie'lerin gönderilmesine izin ver
@@ -114,4 +115,8 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+
+
+
 app.Run();
