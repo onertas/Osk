@@ -94,11 +94,11 @@ var app = builder.Build();
 
 
 //seed data
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    await SeedData.SeedAsync(services);
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    await SeedData.SeedAsync(services);
+//}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
