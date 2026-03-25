@@ -26,7 +26,7 @@ export const routes: Routes = [
         component: Home,
       },
          {
-        path: 'hf-type',
+        path: 'hf-types',
         component: HfType,
       },
       {
