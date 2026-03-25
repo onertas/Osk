@@ -1,0 +1,21 @@
+name: OskApi Otomatik Deploy
+
+on:
+  push:
+    branches: [ master ] # Burayı 'master' olarak güncelledik
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sunucuya Bağlan ve Güncelle
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}      # IP: 141.98.51.177
+          username: ${{ secrets.SSH_USER }}  # User: root
+          key: ${{ secrets.SSH_KEY }}        # Eklediğin Private Key
+          script: |
+            cd /root/OskApi
+            git pull origin master
+            docker-compose up -d --build
+            docker image prune -f
