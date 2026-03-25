@@ -14,11 +14,22 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 
+//builder.Services.AddCors(options =>
+//{
+//    options.AddDefaultPolicy(policy =>
+//    {
+//        policy.WithOrigins("https://localhost:4200", "http://localhost:4200", "https://osk.onertas.com") // React uygulamanızın adresi
+//              .AllowAnyHeader()
+//              .AllowAnyMethod()
+//              .AllowCredentials(); // Cookie'lerin gönderilmesine izin ver
+//    });
+//});
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("https://localhost:4200", "http://localhost:4200", "https://osk.onertas.com") // React uygulamanızın adresi
+        policy.SetIsOriginAllowed(origin => true) // Cloudflare Tünel için en güvenlisi
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials(); // Cookie'lerin gönderilmesine izin ver
