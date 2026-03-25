@@ -8,6 +8,7 @@ import { HfHome } from './pages/hf-home/hf-home';
 import { HfDetailComponent } from './pages/hf-detail/hf-detail';
 import { ErrorComponent } from './components/error-component/error-component';
 import { Personnel } from './pages/personnel/personnel';
+import { HfType } from './pages/hf-type/hf-type';
 
 export const routes: Routes = [
   {
@@ -23,6 +24,10 @@ export const routes: Routes = [
       {
         path: '',
         component: Home,
+      },
+         {
+        path: 'hf-type',
+        component: HfType,
       },
       {
         path: 'hf/:code',

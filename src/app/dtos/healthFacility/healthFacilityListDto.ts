@@ -5,3 +5,4 @@ export class HealthFacilityListDto {
   typeName!: string;
   
 }
+

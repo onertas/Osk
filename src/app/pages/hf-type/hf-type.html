@@ -1,0 +1,20 @@
+<app-blank title="Kurum Tipleri">
+    <app-section title="Kurum Tipleri">
+        <p-table [value]="typelist">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Kurum Tipi Kodu</th>
+                    <th>Kurum Tipi Adı</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData>
+                <tr>
+                    <td>{{ rowData.code }}</td>
+                    <td>{{ rowData.name }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+        </app-section>
+
+    
+</app-blank>
