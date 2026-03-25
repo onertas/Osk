@@ -16,7 +16,6 @@ namespace OskApi.Data
         public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) { }
 
 
-        public DbSet<Product> Products { get; set; }
         public DbSet<HealthFacility> HealthFacilities { get; set; }
         public DbSet<HealthFacilityType> HealthFacilityTypes { get; set; }
         public DbSet<IcBedName> IcBedNames { get; set; } = null!;

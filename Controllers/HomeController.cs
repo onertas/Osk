@@ -30,30 +30,8 @@ namespace OskApi.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<IActionResult> Add(Product model)
-        {
-         
-   
-            await _unitOfWork.SaveChangesAsync();
+        
 
-
-            var res = Result.Ok("İşlem Başarılı");
-
-            return Ok(res);
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
-        public async Task<IActionResult> GetList()
-        {
-           
-
-
-            var res=Result<List<Product>>.Ok();
-
-            return Ok(res);
-        }
 
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()

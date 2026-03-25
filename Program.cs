@@ -94,11 +94,20 @@ var app = builder.Build();
 
 
 //seed data
-//using (var scope = app.Services.CreateScope())
-//{
-//    var services = scope.ServiceProvider;
-//    await SeedData.SeedAsync(services);
-//}
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        await SeedData.SeedAsync(services);
+        // İsteğe bağlı: Console.WriteLine("Veritabanı başarıyla hazırlandı.");
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Veritabanı migration veya seed işlemi sırasında hata oluştu.");
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
