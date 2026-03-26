@@ -21,12 +21,14 @@ export class Home implements OnInit {
     pdfUrl: 'https://www.mevzuat.gov.tr/MevzuatMetin/yonetmelik/7.5.42353.pdf',
     soru: 'Tabela standartları nelerdir?',
   };
-
+this.http.post(url, body).subscribe(res=>{
+  console.log(res)
+})
   // withCredentials: false yaparak sunucunun 'true' dönme zorunluluğunu ortadan kaldırın
-  this.http.post<any>(url, body, { withCredentials: true})
-    .subscribe({
-      next: (res) => { this.sonuc = res; console.log('Başarılı:', res); },
-      error: (err) => { console.error('Hata:', err); }
-    });
+  // this.http.post<any>(url, body)
+  //   .subscribe({
+  //     next: (res) => { this.sonuc = res; console.log('Başarılı:', res); },
+  //     error: (err) => { console.error('Hata:', err); }
+  //   });
   }
 }
