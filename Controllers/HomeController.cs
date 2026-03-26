@@ -10,6 +10,7 @@ using OskApi.Entities.User;
 using OskApi.Services;
 using OskApi.Services.Jwt;
 using OskApi.Shared.Result;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OskApi.Controllers
 {
@@ -29,8 +30,26 @@ namespace OskApi.Controllers
             _tokenService = tokenService;
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<ActionResult> n8n()
+        {
+            var req = new SoruRequest();
+            req.Soru = "Tabela";
+            req.PdfUrl = "https://www.mevzuat.gov.tr/MevzuatMetin/yonetmelik/7.5.42353.pdf";
 
-        
+            var client = new HttpClient();
+            var response = await client.PostAsJsonAsync("https://n8n.onertas.com/webhook/mevzuat-soru", req);
+
+            // İstek başarılıysa içeriği (body) okuyup döndürüyoruz
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync(); // JSON'ı string olarak okur
+                return Ok(result);
+            }
+
+            return BadRequest($"n8n isteği başarısız oldu. Durum Kodu: {response.StatusCode}");
+        }
 
 
         [HttpGet]
@@ -40,4 +59,9 @@ namespace OskApi.Controllers
             return Ok(users);
         }
     }
+}
+public class SoruRequest
+{
+    public string Soru { get; set; }
+    public string PdfUrl { get; set; }
 }
