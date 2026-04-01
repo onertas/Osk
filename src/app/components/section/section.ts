@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-section',
+  standalone: true,
   imports: [],
   templateUrl: './section.html',
   styleUrl: './section.css',

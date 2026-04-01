@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-blank',
+  standalone: true,
   imports: [RouterLink],
   templateUrl: './blank.html',
   styleUrl: './blank.css',

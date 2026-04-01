@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 declare var $: any;
 @Component({
   selector: 'app-modal',
+  standalone: true,
   imports: [],
   templateUrl: './modal.html',
   styleUrl: './modal.css',

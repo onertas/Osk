@@ -1,0 +1,130 @@
+<app-blank title="Personel Hareket Türleri">
+  <app-section title="Tür Listesi">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
+      <button data-toggle="modal" data-target="#addPmTypeModal" class="btn btn-sm btn-dark">
+        <i class="fas fa-plus"></i> Yeni Tür Ekle
+      </button>
+      <input pInputText #globalFilter placeholder="Ara..." type="text" (input)="onGlobalFilter($event)" style="max-width:280px;" />
+    </div>
+
+    <p-table #dt [value]="pmTypes" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20]" 
+      [sortMode]="'multiple'" [responsiveLayout]="'scroll'" 
+      [globalFilterFields]="['name', 'description']">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="name">Adı <p-sortIcon field="name"></p-sortIcon></th>
+          <th pSortableColumn="description">Açıklama <p-sortIcon field="description"></p-sortIcon></th>
+          <th pSortableColumn="order">Sıra <p-sortIcon field="order"></p-sortIcon></th>
+          <th>Personel Kullanır</th>
+          <th>Yönetici</th>
+          <th>Başlangıç Öncesi</th>
+          <th>Faaliyet2</th>
+          <th>Tek Statü</th>
+          <th pSortableColumn="statusQuota">Kota <p-sortIcon field="statusQuota"></p-sortIcon></th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>{{ item.description }}</td>
+          <td>{{ item.order }}</td>
+          <td>
+            <i class="fas fa-check text-success" *ngIf="item.isUsingStaff"></i>
+            <i class="fas fa-times text-danger" *ngIf="!item.isUsingStaff"></i>
+          </td>
+          <td>
+            <i class="fas fa-check text-success" *ngIf="item.isManager"></i>
+            <i class="fas fa-times text-danger" *ngIf="!item.isManager"></i>
+          </td>
+          <td>
+            <i class="fas fa-check text-success" *ngIf="item.isBeforeStartStaff"></i>
+            <i class="fas fa-times text-danger" *ngIf="!item.isBeforeStartStaff"></i>
+          </td>
+          <td>
+            <i class="fas fa-check text-success" *ngIf="item.isFaaliyet2Control"></i>
+            <i class="fas fa-times text-danger" *ngIf="!item.isFaaliyet2Control"></i>
+          </td>
+          <td>
+            <i class="fas fa-check text-success" *ngIf="item.isOnlyOneStatu"></i>
+            <i class="fas fa-times text-danger" *ngIf="!item.isOnlyOneStatu"></i>
+          </td>
+          <td>{{ item.statusQuota }}</td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="9">Kayıt bulunamadı.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </app-section>
+</app-blank>
+
+<app-modal name="addPmTypeModal" title="Yeni Hareket Türü">
+  <form #addForm="ngForm" (ngSubmit)="Add(addForm)">
+    
+    <div class="row">
+      <div class="col-md-8 form-group mb-2">
+        <label>Adı</label>
+        <input type="text" class="form-control" name="name" [(ngModel)]="newPmType.name" required>
+      </div>
+      <div class="col-md-4 form-group mb-2">
+        <label>Listeleme Sırası</label>
+        <input type="number" class="form-control" name="order" [(ngModel)]="newPmType.order">
+      </div>
+    </div>
+
+    <div class="form-group mb-2">
+      <label>Açıklama</label>
+      <input type="text" class="form-control" name="description" [(ngModel)]="newPmType.description">
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-6 form-group mb-2">
+        <div class="form-check">
+          <p-checkbox [(ngModel)]="newPmType.isUsingStaff" name="isUsingStaff" binary="true" inputId="isUsingStaffCheck"></p-checkbox>
+          <label class="form-check-label ms-2" for="isUsingStaffCheck">Personel Kullanır mı?</label>
+        </div>
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <div class="form-check">
+          <p-checkbox [(ngModel)]="newPmType.isManager" name="isManager" binary="true" inputId="isManagerCheck"></p-checkbox>
+          <label class="form-check-label ms-2" for="isManagerCheck">Yönetici mi?</label>
+        </div>
+      </div>
+      <div class="col-md-6 form-group mb-2 mt-2">
+        <div class="form-check">
+          <p-checkbox [(ngModel)]="newPmType.isBeforeStartStaff" name="isBeforeStartStaff" binary="true" inputId="isBeforeStartStaffCheck"></p-checkbox>
+          <label class="form-check-label ms-2" for="isBeforeStartStaffCheck">Başlangıç Öncesi mi?</label>
+        </div>
+      </div>
+      <div class="col-md-6 form-group mb-2 mt-2">
+        <div class="form-check">
+          <p-checkbox [(ngModel)]="newPmType.isFaaliyet2Control" name="isFaaliyet2Control" binary="true" inputId="isFaaliyet2ControlCheck"></p-checkbox>
+          <label class="form-check-label ms-2" for="isFaaliyet2ControlCheck">Faaliyet2 Kontrol?</label>
+        </div>
+      </div>
+      <div class="col-md-6 form-group mb-2 mt-2">
+        <div class="form-check">
+          <p-checkbox [(ngModel)]="newPmType.isOnlyOneStatu" name="isOnlyOneStatu" binary="true" inputId="isOnlyOneStatuCheck"></p-checkbox>
+          <label class="form-check-label ms-2" for="isOnlyOneStatuCheck">Tek Statü mü?</label>
+        </div>
+      </div>
+      <div class="col-md-6 form-group mb-2 mt-2">
+        <label>Statü Kotası</label>
+        <input type="number" class="form-control" name="statusQuota" [(ngModel)]="newPmType.statusQuota">
+      </div>
+    </div>
+
+    <hr>
+    <div class="text-right d-flex justify-content-end gap-2 mt-2">
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!addForm.valid">
+        <i class="fa fa-save"></i> Kaydet
+      </button>
+    </div>
+  </form>
+</app-modal>

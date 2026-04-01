@@ -30,7 +30,7 @@ export const routes: Routes = [
         component: HfType,
       },
       {
-        path: 'hf/:code',
+        path: 'hf-list/:code',
         component: HfHome,
       },
       {
@@ -48,6 +48,10 @@ export const routes: Routes = [
       {
         path: 'branch',
         loadComponent: () => import('./pages/branch/branch').then(m => m.BranchComponent)
+      },
+      {
+        path: 'pm-type',
+        loadComponent: () => import('./pages/pm-type/pm-type').then(m => m.PmTypeComponent)
       },
       { path: '**', component: ErrorComponent },
       { path: 'errorpage', component: ErrorComponent },

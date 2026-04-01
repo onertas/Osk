@@ -1,19 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Modal } from '../../components/modal/modal';
 import { SharedModule } from '../../modules/shared.module';
-import { Personnel } from '../personnel/personnel';
+import { PersonnelMovementComponent } from '../personnel-movement/personnel-movement.component';
 
 @Component({
   selector: 'app-hf-detail',
   standalone: true,
-  imports: [SharedModule, Personnel],
+  imports: [SharedModule, PersonnelMovementComponent],
   templateUrl: './hf-detail.html',
   styleUrl: './hf-detail.css',
 })
-export class HfDetailComponent {
+export class HfDetailComponent implements OnInit {
+  route = inject(ActivatedRoute);
+  healthFacilityId: string = '';
+
   ngOnInit(): void {
-    this.GetPersonnelList();
-    // this.GetHealthFacilityList();
+    this.route.paramMap.subscribe(params => {
+      this.healthFacilityId = params.get('id') || '';
+    });
   }
-  GetPersonnelList() {}
 }
