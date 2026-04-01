@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OskApi.Data;
@@ -129,7 +129,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// ❗️ CORS en üstte (çünkü cookie gönderimi için gerekli)
 app.UseCors();
 
 app.UseAuthentication();
