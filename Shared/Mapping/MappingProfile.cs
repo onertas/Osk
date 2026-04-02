@@ -12,9 +12,11 @@ namespace OskApi.Shared.Mapping
         {
             CreateMap<Personnel, ListPersonnelDto>()
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src =>
-                        src.PersonnelBranches!.Select(pb => pb.Branch!.Title!.Name).FirstOrDefault()))
+                        src.PersonnelBranches == null ? "" : 
+                        src.PersonnelBranches.Select(pb => pb.Branch != null && pb.Branch.Title != null ? pb.Branch.Title.Name : "").FirstOrDefault() ?? ""))
                 .ForMember(dest => dest.Branches, opt => opt.MapFrom(src =>
-                        src.PersonnelBranches!.Select(pb => pb.Branch!.Name).ToList()));
+                        src.PersonnelBranches == null ? new List<string>() :
+                        src.PersonnelBranches.Select(pb => pb.Branch != null ? pb.Branch.Name : "").ToList()));
 
             CreateMap<HealthFacility, CreateHealthFacilityDto>().ReverseMap();
             CreateMap<PersonnelMovement, OskApi.Dtos.PersonnelMovement.CreatePersonelMovementDto>().ReverseMap();

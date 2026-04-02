@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using GenericRepository;
 
 using Microsoft.AspNetCore.Mvc;
@@ -72,6 +72,18 @@ public class PersonnelController : ControllerBase
         return Ok(result);
 
 
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Search([FromQuery] string? query)
+    {
+        var list = await _personnelService.Search(query).ToListAsync();
+
+        var mappedlist = _mapper.Map<List<ListPersonnelDto>>(list);
+
+        var result = Result<List<ListPersonnelDto>>.Ok(mappedlist);
+
+        return Ok(result);
     }
 }
 
