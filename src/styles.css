@@ -70,10 +70,24 @@ img {
 /* Inputları AdminLTE stili yerine bizim tanımladığımız boyutlara zorla */
 .p-inputtext, 
 .p-dropdown, 
-.p-datepicker input {
+.p-select,
+.p-datepicker input,
+.form-control {
     padding: 0.25rem 0.5rem !important;
     font-size: 0.85rem !important;
     height: auto !important; /* AdminLTE'nin height zorlamasını kırar */
+    min-height: 31px !important;
+}
+
+.p-select {
+    height: 31px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.p-select .p-select-label {
+    padding: 0 0.5rem !important;
+    font-size: 0.85rem !important;
 }
 
 /* DatePicker kutucuklarını küçült */

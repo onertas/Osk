@@ -45,7 +45,8 @@
       <div class="col-md-6 form-group mb-2">
         <label>Personel</label>
         <p-select [options]="personnelList" [(ngModel)]="newMovement.personnelId" (onChange)="onPersonnelChange($event)"
-          name="personnelId" placeholder="Personel Seçin" styleClass="w-100" [required]="true" optionValue="id">
+          name="personnelId" placeholder="Personel Seçin (En az 2 karakter giriniz)" styleClass="w-100" [required]="true" optionValue="id"
+          [filter]="true" filterBy="firstName,lastName,identityNumber" optionLabel="firstName" (onFilter)="onPersonnelSearch($event)">
           <ng-template let-person pTemplate="selectedItem">
             <div *ngIf="person">
               {{ person.firstName }} {{ person.lastName }}
@@ -105,7 +106,7 @@
 
     <div class="form-group mb-2">
       <label>Açıklama</label>
-      <input type="text" class="form-control" name="description" [(ngModel)]="newMovement.description">
+      <input type="text" pInputText class="w-100" name="description" [(ngModel)]="newMovement.description">
     </div>
 
     <hr>

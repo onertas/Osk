@@ -1,4 +1,5 @@
 import { Component, inject, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
@@ -36,10 +37,18 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
   filteredBranches: any[] = [];
   personnelList: any[] = [];
 
+  private searchSubject = new Subject<string>();
+
   ngOnInit() {
     this.GetPmTypes();
     this.GetBranches();
-    this.GetPersonnel();
+    
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(query => {
+      this.searchPersonnel(query);
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -105,8 +114,19 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
     }
   }
 
-  GetPersonnel() {
-    this.http.get<any[]>('Personnel/GetAll').subscribe({
+  onPersonnelSearch(event: any) {
+
+    const query = event.filter || event.query || '';
+    this.searchSubject.next(query);
+  }
+
+  searchPersonnel(query: string) {
+    if (!query || query.length < 2) {
+      this.personnelList = [];
+      return;
+    }
+
+    this.http.get<any[]>("Personnel/Search",{query}).subscribe({
       next: (res) => {
         if (res.success && res.data) {
           this.personnelList = res.data;

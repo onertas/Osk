@@ -4,7 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { HealthFacilityListDto } from '../../dtos/healthFacility/healthFacilityListDto';
 import { SharedModule } from '../../modules/shared.module';
 import { GrupMenuComponent } from '../../components/grup-menu-component/grup-menu-component';
-
 @Component({
   selector: 'app-hf-home',
   imports: [SharedModule, GrupMenuComponent],
@@ -18,6 +17,8 @@ export class HfHome {
 
   healthFacilities: HealthFacilityListDto[] = [];
   ngOnInit(): void {
+
+    
     this.route.params.subscribe((params) => {
       this.code = params['code'] ?? null;
       this.GetHealthFacilities();
