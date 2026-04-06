@@ -52,6 +52,15 @@ namespace OskApi.Controllers
         }
 
 
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult test()
+        {
+            return Ok("test endpoint'i çalışıyor!");
+        }
+
+
+
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
