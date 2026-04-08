@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using OskApi.Entities.User;
 using System.IdentityModel.Tokens.Jwt;
@@ -45,7 +45,7 @@ namespace OskApi.Services.Jwt
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims,
-                expires: DateTime.UtcNow.AddSeconds(30), // kısa ömürlü access token
+                expires: DateTime.UtcNow.AddMinutes(60), // Access token süresi 1 saate çıkarıldı
                 signingCredentials: creds
             );
 

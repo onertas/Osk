@@ -1,4 +1,4 @@
-﻿using GenericRepository;
+using GenericRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -77,11 +77,11 @@ public class AuthController : ControllerBase
        
         var refreshToken = Request.Cookies["refreshToken"];
         if (refreshToken == null)
-            return Unauthorized("Refresh token bulunamadı");
+            return Unauthorized("Kullanıcı oturumu bulunamadı. Lütfen tekrar giriş yapın.");
 
         var user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
         if (user == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
-            return Unauthorized("Refresh token geçersiz");
+            return Unauthorized("Kullanıcı oturumunun süresi dolmuş. Lütfen tekrar giriş yapın.");
 
       
         var newAccessToken = _tokenService.CreateToken(user);
@@ -134,10 +134,11 @@ public class AuthController : ControllerBase
     [HttpGet]
     public IActionResult IsAuthenticated()
     {
-        if (User.Identity?.IsAuthenticated == true)
-        return Ok();
-
-        return Unauthorized();
+        return Ok(new Result<bool>
+        {
+            Data = User.Identity?.IsAuthenticated ?? false,
+            Success = true
+        });
     }
     [Authorize]
     [HttpGet]

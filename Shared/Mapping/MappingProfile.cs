@@ -16,7 +16,10 @@ namespace OskApi.Shared.Mapping
                         src.PersonnelBranches.Select(pb => pb.Branch != null && pb.Branch.Title != null ? pb.Branch.Title.Name : "").FirstOrDefault() ?? ""))
                 .ForMember(dest => dest.Branches, opt => opt.MapFrom(src =>
                         src.PersonnelBranches == null ? new List<string>() :
-                        src.PersonnelBranches.Select(pb => pb.Branch != null ? pb.Branch.Name : "").ToList()));
+                        src.PersonnelBranches.Select(pb => pb.Branch != null ? pb.Branch.Name : "").ToList()))
+                .ForMember(dest => dest.BranchIds, opt => opt.MapFrom(src => 
+                        src.PersonnelBranches == null ? new List<Guid>() :
+                        src.PersonnelBranches.Select(pb => pb.BranchId).ToList()));
 
             CreateMap<HealthFacility, CreateHealthFacilityDto>().ReverseMap();
             CreateMap<PersonnelMovement, OskApi.Dtos.PersonnelMovement.CreatePersonelMovementDto>().ReverseMap();

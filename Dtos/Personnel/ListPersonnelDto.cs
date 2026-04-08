@@ -12,6 +12,7 @@ namespace OskApi.Dtos.Personnel
         public bool IsBanned { get; set; } = false;
         public string Title { get; set; } = string.Empty;
         public List<string>? Branches { get; set; } 
+        public List<Guid>? BranchIds { get; set; }
 
 
 
