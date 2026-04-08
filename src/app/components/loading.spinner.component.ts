@@ -1,16 +1,19 @@
-// loading-spinner.component.ts
 import { Component, inject } from '@angular/core';
 import { LoadingService } from '../services/loading.service';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-loading-spinner',
   standalone: true,
   template: `
     @if (loadingService.isLoading()) {
-      <div class="spinner-overlay">
-       <div class="spinner-grow text-white" role="status">
-  <span class="sr-only">Loading...</span>
-</div>
+      <div class="spinner-overlay" @fadeInOut>
+        <div class="spinner-content">
+          <div class="spinner-grow text-danger" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <div class="loading-text">Yükleniyor...</div>
+        </div>
       </div>
     }
   `,
@@ -22,30 +25,37 @@ import { LoadingService } from '../services/loading.service';
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.8);
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(4px);
         display: flex;
         justify-content: center;
         align-items: center;
         z-index: 9999;
       }
-      .loader {
-        /* CSS Spinner kodlarınız buraya */
-        border: 5px solid #f3f3f3;
-        border-top: 5px solid #a10000;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        animation: spin 2s linear infinite;
+      .spinner-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
       }
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
+      .loading-text {
+        color: #333;
+        font-weight: 500;
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
       }
     `,
+  ],
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('300ms ease-out', style({ opacity: 1 })),
+      ]),
+      transition(':leave', [
+        animate('200ms ease-in', style({ opacity: 0 })),
+      ]),
+    ]),
   ],
 })
 export class LoadingSpinnerComponent {

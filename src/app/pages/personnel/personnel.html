@@ -2,7 +2,7 @@
 <app-blank title="Personel">
   <app-section title="Personel Listesi">
     <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
-  <button data-toggle="modal" data-target="#ac" class="btn btn-sm btn-dark"><i class="fas fa-plus"></i> Yeni
+  <button (click)="ResetForm()" data-toggle="modal" data-target="#acAdd" class="btn btn-sm btn-dark"><i class="fas fa-plus"></i> Yeni
     Personel</button>
   <input pInputText #globalFilter placeholder="Global filter" type="text" (input)="onGlobalFilter($event)"
     style="max-width:280px;" />
@@ -19,6 +19,7 @@
       <th pSortableColumn="phoneNumber">Telefon <p-sortIcon field="phoneNumber"></p-sortIcon></th>
       <th pSortableColumn="title">Ünvan <p-sortIcon field="title"></p-sortIcon></th>
       <th pSortableColumn="branches">Branş <p-sortIcon field="branches"></p-sortIcon></th>
+      <th>İşlemler</th>
     </tr>
   </ng-template>
 
@@ -30,13 +31,22 @@
       <td>{{ person.phoneNumber }}</td>
       <td>{{ person.title }}</td>
       <td>{{ person.branches.join(', ') }}</td>
-
+      <td>
+        <div class="d-flex gap-2">
+          <button (click)="Edit(person)" data-toggle="modal" data-target="#acEdit" class="btn btn-sm btn-outline-primary" title="Düzenle">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button (click)="Delete(person.id)" class="btn btn-sm btn-outline-danger" title="Sil">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </td>
     </tr>
   </ng-template>
 
   <ng-template pTemplate="emptymessage">
     <tr>
-      <td colspan="4">No personnel found.</td>
+      <td colspan="7">No personnel found.</td>
     </tr>
   </ng-template>
 </p-table>
@@ -45,7 +55,7 @@
 
 
 
-<app-modal name="ac" title="Yeni Personel Ekle">
+<app-modal name="acAdd" title="Yeni Personel Ekle">
   <form #addForm="ngForm" (ngSubmit)="Add(addForm)">
     <div class="row">
       <div class="col-md-6 form-group mb-2">
@@ -83,8 +93,6 @@
       <label class="form-check-label" for="isBanned">Yasaklı mı?</label>
     </div>
 
-
-
     <hr>
     <div class="text-right d-flex justify-content-end gap-2">
       <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
@@ -93,3 +101,50 @@
     </div>
   </form>
 </app-modal>
+
+<app-modal name="acEdit" title="Personel Düzenle">
+  <form #editForm="ngForm" (ngSubmit)="Update(editForm)">
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Kimlik Numarası</label>
+        <input type="text" class="form-control" name="updIdentityNumber" [(ngModel)]="updatePersonnelModel.identityNumber"
+          required>
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Telefon Numarası</label>
+        <p-inputMask mask="(999) 999-9999" [(ngModel)]="updatePersonnelModel.phoneNumber" name="updPhoneNumber"
+          placeholder="(555) 555-5555" styleClass="form-control w-100"></p-inputMask>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Ad</label>
+        <input type="text" class="form-control" name="updFirstName" [(ngModel)]="updatePersonnelModel.firstName" required>
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Soyad</label>
+        <input type="text" class="form-control" name="updLastName" [(ngModel)]="updatePersonnelModel.lastName" required>
+      </div>
+    </div>
+    <div class="form-group mb-2">
+      <label>Email</label>
+      <input type="email" class="form-control" name="updEmail" [(ngModel)]="updatePersonnelModel.email" required>
+    </div>
+    <div class="form-group mb-2">
+      <label>Branşlar</label>
+      <p-multiSelect [options]="branches" [(ngModel)]="updatePersonnelModel.personnelBranches" optionLabel="name" 
+      optionValue="id" name="updBranches" placeholder="Branş Seçin" styleClass="w-100"></p-multiSelect>
+    </div>
+    <div class="form-group mb-2 mt-3 form-check">
+      <input type="checkbox" class="form-check-input" id="updIsBanned" name="updIsBanned" [(ngModel)]="updatePersonnelModel.isBanned">
+      <label class="form-check-label" for="updIsBanned">Yasaklı mı?</label>
+    </div>
+
+    <hr>
+    <div class="text-right d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!editForm.valid"><i class="fa fa-save"></i>
+        Güncelle</button>
+    </div>
+  </form>
+</app-modal>

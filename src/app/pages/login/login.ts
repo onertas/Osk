@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { SharedModule } from '../../modules/shared.module';
 import { HttpApiService } from '../../services/http-api-service';
 import { AuthService } from '../../services/auth.service';
+import { SwalService } from '../../services/swall.service';
 
 @Component({
   selector: 'app-login',
@@ -15,6 +16,7 @@ export class Login {
   router = inject(Router);
   http = inject(HttpApiService);
   auth = inject(AuthService);
+  swal = inject(SwalService);
 
   email: string = '';
   password: string = '';
@@ -23,10 +25,16 @@ export class Login {
   Login() {
     this.http
       .post('auth/login', { username: this.email, password: this.password })
-      .subscribe((res) => {
-        // Başarılı giriş işlemi
-//localStorage.setItem('isLoggedIn', 'true'); 
-        this.router.navigate(['/']);
+      .subscribe({
+        next: (res: any) => {
+          if (res && res.success === false) {
+            this.swal.showError(res.message || "Giriş başarısız! Lütfen bilgilerinizi kontrol edin.");
+          } else {
+            // Başarılı giriş işlemi
+            this.auth.loadUser(); 
+            this.router.navigate(['/']);
+          }
+        }
       });
   }
 }

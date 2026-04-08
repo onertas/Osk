@@ -1,5 +1,5 @@
-
 export class ListPersonnelDto {
+    id: string = '';
     identityNumber: string = '';
     firstName: string = '';
     lastName: string = '';
@@ -8,4 +8,5 @@ export class ListPersonnelDto {
     isBanned: boolean = false;
     title: string = '';
     branches: string[] = [];
+    branchIds: string[] = [];
 }

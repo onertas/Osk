@@ -140,15 +140,20 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
     
     this.http.post('Pm/Add', this.newMovement).subscribe({
       next: (response) => {
-        this.modalCom?.close('pmModal');
-        form.resetForm();
-        this.newMovement = new CreatePersonnelMovementDto();
-        this.newMovement.healthFacilityId = this.healthFacilityId;
-        this.GetAll();
-        this.swal.showSuccess("Başarıyla kaydedildi");
+        if (response.success) {
+          this.modalCom?.close('pmModal');
+          form.resetForm();
+          this.newMovement = new CreatePersonnelMovementDto();
+          this.newMovement.healthFacilityId = this.healthFacilityId;
+          this.GetAll();
+          this.swal.showSuccess("Başarıyla kaydedildi");
+        } else {
+          this.swal.showError(response.message || "Kaydetme işlemi başarısız");
+        }
       },
       error: (err) => {
         console.error('Error adding PM', err);
+        this.swal.showError(err.error?.message || "Sunucu hatası oluştu");
       }
     });
   }

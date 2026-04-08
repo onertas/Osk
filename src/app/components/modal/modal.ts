@@ -20,24 +20,31 @@ export class Modal {
   ngOnInit(): void {}
   ngAfterViewInit(): void {
     this.modalSelector = '#' + this.name;
+    $(this.modalSelector).on('hide.bs.modal', () => {
+      // Modal kapanmaya başladığı anda odağı modal dışına çek.
+      // Bu sayede "vurgulanan eleman gizli bir konteyner içinde kaldı" uyarısı engellenir.
+      $('body').attr('tabindex', '-1').focus();
+    });
+
     $(this.modalSelector).on('hidden.bs.modal', () => {
-      // Modal kapandıktan sonra body'e veya başka elemana focus ver
-      $('body').focus();
+      // Modal tamamen kapandığında odağı body'e sabitle ve tabindex'i temizle
+      $('body').focus().removeAttr('tabindex');
     });
 
     $(this.modalSelector).on('shown.bs.modal', () => {
       // Modal açılınca ilk focusable elemana focus ver
-      $(this.modalSelector)
-        .find(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        )
-        .first()
-        .focus();
-     
+      const firstFocusable = $(this.modalSelector).find(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      ).first();
+      
+      if (firstFocusable.length) {
+        firstFocusable.focus();
+      } else {
+        $(this.modalSelector).focus();
+      }
 
       const $dialog = $(this.modalSelector + ' .modal-dialog');
       const windowWidth = $(window).width();
-      const windowHeight = $(window).height();
       const dialogWidth = $dialog.outerWidth();
       const dialogHeight = $dialog.outerHeight();
 

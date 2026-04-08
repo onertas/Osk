@@ -53,6 +53,14 @@ export const routes: Routes = [
         path: 'pm-type',
         loadComponent: () => import('./pages/pm-type/pm-type').then(m => m.PmTypeComponent)
       },
+      {
+        path: 'roles',
+        loadComponent: () => import('./pages/role/role.component').then(m => m.RoleComponent)
+      },
+      {
+        path: 'users',
+        loadComponent: () => import('./pages/user/user.component').then(m => m.UserComponent)
+      },
       { path: '**', component: ErrorComponent },
       { path: 'errorpage', component: ErrorComponent },
     ],

@@ -5,6 +5,7 @@ import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { loadingInterceptor } from './interceptors/loading.interceptor';
 import { authInterceptor } from './interceptors/auth.interceptor';
+import { errorInterceptor } from './interceptors/error.interceptor';
 
 import { providePrimeNG } from 'primeng/config';
 import Lara from '@primeuix/themes/lara';
@@ -14,7 +15,7 @@ import Metarial from '@primeuix/themes/material';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor, loadingInterceptor])), 
+    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor, loadingInterceptor])), 
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideAnimationsAsync(),

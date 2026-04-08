@@ -39,7 +39,6 @@ private baseUrl: string = api
       .pipe(catchError(this.handleError));
   }
 
-  // 🔹 POST metodu, body parametreli
   post<T>(
     endpoint: string,
     body: any,
@@ -58,6 +57,27 @@ private baseUrl: string = api
 
     return this.http
       .post<Result<T>>(url, body, { headers, params: httpParams,withCredentials: true })
+      .pipe(catchError(this.handleError));
+  }
+
+  // 🔹 DELETE metodu
+  delete<T>(
+    endpoint: string,
+    params?: { [key: string]: any },
+    headers?: HttpHeaders
+  ): Observable<Result<T>> {
+    const url = `${this.baseUrl}/${endpoint}`;
+    let httpParams = new HttpParams();
+    if (params) {
+      Object.keys(params).forEach((key) => {
+        if (params[key] !== null && params[key] !== undefined) {
+          httpParams = httpParams.set(key, params[key].toString());
+        }
+      });
+    }
+
+    return this.http
+      .delete<Result<T>>(url, { headers, params: httpParams, withCredentials: true })
       .pipe(catchError(this.handleError));
   }
 }

@@ -7,11 +7,14 @@ export const authGuard: CanActivateFn = async (route, state) => {
   const router = inject(Router);
   const http = inject(HttpApiService);
   try {
-    await firstValueFrom(http.get<any>('auth/IsAuthenticated'));
-    return true;
+    const res = await firstValueFrom(http.get<any>('auth/IsAuthenticated'));
+    if (res.success && res.data === true) {
+      return true;
+    }
+    
+    router.navigate(['/login']);
+    return false;
   } catch (err: any) {
-    // 401 veya başka bir hata fark etmeksizin,
-    // girişi yasak olan kullanıcıyı login sayfasına gönderin.
     router.navigate(['/login']);
     return false;
   }
