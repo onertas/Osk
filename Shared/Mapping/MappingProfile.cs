@@ -26,6 +26,7 @@ namespace OskApi.Shared.Mapping
             CreateMap<PersonnelMovement, OskApi.Dtos.PersonnelMovement.ListPersonelMovementDto>().ReverseMap();
             CreateMap<PmType, OskApi.Dtos.PmType.CreatePmTypeDto>().ReverseMap();
             CreateMap<PmType, OskApi.Dtos.PmType.ListPmTypeDto>().ReverseMap();
+            CreateMap<PmType, OskApi.Dtos.PmType.UpdatePmTypeDto>().ReverseMap();
         }
     }
 }
