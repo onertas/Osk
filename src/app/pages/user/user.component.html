@@ -8,7 +8,8 @@
     </div>
 
     <p-table #dt [value]="users" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,20,50]"
-      [sortMode]="'multiple'" [responsiveLayout]="'scroll'" [globalFilterFields]="['userName','fullName','email']" exportFilename="users">
+      [sortMode]="'multiple'" [responsiveLayout]="'scroll'" [globalFilterFields]="['userName','fullName','email']" exportFilename="users"
+      class="p-datatable-sm fontstil13">
       
       <ng-template pTemplate="header">
         <tr>
@@ -16,7 +17,7 @@
           <th pSortableColumn="fullName">Ad Soyad <p-sortIcon field="fullName"></p-sortIcon></th>
           <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
           <th>Roller</th>
-          <th>İşlemler</th>
+          <th style="text-align: right">İşlemler</th>
         </tr>
       </ng-template>
 
@@ -26,17 +27,19 @@
           <td>{{ user.fullName }}</td>
           <td>{{ user.email }}</td>
           <td>
-            <span *ngFor="let role of user.roles" class="badge bg-secondary me-1">{{ role }}</span>
+            <span *ngFor="let role of user.roles" class="badge bg-secondary me-1 fontstil13">{{ role }}</span>
           </td>
-          <td>
-            <div class="d-flex gap-2">
-              <button (click)="Edit(user)" data-toggle="modal" data-target="#userEditModal" class="btn btn-sm btn-outline-primary" title="Düzenle">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button (click)="Delete(user.id)" class="btn btn-sm btn-outline-danger" title="Sil">
-                <i class="fas fa-trash"></i>
-              </button>
-            </div>
+          <td style="text-align: right">
+            <app-grup-menu-component>
+              <a (click)="Edit(user)" data-toggle="modal" data-target="#userEditModal" class="dropdown-item pointer fontstil13" style="padding: 6px 12px; border-bottom: 1px solid #eee;">
+                <i style="width: 18px" class="fas fa-edit text-primary"></i>
+                Düzenle
+              </a>
+              <a (click)="Delete(user.id)" class="dropdown-item pointer fontstil13" style="padding: 6px 12px;">
+                <i style="width: 18px" class="fas fa-trash text-danger"></i>
+                Sil
+              </a>
+            </app-grup-menu-component>
           </td>
         </tr>
       </ng-template>

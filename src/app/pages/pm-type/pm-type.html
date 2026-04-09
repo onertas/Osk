@@ -9,7 +9,8 @@
 
     <p-table #dt [value]="pmTypes" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20]" 
       [sortMode]="'multiple'" [responsiveLayout]="'scroll'" 
-      [globalFilterFields]="['name', 'description']">
+      [globalFilterFields]="['name', 'description']"
+      class="p-datatable-sm fontstil13">
       
       <ng-template pTemplate="header">
         <tr>
@@ -22,6 +23,7 @@
           <th>Faaliyet2</th>
           <th>Tek Statü</th>
           <th pSortableColumn="statusQuota">Kota <p-sortIcon field="statusQuota"></p-sortIcon></th>
+          <th style="text-align: right">İşlemler</th>
         </tr>
       </ng-template>
 
@@ -51,6 +53,18 @@
             <i class="fas fa-times text-danger" *ngIf="!item.isOnlyOneStatu"></i>
           </td>
           <td>{{ item.statusQuota }}</td>
+          <td style="text-align: right">
+            <app-grup-menu-component>
+              <a (click)="Edit(item)" data-toggle="modal" data-target="#editPmTypeModal" class="dropdown-item pointer fontstil13" style="padding: 6px 12px; border-bottom: 1px solid #eee;">
+                <i style="width: 18px" class="fas fa-edit text-primary"></i>
+                Düzenle
+              </a>
+              <a (click)="Delete(item.id)" class="dropdown-item pointer fontstil13" style="padding: 6px 12px;">
+                <i style="width: 18px" class="fas fa-trash text-danger"></i>
+                Sil
+              </a>
+            </app-grup-menu-component>
+          </td>
         </tr>
       </ng-template>
 
@@ -124,6 +138,72 @@
       <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
       <button type="submit" class="btn btn-primary btn-sm" [disabled]="!addForm.valid">
         <i class="fa fa-save"></i> Kaydet
+      </button>
+    </div>
+  </form>
+</app-modal>
+
+<app-modal name="editPmTypeModal" title="Hareket Türü Düzenle">
+  <form #editForm="ngForm" (ngSubmit)="Update(editForm)">
+    
+    <div class="row">
+      <div class="col-md-8 form-group mb-2">
+        <label>Adı</label>
+        <input type="text" class="form-control" name="updName" [(ngModel)]="updatePmType.name" required>
+      </div>
+      <div class="col-md-4 form-group mb-2">
+        <label>Listeleme Sırası</label>
+        <input type="number" class="form-control" name="updOrder" [(ngModel)]="updatePmType.order">
+      </div>
+    </div>
+
+    <div class="form-group mb-2">
+      <label>Açıklama</label>
+      <input type="text" class="form-control" name="updDescription" [(ngModel)]="updatePmType.description">
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-6 form-group mb-2">
+        <div class="form-check">
+          <p-checkbox [(ngModel)]="updatePmType.isUsingStaff" name="updIsUsingStaff" binary="true" inputId="updIsUsingStaffCheck"></p-checkbox>
+          <label class="form-check-label ms-2" for="updIsUsingStaffCheck">Personel Kullanır mı?</label>
+        </div>
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <div class="form-check">
+          <p-checkbox [(ngModel)]="updatePmType.isManager" name="updIsManager" binary="true" inputId="updIsManagerCheck"></p-checkbox>
+          <label class="form-check-label ms-2" for="updIsManagerCheck">Yönetici mi?</label>
+        </div>
+      </div>
+      <div class="col-md-6 form-group mb-2 mt-2">
+        <div class="form-check">
+          <p-checkbox [(ngModel)]="updatePmType.isBeforeStartStaff" name="updIsBeforeStartStaff" binary="true" inputId="updIsBeforeStartStaffCheck"></p-checkbox>
+          <label class="form-check-label ms-2" for="updIsBeforeStartStaffCheck">Başlangıç Öncesi mi?</label>
+        </div>
+      </div>
+      <div class="col-md-6 form-group mb-2 mt-2">
+        <div class="form-check">
+          <p-checkbox [(ngModel)]="updatePmType.isFaaliyet2Control" name="updIsFaaliyet2Control" binary="true" inputId="updIsFaaliyet2ControlCheck"></p-checkbox>
+          <label class="form-check-label ms-2" for="updIsFaaliyet2ControlCheck">Faaliyet2 Kontrol?</label>
+        </div>
+      </div>
+      <div class="col-md-6 form-group mb-2 mt-2">
+        <div class="form-check">
+          <p-checkbox [(ngModel)]="updatePmType.isOnlyOneStatu" name="updIsOnlyOneStatu" binary="true" inputId="updIsOnlyOneStatuCheck"></p-checkbox>
+          <label class="form-check-label ms-2" for="updIsOnlyOneStatuCheck">Tek Statü mü?</label>
+        </div>
+      </div>
+      <div class="col-md-6 form-group mb-2 mt-2">
+        <label>Statü Kotası</label>
+        <input type="number" class="form-control" name="updStatusQuota" [(ngModel)]="updatePmType.statusQuota">
+      </div>
+    </div>
+
+    <hr>
+    <div class="text-right d-flex justify-content-end gap-2 mt-2">
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!editForm.valid">
+        <i class="fa fa-save"></i> Güncelle
       </button>
     </div>
   </form>
