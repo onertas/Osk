@@ -58,4 +58,32 @@ public class PmController : ControllerBase
         var result = Result<List<ListPersonelMovementDto>>.Ok(mappedList);
         return Ok(result);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> Update(UpdatePersonelMovementDto model)
+    {
+        var entity = await _pmService.GetAll().FirstOrDefaultAsync(i => i.Id == model.Id);
+        if (entity == null)
+            return NotFound(Result.Fail("Kayıt bulunamadı"));
+
+        _mapper.Map(model, entity);
+        
+        _pmService.Update(entity);
+        await _unitOfWork.SaveChangesAsync();
+
+        return Ok(Result.Ok("Güncellendi"));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Delete([FromBody] Guid id)
+    {
+        var entity = await _pmService.GetAll().FirstOrDefaultAsync(i => i.Id == id);
+        if (entity == null)
+            return NotFound(Result.Fail("Kayıt bulunamadı"));
+
+        _pmService.Delete(entity);
+        await _unitOfWork.SaveChangesAsync();
+
+        return Ok(Result.Ok("Silindi"));
+    }
 }

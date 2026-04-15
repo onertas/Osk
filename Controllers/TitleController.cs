@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using GenericRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -50,8 +50,32 @@ public class TitleController : ControllerBase
         var res = Result<List<Title>>.Ok(list, "Veri Listelendi");
         return Ok(res);
     }
+    [HttpPost]
+    public async Task<IActionResult> Update(Title model)
+    {
+        var entity = await _titleService.GetAll().FirstOrDefaultAsync(i => i.Id == model.Id);
+        if (entity == null)
+            return NotFound(Result.Fail("Kayıt bulunamadı"));
 
+        entity.Name = model.Name;
+        
+        _titleService.Update(entity);
+        await _unitOfWork.SaveChangesAsync();
 
+        return Ok(Result.Ok("Güncellendi"));
+    }
 
+    [HttpPost]
+    public async Task<IActionResult> Delete([FromBody] Guid id)
+    {
+        var entity = await _titleService.GetAll().FirstOrDefaultAsync(i => i.Id == id);
+        if (entity == null)
+            return NotFound(Result.Fail("Kayıt bulunamadı"));
+
+        _titleService.Delete(entity);
+        await _unitOfWork.SaveChangesAsync();
+
+        return Ok(Result.Ok("Silindi"));
+    }
 }
 

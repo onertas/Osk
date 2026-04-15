@@ -40,4 +40,33 @@ public class BranchController : ControllerBase
         var res = Result<List<Branch>>.Ok(list, "Veri Listelendi");
         return Ok(res);
     }
+    [HttpPost]
+    public async Task<IActionResult> Update(Branch model)
+    {
+        var entity = await _branchService.GetAll().FirstOrDefaultAsync(i => i.Id == model.Id);
+        if (entity == null)
+            return NotFound(Result.Fail("Kayıt bulunamadı"));
+
+        entity.Name = model.Name;
+        entity.TitleId = model.TitleId;
+        entity.BranchTypeId = model.BranchTypeId;
+        
+        _branchService.Update(entity);
+        await _unitOfWork.SaveChangesAsync();
+
+        return Ok(Result.Ok("Güncellendi"));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Delete([FromBody] Guid id)
+    {
+        var entity = await _branchService.GetAll().FirstOrDefaultAsync(i => i.Id == id);
+        if (entity == null)
+            return NotFound(Result.Fail("Kayıt bulunamadı"));
+
+        _branchService.Delete(entity);
+        await _unitOfWork.SaveChangesAsync();
+
+        return Ok(Result.Ok("Silindi"));
+    }
 }

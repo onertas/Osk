@@ -1,4 +1,4 @@
-﻿using GenericRepository;
+using GenericRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -46,5 +46,35 @@ namespace OskApi.Controllers;
         return Ok(Result.Ok("Eklendi"));
     }
 
+    [AllowAnonymous]
+    [HttpPost]
+    public async Task<IActionResult> Update(HealthFacilityType model)
+    {
+        var entity = await _healthFacilityTypeService.GetAll().FirstOrDefaultAsync(i => i.Id == model.Id);
+        if (entity == null)
+            return NotFound(Result.Fail("Kayıt bulunamadı"));
+
+        entity.Name = model.Name;
+        entity.Code = model.Code;
+        
+        _healthFacilityTypeService.Update(entity);
+        await _unitOfWork.SaveChangesAsync();
+
+        return Ok(Result.Ok("Güncellendi"));
+    }
+
+    [AllowAnonymous]
+    [HttpPost]
+    public async Task<IActionResult> Delete([FromBody] Guid id)
+    {
+        var entity = await _healthFacilityTypeService.GetAll().FirstOrDefaultAsync(i => i.Id == id);
+        if (entity == null)
+            return NotFound(Result.Fail("Kayıt bulunamadı"));
+
+        _healthFacilityTypeService.Delete(entity);
+        await _unitOfWork.SaveChangesAsync();
+
+        return Ok(Result.Ok("Silindi"));
+    }
 }
 
