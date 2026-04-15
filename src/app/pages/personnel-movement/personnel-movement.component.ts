@@ -12,6 +12,7 @@ import { HttpApiService } from '../../services/http-api-service';
 import { SwalService } from '../../services/swall.service';
 import { CreatePersonnelMovementDto } from '../../dtos/personnelMovement/create-personnel-movement.dto';
 import { ListPersonnelMovementDto } from '../../dtos/personnelMovement/list-personnel-movement.dto';
+import { UpdatePersonnelMovementDto } from '../../dtos/personnelMovement/update-personnel-movement.dto';
 import { ListPmTypeDto } from '../../dtos/pmType/list-pm-type.dto';
 
 @Component({
@@ -30,8 +31,9 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
   @ViewChild(Modal) modalCom: Modal | undefined;
 
   newMovement: CreatePersonnelMovementDto = new CreatePersonnelMovementDto();
+  updateMovement: UpdatePersonnelMovementDto = new UpdatePersonnelMovementDto();
   movements: ListPersonnelMovementDto[] = [];
-  
+
   pmTypes: ListPmTypeDto[] = [];
   branches: any[] = [];
   filteredBranches: any[] = [];
@@ -42,7 +44,7 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.GetPmTypes();
     this.GetBranches();
-    
+
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -65,7 +67,7 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
 
   GetAll() {
     if (!this.healthFacilityId) return;
-    
+
     this.http.get<ListPersonnelMovementDto[]>('Pm/GetAll').subscribe({
       next: (res) => {
         if (res.success && res.data) {
@@ -100,17 +102,17 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
   onPersonnelChange(event: any) {
     const selectedPersonId = event.value;
     const selectedPerson = this.personnelList.find(p => p.id === selectedPersonId);
-    
+
     if (selectedPerson && selectedPerson.branches && selectedPerson.branches.length > 0) {
       // Assuming selectedPerson.branches contains branch names or data that we can use to filter.
       // E.g., if selectedPerson.branches is a list of strings [ "Kardiyoloji" ]
       this.filteredBranches = this.branches.filter(b => selectedPerson.branches.includes(b.name));
     } else {
-      this.filteredBranches = []; 
+      this.filteredBranches = [];
     }
-    
+
     if (!this.filteredBranches.find(b => b.id === this.newMovement.branchId)) {
-        this.newMovement.branchId = '';
+      this.newMovement.branchId = '';
     }
   }
 
@@ -126,7 +128,7 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
       return;
     }
 
-    this.http.get<any[]>("Personnel/Search",{query}).subscribe({
+    this.http.get<any[]>("Personnel/Search", { query }).subscribe({
       next: (res) => {
         if (res.success && res.data) {
           this.personnelList = res.data;
@@ -137,7 +139,7 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
 
   Add(form: any) {
     this.newMovement.healthFacilityId = this.healthFacilityId;
-    
+
     this.http.post('Pm/Add', this.newMovement).subscribe({
       next: (response) => {
         if (response.success) {
@@ -155,6 +157,52 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
         console.error('Error adding PM', err);
         this.swal.showError(err.error?.message || "Sunucu hatası oluştu");
       }
+    });
+  }
+
+  Edit(pm: any) {
+    this.updateMovement = { ...pm };
+    // Optionally fetch specific personnel to populate dropdown
+    if (pm.personnelId) {
+      this.searchPersonnel(pm.personnel?.firstName || '');
+      this.newMovement.branchId = pm.branchId;
+    }
+  }
+
+  Update(form: any) {
+    this.http.post('Pm/Update', this.updateMovement).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.modalCom?.close('pmEditModal');
+          this.GetAll();
+          this.swal.showSuccess("Başarıyla güncellendi");
+        } else {
+          this.swal.showError(response.message || "Güncelleme işlemi başarısız");
+        }
+      },
+      error: (err) => {
+        console.error('Error updating PM', err);
+        this.swal.showError(err.error?.message || "Sunucu hatası oluştu");
+      }
+    });
+  }
+
+  Delete(id: string) {
+    this.swal.showConfirmation("Silmek istediğinize emin misiniz?", "Bu işlem geri alınamaz!", () => {
+      this.http.post('Pm/Delete', `"${id}"`).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.GetAll();
+            this.swal.showSuccess("Silme işlemi başarılı");
+          } else {
+            this.swal.showError(response.message || "Silme işlemi başarısız");
+          }
+        },
+        error: (err) => {
+          console.error("Error deleting PM", err);
+          this.swal.showError(err.error?.message || "Sunucu hatası");
+        }
+      });
     });
   }
 }

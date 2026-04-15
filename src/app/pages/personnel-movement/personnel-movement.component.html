@@ -5,7 +5,7 @@
   <input pInputText #globalFilter placeholder="Ara..." type="text" (input)="onGlobalFilter($event)" style="max-width:280px;" />
 </div>
 
-<p-table #dt [value]="movements" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5,10,20]" 
+<p-table styleClass="p-datatable-sm fontstil13" #dt [value]="movements" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5,10,20]" 
   [sortMode]="'multiple'" [responsiveLayout]="'scroll'" 
   [globalFilterFields]="['personnel.firstName','personnel.lastName','pmType.name','branch.name', 'description']">
   
@@ -17,6 +17,7 @@
       <th pSortableColumn="branch.name">Branş <p-sortIcon field="branch.name"></p-sortIcon></th>
       <th pSortableColumn="start">Başlangıç <p-sortIcon field="start"></p-sortIcon></th>
       <th pSortableColumn="finish">Bitiş <p-sortIcon field="finish"></p-sortIcon></th>
+      <th style="text-align: right">İşlemler</th>
     </tr>
   </ng-template>
 
@@ -28,12 +29,24 @@
       <td>{{ pm.branch?.name }}</td>
       <td>{{ pm.start | date:'dd.MM.yyyy' }}</td>
       <td>{{ pm.finish ? (pm.finish | date:'dd.MM.yyyy') : '-' }}</td>
+      <td style="text-align: right">
+        <app-grup-menu-component>
+          <a (click)="Edit(pm)" data-toggle="modal" data-target="#pmEditModal" class="dropdown-item pointer fontstil13" style="padding: 6px 12px; border-bottom: 1px solid #eee;">
+            <i style="width: 18px" class="fas fa-edit text-primary"></i>
+            Düzenle
+          </a>
+          <a (click)="Delete(pm.id)" class="dropdown-item pointer fontstil13" style="padding: 6px 12px;">
+            <i style="width: 18px" class="fas fa-trash text-danger"></i>
+            Sil
+          </a>
+        </app-grup-menu-component>
+      </td>
     </tr>
   </ng-template>
 
   <ng-template pTemplate="emptymessage">
     <tr>
-      <td colspan="6">Kayıt bulunamadı.</td>
+      <td colspan="7">Kayıt bulunamadı.</td>
     </tr>
   </ng-template>
 </p-table>
@@ -114,6 +127,87 @@
       <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
       <button type="submit" class="btn btn-primary btn-sm" [disabled]="!addForm.valid">
         <i class="fa fa-save"></i> Kaydet
+      </button>
+    </div>
+  </form>
+</app-modal>
+
+<app-modal name="pmEditModal" title="Personel Hareketi Düzenle">
+  <form #editForm="ngForm" (ngSubmit)="Update(editForm)">
+    
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Personel</label>
+        <p-select [options]="personnelList" [(ngModel)]="updateMovement.personnelId" (onChange)="onPersonnelChange($event)"
+          name="updPersonnelId" placeholder="Personel Seçin" styleClass="w-100" [required]="true" optionValue="id"
+          [filter]="true" filterBy="firstName,lastName,identityNumber" optionLabel="firstName" (onFilter)="onPersonnelSearch($event)">
+          <ng-template let-person pTemplate="selectedItem">
+            <div *ngIf="person">
+              {{ person.firstName }} {{ person.lastName }}
+            </div>
+          </ng-template>
+          <ng-template let-person pTemplate="item">
+            <div>
+              <div class="font-weight-bold">{{ person.firstName }} {{ person.lastName }}</div>
+              <div style="font-size: 0.85em; color: gray;">{{ person.title?.name || person.title || 'Ünvan Yok' }}</div>
+            </div>
+          </ng-template>
+        </p-select>
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Hareket Türü</label>
+        <p-select [options]="pmTypes" [(ngModel)]="updateMovement.pmTypeId" optionLabel="name" optionValue="id" 
+          name="updPmTypeId" placeholder="Tür Seçin" styleClass="w-100" [required]="true"></p-select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 form-group mb-2">
+        <label>Branş</label>
+        <p-select [options]="filteredBranches" [(ngModel)]="updateMovement.branchId" optionLabel="name" optionValue="id" 
+          name="updBranchId" placeholder="Branş Seçin" styleClass="w-100" [required]="true"></p-select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 form-group mb-2 d-flex flex-column">
+        <label>Başlangıç Tarihi</label>
+        <p-datepicker [(ngModel)]="updateMovement.start" name="updStart" styleClass="w-100" [required]="true"></p-datepicker>
+      </div>
+      <div class="col-md-6 form-group mb-2 d-flex flex-column">
+        <label>Bitiş Tarihi</label>
+        <p-datepicker [(ngModel)]="updateMovement.finish" name="updFinish" styleClass="w-100"></p-datepicker>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-6 form-group mb-2 d-flex flex-column">
+        <label>Sözleşme Başlangıç</label>
+        <p-datepicker [(ngModel)]="updateMovement.contractStart" name="updContractStart" styleClass="w-100"></p-datepicker>
+      </div>
+      <div class="col-md-6 form-group mb-2 d-flex flex-column">
+        <label>Sözleşme Bitiş</label>
+        <p-datepicker [(ngModel)]="updateMovement.contractFinish" name="updContractFinish" styleClass="w-100"></p-datepicker>
+      </div>
+    </div>
+
+    <div class="form-group mb-2 mt-2">
+      <div class="form-check">
+        <p-checkbox [(ngModel)]="updateMovement.isSgk" name="updIsSgk" binary="true" inputId="updIsSgkCheck"></p-checkbox>
+        <label class="form-check-label ms-2" for="updIsSgkCheck">SGK'lı mı?</label>
+      </div>
+    </div>
+
+    <div class="form-group mb-2">
+      <label>Açıklama</label>
+      <input type="text" pInputText class="w-100" name="updDescription" [(ngModel)]="updateMovement.description">
+    </div>
+
+    <hr>
+    <div class="text-right d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!editForm.valid">
+        <i class="fa fa-save"></i> Güncelle
       </button>
     </div>
   </form>

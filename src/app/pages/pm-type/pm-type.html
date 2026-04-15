@@ -7,10 +7,9 @@
       <input pInputText #globalFilter placeholder="Ara..." type="text" (input)="onGlobalFilter($event)" style="max-width:280px;" />
     </div>
 
-    <p-table #dt [value]="pmTypes" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20]" 
+    <p-table styleClass="p-datatable-sm fontstil13" #dt [value]="pmTypes" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20]" 
       [sortMode]="'multiple'" [responsiveLayout]="'scroll'" 
-      [globalFilterFields]="['name', 'description']"
-      class="p-datatable-sm fontstil13">
+      [globalFilterFields]="['name', 'description']">
       
       <ng-template pTemplate="header">
         <tr>

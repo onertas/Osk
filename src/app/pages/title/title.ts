@@ -5,8 +5,10 @@ import { TableModule, Table } from 'primeng/table';
 import { SharedModule } from '../../modules/shared.module';
 import { Modal } from '../../components/modal/modal';
 import { HttpApiService } from '../../services/http-api-service';
+import { SwalService } from '../../services/swall.service';
 import { CreateTitleDto } from '../../dtos/title/CreateTitleDto';
 import { ListTitleDto } from '../../dtos/title/ListTitleDto';
+import { UpdateTitleDto } from '../../dtos/title/UpdateTitleDto';
 
 @Component({
   selector: 'app-title',
@@ -17,10 +19,12 @@ import { ListTitleDto } from '../../dtos/title/ListTitleDto';
 export class TitleComponent implements OnInit {
 
   http = inject(HttpApiService);
+  swal = inject(SwalService);
   @ViewChild('dt') table!: Table;
   @ViewChild(Modal) modalCom: Modal | undefined;
 
   newTitle: CreateTitleDto = new CreateTitleDto();
+  updateTitle: UpdateTitleDto = new UpdateTitleDto();
   titles: ListTitleDto[] = [];
 
   ngOnInit(): void {
@@ -51,6 +55,35 @@ export class TitleComponent implements OnInit {
       if (res.success && res.data) {
         this.titles = res.data;
       }
+    });
+  }
+
+  Edit(title: any) {
+    this.updateTitle = { ...title };
+  }
+
+  Update(form: any) {
+    this.http.post('title/update', this.updateTitle).subscribe({
+      next: (response) => {
+        this.modalCom?.close('editTitleModal');
+        this.GetAll();
+      },
+      error: (err) => {
+        console.error('Error updating title', err);
+      }
+    });
+  }
+
+  Delete(id: string) {
+    this.swal.showConfirmation("Silmek istediğinize emin misiniz?", "Bu işlem geri alınamaz!", () => {
+      this.http.post('title/delete', `"${id}"`).subscribe({
+        next: (response) => {
+          this.GetAll();
+        },
+        error: (err) => {
+          console.error("Error deleting title", err);
+        }
+      });
     });
   }
 }

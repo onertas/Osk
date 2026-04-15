@@ -7,9 +7,8 @@
       <input pInputText #globalFilter placeholder="Global filter" type="text" (input)="onGlobalFilter($event)" style="max-width:280px;" />
     </div>
 
-    <p-table #dt [value]="users" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,20,50]"
-      [sortMode]="'multiple'" [responsiveLayout]="'scroll'" [globalFilterFields]="['userName','fullName','email']" exportFilename="users"
-      class="p-datatable-sm fontstil13">
+    <p-table styleClass="p-datatable-sm fontstil13" #dt [value]="users" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,20,50]"
+      [sortMode]="'multiple'" [responsiveLayout]="'scroll'" [globalFilterFields]="['userName','fullName','email']" exportFilename="users">
       
       <ng-template pTemplate="header">
         <tr>

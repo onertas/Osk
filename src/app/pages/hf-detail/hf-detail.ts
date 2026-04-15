@@ -3,11 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { Modal } from '../../components/modal/modal';
 import { SharedModule } from '../../modules/shared.module';
 import { PersonnelMovementComponent } from '../personnel-movement/personnel-movement.component';
+import { IcBedComponent } from '../ic-bed/ic-bed.component';
 
 @Component({
   selector: 'app-hf-detail',
   standalone: true,
-  imports: [SharedModule, PersonnelMovementComponent],
+  imports: [SharedModule, PersonnelMovementComponent, IcBedComponent],
   templateUrl: './hf-detail.html',
   styleUrl: './hf-detail.css',
 })

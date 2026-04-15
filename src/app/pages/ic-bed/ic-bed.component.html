@@ -1,0 +1,169 @@
+<div class="row">
+  <div class="col-md-12 text-right d-flex justify-content-between align-items-center mb-2">
+    <h5 class="mb-0">Yoğun Bakım Yatakları</h5>
+    <button data-toggle="modal" data-target="#addIcBedModal" class="btn btn-sm btn-dark">
+      <i class="fas fa-plus"></i> Yeni Yatak Ekle
+    </button>
+  </div>
+  
+  <div class="col-md-12">
+    <p-table [value]="beds" styleClass="p-datatable-sm fontstil13" [responsiveLayout]="'scroll'">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Yatak Birimi</th>
+          <th>Tip</th>
+          <th>Tescil Seviyesi</th>
+          <th>Tescil Türü</th>
+          <th>Adet</th>
+          <th>Tescil No</th>
+          <th>Tescil Tarihi</th>
+          <th style="width: 80px; text-align: right">İşlemler</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-bed>
+        <tr [ngClass]="{'text-muted': !bed.isActive}">
+          <td>{{ bed.icBedName }}</td>
+          <td>{{ bed.icBedTypeName }}</td>
+          <td>{{ bed.icBedRegLevelName }}</td>
+          <td>{{ bed.icBedRegTypeName }}</td>
+          <td>{{ bed.quantity }}</td>
+          <td>{{ bed.icBedRegNumber }}</td>
+          <td>{{ bed.icBedRegDate | date: 'dd.MM.yyyy' }}</td>
+          <td style="text-align: right">
+            <app-grup-menu-component>
+              <a (click)="Edit(bed)" data-toggle="modal" data-target="#editIcBedModal" class="dropdown-item pointer fontstil13">
+                <i class="fas fa-edit text-primary mr-2"></i> Düzenle
+              </a>
+              <a (click)="Delete(bed.id)" class="dropdown-item pointer fontstil13">
+                <i class="fas fa-trash text-danger mr-2"></i> Sil
+              </a>
+            </app-grup-menu-component>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="8" class="text-center">Kayıtlı yoğun bakım yatağı bulunamadı.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<!-- Add Modal -->
+<app-modal name="addIcBedModal" title="Yeni Yoğun Bakım Yatağı Ekle">
+  <form #addForm="ngForm" (ngSubmit)="Add(addForm)">
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Yatak Tipi</label>
+        <p-select [options]="bedTypes" [(ngModel)]="selectedType" (onChange)="onTypeChange($event, 'add')"
+          name="type" placeholder="Tip Seçin" styleClass="w-100" [required]="true" optionValue="value" optionLabel="description"></p-select>
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Yatak Birimi</label>
+        <p-select [options]="filteredBedNames" [(ngModel)]="newBed.icBedNameId"
+          name="icBedNameId" placeholder="Birim Seçin" styleClass="w-100" [required]="true" optionValue="id" optionLabel="name" [disabled]="!selectedType"></p-select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Tescil Seviyesi</label>
+        <p-select [options]="regLevels" [(ngModel)]="newBed.icBedRegLevel"
+          name="regLevel" placeholder="Seviye Seçin" styleClass="w-100" [required]="true" optionValue="value" optionLabel="description"></p-select>
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Tescil Türü</label>
+        <p-select [options]="regTypes" [(ngModel)]="newBed.icBedRegType"
+          name="regType" placeholder="Tür Seçin" styleClass="w-100" [required]="true" optionValue="value" optionLabel="description"></p-select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 form-group mb-2">
+        <label>Adet</label>
+        <input type="number" pInputText class="w-100" name="quantity" [(ngModel)]="newBed.quantity" required>
+      </div>
+      <div class="col-md-4 form-group mb-2">
+        <label>Tescil No</label>
+        <input type="text" pInputText class="w-100" name="regNumber" [(ngModel)]="newBed.icBedRegNumber" required>
+      </div>
+      <div class="col-md-4 form-group mb-2 d-flex flex-column">
+        <label>Tescil Tarihi</label>
+        <p-datepicker [(ngModel)]="newBed.icBedRegDate" name="regDate" styleClass="w-100" [required]="true"></p-datepicker>
+      </div>
+    </div>
+
+    <div class="form-check mb-2">
+      <p-checkbox [(ngModel)]="newBed.isActive" name="isActive" binary="true" inputId="isActiveAdd"></p-checkbox>
+      <label class="form-check-label ml-2" for="isActiveAdd">Aktif</label>
+    </div>
+
+    <hr>
+    <div class="text-right d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!addForm.valid">
+        <i class="fa fa-save"></i> Kaydet
+      </button>
+    </div>
+  </form>
+</app-modal>
+
+<!-- Edit Modal -->
+<app-modal name="editIcBedModal" title="Yoğun Bakım Yatağı Düzenle">
+  <form #editForm="ngForm" (ngSubmit)="Update(editForm)">
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Yatak Tipi</label>
+        <p-select [options]="bedTypes" [(ngModel)]="selectedUpdateType" (onChange)="onTypeChange($event, 'edit')"
+          name="updType" placeholder="Tip Seçin" styleClass="w-100" [required]="true" optionValue="value" optionLabel="description"></p-select>
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Yatak Birimi</label>
+        <p-select [options]="filteredBedNames" [(ngModel)]="updateBed.icBedNameId"
+          name="updIcBedNameId" placeholder="Birim Seçin" styleClass="w-100" [required]="true" optionValue="id" optionLabel="name" [disabled]="!selectedUpdateType"></p-select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Tescil Seviyesi</label>
+        <p-select [options]="regLevels" [(ngModel)]="updateBed.icBedRegLevel"
+          name="updRegLevel" placeholder="Seviye Seçin" styleClass="w-100" [required]="true" optionValue="value" optionLabel="description"></p-select>
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Tescil Türü</label>
+        <p-select [options]="regTypes" [(ngModel)]="updateBed.icBedRegType"
+          name="updRegType" placeholder="Tür Seçin" styleClass="w-100" [required]="true" optionValue="value" optionLabel="description"></p-select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 form-group mb-2">
+        <label>Adet</label>
+        <input type="number" pInputText class="w-100" name="updQuantity" [(ngModel)]="updateBed.quantity" required>
+      </div>
+      <div class="col-md-4 form-group mb-2">
+        <label>Tescil No</label>
+        <input type="text" pInputText class="w-100" name="updRegNumber" [(ngModel)]="updateBed.icBedRegNumber" required>
+      </div>
+      <div class="col-md-4 form-group mb-2 d-flex flex-column">
+        <label>Tescil Tarihi</label>
+        <p-datepicker [(ngModel)]="updateBed.icBedRegDate" name="updRegDate" styleClass="w-100" [required]="true"></p-datepicker>
+      </div>
+    </div>
+
+    <div class="form-check mb-2">
+      <p-checkbox [(ngModel)]="updateBed.isActive" name="updIsActive" binary="true" inputId="isActiveEdit"></p-checkbox>
+      <label class="form-check-label ml-2" for="isActiveEdit">Aktif</label>
+    </div>
+
+    <hr>
+    <div class="text-right d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!editForm.valid">
+        <i class="fa fa-save"></i> Güncelle
+      </button>
+    </div>
+  </form>
+</app-modal>

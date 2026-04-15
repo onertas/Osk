@@ -7,7 +7,7 @@
   <input pInputText #globalFilter placeholder="Global filter" type="text" (input)="onGlobalFilter($event)"
     style="max-width:280px;" />
 </div>
-<p-table #dt [value]="personnel" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5,10,20]" 
+<p-table styleClass="p-datatable-sm fontstil13" #dt [value]="personnel" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5,10,20]" 
 [sortMode]="'multiple'"
   [responsiveLayout]="'scroll'" [globalFilterFields]="['firstName','lastName','email','phone']"
   exportFilename="personnel">
@@ -31,15 +31,17 @@
       <td>{{ person.phoneNumber }}</td>
       <td>{{ person.title }}</td>
       <td>{{ person.branches.join(', ') }}</td>
-      <td>
-        <div class="d-flex gap-2">
-          <button (click)="Edit(person)" data-toggle="modal" data-target="#acEdit" class="btn btn-sm btn-outline-primary" title="Düzenle">
-            <i class="fas fa-edit"></i>
-          </button>
-          <button (click)="Delete(person.id)" class="btn btn-sm btn-outline-danger" title="Sil">
-            <i class="fas fa-trash"></i>
-          </button>
-        </div>
+      <td style="text-align: right">
+        <app-grup-menu-component>
+          <a (click)="Edit(person)" data-toggle="modal" data-target="#acEdit" class="dropdown-item pointer fontstil13" style="padding: 6px 12px; border-bottom: 1px solid #eee;">
+            <i style="width: 18px" class="fas fa-edit text-primary"></i>
+            Düzenle
+          </a>
+          <a (click)="Delete(person.id)" class="dropdown-item pointer fontstil13" style="padding: 6px 12px;">
+            <i style="width: 18px" class="fas fa-trash text-danger"></i>
+            Sil
+          </a>
+        </app-grup-menu-component>
       </td>
     </tr>
   </ng-template>
@@ -147,4 +149,4 @@
         Güncelle</button>
     </div>
   </form>
-</app-modal>
+</app-modal>
