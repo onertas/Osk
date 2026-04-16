@@ -65,7 +65,7 @@ public class AuthController : ControllerBase
         // 🍪 Cookie olarak token yaz
 
         CreateCookie("accessToken", accessToken, DateTime.UtcNow.AddMinutes(60));
-        CreateCookie("refreshToken", refreshToken, DateTime.UtcNow.AddDays(2));
+        CreateCookie("refreshToken", refreshToken, DateTime.UtcNow.AddDays(7)); // DB ile eşit
 
         return Ok(user);
     }
@@ -87,11 +87,12 @@ public class AuthController : ControllerBase
         var newAccessToken = _tokenService.CreateToken(user);
         var newRefreshToken = _tokenService.CreateRefreshToken();
         user.RefreshToken = newRefreshToken;
+        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7); // ✅ Süreyi de uzat
         await _userManager.UpdateAsync(user);
         // 🍪 Cookie olarak token yaz
 
         CreateCookie("accessToken", newAccessToken, DateTime.UtcNow.AddMinutes(60));
-        CreateCookie("refreshToken", newRefreshToken, DateTime.UtcNow.AddDays(2));
+        CreateCookie("refreshToken", newRefreshToken, DateTime.UtcNow.AddDays(7)); // DB ile eşit
 
        
         return Ok(new { message = "Token yenilendi" });
