@@ -42,6 +42,10 @@ export const routes: Routes = [
         component: HfDetailComponent,
       },
       {
+        path: 'hf-management',
+        loadComponent: () => import('./pages/hf-management/hf-management').then(m => m.HfManagementComponent)
+      },
+      {
         path: 'title',
         loadComponent: () => import('./pages/title/title').then(m => m.TitleComponent)
       },

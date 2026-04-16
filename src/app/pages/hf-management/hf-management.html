@@ -1,0 +1,182 @@
+<app-blank title="Sağlık Tesisi Yönetimi">
+  <app-section title="Tesis Listesi">
+
+    <!-- Toolbar -->
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem; flex-wrap:wrap;">
+      <span class="text-muted fontstil13">
+        Toplam <strong>{{ totalRecords }}</strong> kayıt
+      </span>
+      <input
+        pInputText
+        placeholder="Ara (Ad, Kurum, Vergi No...)"
+        type="text"
+        (input)="onSearch($event)"
+        style="max-width:300px;"
+      />
+    </div>
+
+    <!-- Tablo -->
+    <!-- Ünvan sayfası gibi sade yapıya dönüldü, tüm özel CSS zorlamaları kaldırıldı -->
+    <p-table
+      #dt
+      styleClass="p-datatable-sm fontstil13"
+      [value]="facilities"
+      [loading]="loading"
+      [lazy]="true"
+      [totalRecords]="totalRecords"
+      [paginator]="false"
+      [sortMode]="'single'"
+      [responsiveLayout]="'scroll'"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="name" style="min-width:180px">
+            Tesis Adı <p-sortIcon field="name"></p-sortIcon>
+          </th>
+          <th style="min-width:130px">Tür</th>
+          <th style="min-width:150px">Kurum Adı</th>
+          <th style="min-width:130px">Telefon</th>
+          <th style="min-width:130px">E-Posta</th>
+          <th style="min-width:120px">Vergi No</th>
+          <th style="min-width:200px">Adres</th>
+          <th style="text-align:right; min-width:80px">İşlemler</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>
+            <span class="badge bg-secondary fontstil12">{{ item.typeName }}</span>
+          </td>
+          <td>{{ item.corporationName || '—' }}</td>
+          <td>{{ item.phoneNumber || '—' }}</td>
+          <td>{{ item.email || '—' }}</td>
+          <td>{{ item.taxNumber || '—' }}</td>
+          <td
+            [pTooltip]="item.address || ''"
+            tooltipPosition="top"
+            style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"
+          >
+            {{ item.address || '—' }}
+          </td>
+          <td style="text-align:right">
+            <app-grup-menu-component>
+              <a
+                (click)="Edit(item)"
+                data-toggle="modal"
+                data-target="#editHfModal"
+                class="dropdown-item pointer fontstil13"
+                style="padding:6px 12px; border-bottom:1px solid #eee;"
+              >
+                <i style="width:18px" class="fas fa-edit text-primary"></i>
+                Düzenle
+              </a>
+              <a
+                (click)="Delete(item.id)"
+                class="dropdown-item pointer fontstil13"
+                style="padding:6px 12px;"
+              >
+                <i style="width:18px" class="fas fa-trash text-danger"></i>
+                Sil
+              </a>
+            </app-grup-menu-component>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="8" class="text-center text-muted py-3">
+            <i class="fas fa-inbox me-2"></i> Kayıt bulunamadı.
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="loadingbody">
+        <tr *ngFor="let r of [1,2,3,4,5]">
+          <td colspan="8"><div style="height:22px; background:#f0f0f0; border-radius:4px;"></div></td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <!-- Sayfalama -->
+    <div class="mt-2">
+      <p-paginator
+        [rows]="pageSize"
+        [totalRecords]="totalRecords"
+        [rowsPerPageOptions]="rowsPerPageOptions"
+        (onPageChange)="onPageChange($event)"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="{first} - {last} / {totalRecords} kayıt"
+      ></p-paginator>
+    </div>
+
+  </app-section>
+</app-blank>
+
+<!-- Düzenleme Modalı -->
+<app-modal name="editHfModal" title="Sağlık Tesisi Düzenle">
+  <form #editForm="ngForm" (ngSubmit)="Update(editForm)">
+
+    <div class="row">
+      <div class="col-md-8 form-group mb-2">
+        <label>Tesis Adı <span class="text-danger">*</span></label>
+        <input
+          type="text"
+          class="form-control"
+          name="updName"
+          [(ngModel)]="updateModel.name"
+          required
+        />
+      </div>
+      <div class="col-md-4 form-group mb-2">
+        <label>Kurum Türü</label>
+        <div class="form-control-plaintext">
+          <span class="badge bg-secondary">{{ updateModel.typeName }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Kurum Adı</label>
+        <input type="text" class="form-control" name="updCorporationName" [(ngModel)]="updateModel.corporationName" />
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Vergi No</label>
+        <input type="text" class="form-control" name="updTaxNumber" [(ngModel)]="updateModel.taxNumber" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Telefon</label>
+        <input type="text" class="form-control" name="updPhone" [(ngModel)]="updateModel.phoneNumber" />
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>E-Posta</label>
+        <input type="email" class="form-control" name="updEmail" [(ngModel)]="updateModel.email" />
+      </div>
+    </div>
+
+    <div class="form-group mb-2">
+      <label>Adres</label>
+      <textarea
+        class="form-control"
+        name="updAddress"
+        [(ngModel)]="updateModel.address"
+        rows="2"
+      ></textarea>
+    </div>
+
+    <hr />
+    <div class="d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!editForm.valid">
+        <i class="fa fa-save"></i> Güncelle
+      </button>
+    </div>
+
+  </form>
+</app-modal>

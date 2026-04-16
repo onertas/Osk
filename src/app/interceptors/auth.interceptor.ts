@@ -38,13 +38,18 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         isRefreshing = true;
         refreshTokenSubject.next(false); // Diğerlerini beklet
 
+        // Güvenlik: 10 saniye sonra isRefreshing'i sıfırla (stuck kalmasın)
+        const refreshTimeout = setTimeout(() => { isRefreshing = false; }, 10000);
+
         return http.post(`${api}/auth/refreshToken`, {}, { withCredentials: true }).pipe(
           switchMap(() => {
+            clearTimeout(refreshTimeout);
             isRefreshing = false;
             refreshTokenSubject.next(true); // Bekleyen isteklere "yol açık" sinyali ver
             return next(cloned);
           }),
           catchError((err) => {
+            clearTimeout(refreshTimeout);
             isRefreshing = false;
             router.navigate(['/login']);
             return throwError(() => err);

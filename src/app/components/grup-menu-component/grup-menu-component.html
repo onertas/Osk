@@ -1,18 +1,14 @@
 <div class="btn-group">
   <span
     style="cursor: pointer; padding:0 5px;"
-    data-toggle="dropdown"
-    aria-expanded="false"
+    (click)="op.toggle($event)"
   >
     <i class="fa fa-ellipsis-v"></i>
   </span>
 
-  <div
-    class="dropdown-menu dropdown-menu-sm"
-    data-boundary="window"
-    style="padding:0px; font-size:13px;"
-  >
-    <ng-content></ng-content>
-  </div>
+  <p-popover #op appendTo="body" [style]="{'padding': '0'}">
+      <div class="d-flex flex-column custom-menu-container" style="min-width: 140px; font-size: 13px;">
+          <ng-content></ng-content>
+      </div>
+  </p-popover>
 </div>
-
