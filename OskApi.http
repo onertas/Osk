@@ -1,0 +1,6 @@
+@OskApi_HostAddress = http://localhost:5157
+
+GET {{OskApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
