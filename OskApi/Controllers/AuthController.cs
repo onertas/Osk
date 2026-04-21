@@ -93,8 +93,7 @@ public class AuthController : ControllerBase
 
         CreateCookie("accessToken", newAccessToken, DateTime.UtcNow.AddMinutes(60));
         CreateCookie("refreshToken", newRefreshToken, DateTime.UtcNow.AddDays(7)); // DB ile eşit
-
-       
+      
         return Ok(new { message = "Token yenilendi" });
     }
 
