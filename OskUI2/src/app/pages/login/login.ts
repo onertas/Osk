@@ -34,6 +34,16 @@ export class Login {
             this.auth.loadUser(); 
             this.router.navigate(['/']);
           }
+        },
+        error: (err: any) => {
+          console.error("Login component error:", err);
+          let errorMessage = "Sunucuya bağlanılamadı veya bir hata oluştu.";
+          if (err.error && typeof err.error === 'string') {
+              errorMessage = err.error;
+          } else if (err.error && err.error.message) {
+              errorMessage = err.error.message;
+          }
+          this.swal.showError(errorMessage);
         }
       });
   }

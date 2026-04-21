@@ -49,11 +49,17 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login(UserLoginDto dto)
     {
         var user = await _userManager.FindByNameAsync(dto.UserName);
-        if (user == null) return Unauthorized("Kullanıcı bulunamadı");
+        if (user == null)
+        {
+            user = await _userManager.FindByEmailAsync(dto.UserName);
+        }
+
+        if (user == null) 
+            return Ok(Result<AppUser>.Fail("Kullanıcı bulunamadı"));
 
         var result = await _userManager.CheckPasswordAsync(user, dto.Password);
-       // result = true;
-        if (!result) return Unauthorized("Hatalı şifre");
+        if (!result) 
+            return Ok(Result<AppUser>.Fail("Hatalı şifre"));
 
         var accessToken = _tokenService.CreateToken(user);
         var refreshToken = _tokenService.CreateRefreshToken();
@@ -63,11 +69,10 @@ public class AuthController : ControllerBase
         await _userManager.UpdateAsync(user);
 
         // 🍪 Cookie olarak token yaz
-
         CreateCookie("accessToken", accessToken, DateTime.UtcNow.AddMinutes(60));
         CreateCookie("refreshToken", refreshToken, DateTime.UtcNow.AddDays(7)); // DB ile eşit
 
-        return Ok(user);
+        return Ok(Result<AppUser>.Ok(user, "Giriş başarılı"));
     }
 
 
