@@ -1,0 +1,56 @@
+
+services:
+  osk_mysql:
+    image: mysql:8.0
+    container_name: osk_mysql
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: oskdb
+      MYSQL_ROOT_PASSWORD: Oner3838**
+    ports:
+      - "3306:3306"
+    volumes:
+      - osk_mysql_data:/var/lib/mysql
+    networks:
+      - osk_network
+
+  api:
+    build:
+      context: ./OskApi
+      dockerfile: Dockerfile
+    image: onertas/osk-api:v1  # Docker Hub: onertas
+    container_name: osk_api
+    restart: always
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=osk_mysql;Port=3306;Database=oskdb;Uid=root;Pwd=Oner3838**;SslMode=none;
+      - Jwt__Key=OskSaglikSistemi_Cok_Gizli_Key_2026_!*
+      - Jwt__Issuer=OskApi
+      - Jwt__Audience=OskUsers
+    depends_on:
+      - osk_mysql
+    ports:
+      - "5000:8080"
+    networks:
+      - osk_network
+
+  frontend:
+    build:
+      context: ./OskUI2
+      dockerfile: Dockerfile
+    image: onertas/osk-frontend:v1  # Docker Hub: onertas
+    container_name: osk_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - osk_network
+
+networks:
+  osk_network:
+    driver: bridge
+
+volumes:
+  osk_mysql_data:
