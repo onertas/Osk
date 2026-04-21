@@ -1,0 +1,116 @@
+/* Table-Stil1 CSS */
+.table-stil1 {
+  border-collapse: collapse;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  overflow: hidden;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+}
+
+.table-stil1 th,
+.table-stil1 td {
+  text-align: left;
+  font-size: 15px;
+  letter-spacing: 0.3px;
+}
+
+.table-stil1 th {
+  padding: 13px 8px;
+  border: 1px solid #ddd;
+  background-color: #eef1f3;
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+}
+
+.table-stil1 td {
+  padding: 5px 8px;
+  border: 1px solid #ddd;
+  color: #414040;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.table-stil1 tr:hover {
+  background-color: #f8f9fa;
+}
+/* TAKVİM */
+.fc-event {
+  cursor: pointer !important;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.pointer {
+  cursor: pointer;
+}
+.fontstil13 {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 13px;
+}
+.fontstil14 {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+}
+
+.p-datepicker-calendar td {
+  padding: 0.1rem !important;
+}
+
+/* Inputları AdminLTE stili yerine bizim tanımladığımız boyutlara zorla */
+.p-inputtext, 
+.p-dropdown, 
+.p-select,
+.p-datepicker input,
+.form-control {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.85rem !important;
+    height: auto !important; /* AdminLTE'nin height zorlamasını kırar */
+    min-height: 31px !important;
+}
+
+.p-select {
+    height: 31px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.p-select .p-select-label {
+    padding: 0 0.5rem !important;
+    font-size: 0.85rem !important;
+}
+
+/* DatePicker kutucuklarını küçült */
+.p-datepicker table td {
+    padding: 0.2rem !important;
+}
+
+/* MultiSelect bileşenini hedef al ve küçült */
+.p-multiselect {
+    padding: 0.2rem 0.5rem !important; /* Dış boşlukları daralt */
+    height: 32px !important;           /* Sabit yükseklik ver */
+    font-size: 0.85rem !important;     /* Yazı boyutunu küçült */
+    display: flex !important;
+    align-items: center !important;    /* İçeriği dikeyde ortala */
+}
+
+/* Seçilen etiketlerin (chips) boyutunu küçült */
+.p-multiselect .p-multiselect-label {
+    padding: 0 !important;
+    font-size: 0.85rem !important;
+}
+
+/* Dropdown butonunun boyutunu ayarla */
+.p-multiselect .p-multiselect-trigger {
+    width: 2.5rem !important;
+}

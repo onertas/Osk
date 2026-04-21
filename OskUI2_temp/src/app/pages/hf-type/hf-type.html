@@ -1,0 +1,82 @@
+<app-blank title="Kurum Tipleri">
+    <app-section title="Kurum Tipleri">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
+            <button data-toggle="modal" data-target="#addHfTypeModal" class="btn btn-sm btn-dark">
+                <i class="fas fa-plus"></i> Yeni Kurum Tipi
+            </button>
+        </div>
+
+        <p-table styleClass="p-datatable-sm fontstil13" [value]="typelist">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Kurum Tipi Kodu</th>
+                    <th>Kurum Tipi Adı</th>
+                    <th style="text-align: right">İşlemler</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData>
+                <tr>
+                    <td>{{ rowData.code }}</td>
+                    <td>{{ rowData.name }}</td>
+                    <td style="text-align: right">
+                        <app-grup-menu-component>
+                            <a (click)="Edit(rowData)" data-toggle="modal" data-target="#editHfTypeModal" class="dropdown-item pointer fontstil13" style="padding: 6px 12px; border-bottom: 1px solid #eee;">
+                                <i style="width: 18px" class="fas fa-edit text-primary"></i>
+                                Düzenle
+                            </a>
+                            <a (click)="Delete(rowData.id)" class="dropdown-item pointer fontstil13" style="padding: 6px 12px;">
+                                <i style="width: 18px" class="fas fa-trash text-danger"></i>
+                                Sil
+                            </a>
+                        </app-grup-menu-component>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="3">Kayıt bulunamadı.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </app-section>
+</app-blank>
+
+<app-modal name="addHfTypeModal" title="Yeni Kurum Tipi Ekle">
+    <form #addForm="ngForm" (ngSubmit)="Add(addForm)">
+        <div class="form-group mb-2">
+            <label>Kod</label>
+            <input type="text" class="form-control" name="code" [(ngModel)]="newType.code" required>
+        </div>
+        <div class="form-group mb-2">
+            <label>Ad</label>
+            <input type="text" class="form-control" name="name" [(ngModel)]="newType.name" required>
+        </div>
+        <hr>
+        <div class="text-right d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
+            <button type="submit" class="btn btn-primary btn-sm" [disabled]="!addForm.valid">
+                <i class="fa fa-save"></i> Kaydet
+            </button>
+        </div>
+    </form>
+</app-modal>
+
+<app-modal name="editHfTypeModal" title="Kurum Tipi Düzenle">
+    <form #editForm="ngForm" (ngSubmit)="Update(editForm)">
+        <div class="form-group mb-2">
+            <label>Kod</label>
+            <input type="text" class="form-control" name="code" [(ngModel)]="updateType.code" required>
+        </div>
+        <div class="form-group mb-2">
+            <label>Ad</label>
+            <input type="text" class="form-control" name="name" [(ngModel)]="updateType.name" required>
+        </div>
+        <hr>
+        <div class="text-right d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
+            <button type="submit" class="btn btn-primary btn-sm" [disabled]="!editForm.valid">
+                <i class="fa fa-save"></i> Güncelle
+            </button>
+        </div>
+    </form>
+</app-modal>

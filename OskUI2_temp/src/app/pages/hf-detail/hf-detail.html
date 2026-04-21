@@ -1,0 +1,150 @@
+<app-blank title="Kuruluş Detayı">
+  <app-section title="Acıbadem Hastanesi">
+    <div class="card card-dark card-tabs fontstil13">
+      <div class="card-header p-0 pt-1">
+        <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+          <li class="nav-item">
+            <a
+              class="nav-link active"
+              id="home-tab"
+              data-toggle="pill"
+              href="#home"
+              role="tab"
+              aria-controls="home"
+              aria-selected="false"
+              >Genel Bilgiler</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              id="staff-tab"
+              data-toggle="pill"
+              href="#staff"
+              role="tab"
+              aria-controls="staff"
+              aria-selected="false"
+              >Personel</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              id="bed-tab"
+              data-toggle="pill"
+              href="#bed"
+              role="tab"
+              aria-controls="bed"
+              aria-selected="true"
+              >Yatak</a
+            >
+          </li>
+              <li class="nav-item">
+            <a
+              class="nav-link"
+              id="testnotu-tab"
+              data-toggle="pill"
+              href="#testnotu"
+              role="tab"
+              aria-controls="testnotu"
+              aria-selected="true"
+              >Cihaz</a
+            >
+          </li>
+             <li class="nav-item">
+            <a
+              class="nav-link"
+              id="hedefler-tab"
+              data-toggle="pill"
+              href="#hedefler"
+              role="tab"
+              aria-controls="hedefler"
+              aria-selected="true"
+              >Hedefler</a
+            >
+          </li>
+        </ul>
+      </div>
+      <div class="card-body">
+        <div class="tab-content" id="custom-tabs-one-tabContent">
+          <div
+            class="tab-pane fade active show"
+            id="home"
+            role="tabpanel"
+            aria-labelledby="home-tab"
+          >
+            <div class="row">
+              <div class="col-md-12 text-right">
+                <div class="btn-group">
+                  <button
+                 
+                    data-toggle="modal"
+                    data-target="#updateEvaluationForm"
+                    type="button"
+                   
+                    class="btn btn-xs btn-dark"
+                  >
+                 Buton
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-12 mt-1">
+                <table
+                
+                  class="table table-sm table-bordered fontstil13"
+                >
+                  <tr>
+                    <td style="width: 10%"><strong>Kurum Adı</strong></td>
+                    <td style="width: 40%">Özel Kayseri Acıbadem Hastanesi</td>
+                    <td style="width: 10%"><strong>Adres</strong></td>
+                    <td style="width: 40%">er</td>
+                    
+                  </tr>
+                    <tr>
+                    <td style="width: 10%"><strong>Telefon</strong></td>
+                    <td style="width: 40%">Özel Kayseri Acıbadem Hastanesi</td>
+                    <td style="width: 10%"><strong>E-posta</strong></td>
+                    <td style="width: 40%">er</td>
+                    
+                  </tr>
+               
+                </table>
+              </div>
+           
+            </div>
+          </div>
+             <div
+            class="tab-pane fade"
+            id="staff"
+            role="tabpanel"
+            aria-labelledby="staff-tab"
+          >
+            <div class="row">
+         
+              <div class="col-md-12 mt-1">
+                <app-personnel-movement [healthFacilityId]="healthFacilityId"></app-personnel-movement>
+              </div>
+           
+            </div>
+          </div>
+          <div
+            class="tab-pane fade"
+            id="bed"
+            role="tabpanel"
+            aria-labelledby="bed-tab"
+          >
+            <div class="row">
+              <div class="col-md-12 mt-1">
+                <app-ic-bed [healthFacilityId]="healthFacilityId"></app-ic-bed>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /.card -->
+    </div>
+  </app-section>
+</app-blank>
+
+
+

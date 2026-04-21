@@ -1,0 +1,7 @@
+:host ::ng-deep .p-popover-content {
+    padding: 0 !important;
+}
+
+.custom-menu-container {
+    padding: 0;
+}

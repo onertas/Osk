@@ -1,0 +1,195 @@
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+  <!-- Brand Logo -->
+  <!-- <a href="/assets/index3.html" class="brand-link">
+    <img
+      src="/assets/images/mevada1.jpg"
+      alt="AdminLTE Logo"
+      class="brand-image img-circle elevation-3"
+      style="opacity: 0.8"
+    />
+    <br />
+    <span class="brand-text font-weight-light">Mevada Personel Takip</span>
+  </a> -->
+  <!-- Sidebar Header -->
+  <div class="sidebar-header mb-2">
+    <div class="logo-area">
+      <div class="logo-icon">KSM</div>
+      <div class="logo-text">
+        <span class="title">Özel Hastaneler Birimi</span>
+        @if (user$ | async; as user) {
+          <span class="subtitle">{{ user.username }}</span>
+        }
+      </div>
+      ""
+    </div>
+  </div>
+  <!-- <a class="brand-link">
+    <img
+      src="/assets/dist/img/ComfyTexC.png"
+      alt="AdminLTE Logo"
+      class="brand-image img-circle elevation-3"
+      style="opacity: 0.8"
+    />
+    <span class="brand-text font-weight-light">Comfytex Meeting</span>
+  </a> -->
+
+  <!-- Sidebarsdsdsd -->
+  <div class="sidebar">
+    <!-- Sidebar user (optional)err -->
+    <!-- <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="image">
+        <div class="circle">{{ authService.user.name[0] }}</div>
+      </div>
+      <div class="info">
+        <a routerLink="/mypage"
+          style="cursor: pointer;"
+
+          class="d-block"
+          >{{ authService.user.name }}</a
+        >
+      </div>
+    </div> -->
+
+    <!-- SidebarSearch Form ddfddfdfdf-->
+    <div class="form-inline">
+      <div class="input-group" data-widget="sidebar-search">
+        <form autocomplete="off">
+          <input
+            class="form-control form-control-sidebar"
+            type="search"
+            placeholder="Menude Ara"
+            aria-label="Search"
+          />
+        </form>
+        <div class="input-group-append">
+          <button class="btn btn-sidebar">
+            <i class="fas fa-search fa-fw"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <nav class="mt-2 fontstil14">
+      <ul
+        class="nav nav-pills nav-sidebar flex-column"
+        data-widget="treeview"
+        role="menu"
+        data-accordion="true"
+      >
+        @for (menu of menus; track menu) {
+          @if (menu.isTitle == true && menu.show) {
+            <li style="color: #76818d" class="nav-header">
+              <i class="fa fa-key"></i> {{ menu.name.toLocaleUpperCase() }}
+            </li>
+          } @else if (menu.subMenus.length > 0 && menu.show) {
+            <!--ÇOKLU MENU-->
+            <li class="nav-item">
+              <a (click)="menuac($event)" href="#" class="nav-link">
+                <i class="fas fa-folder-open text-info"></i>
+                <p style="margin-left: 2px">
+                  {{ menu.name }}<i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                @for (sub of menu.subMenus; track sub) {
+                  <li *ngIf="sub.show" class="nav-item">
+                    <a
+                      href="#"
+                      (click)="x($event)"
+                      [routerLink]="sub.url"
+                      routerLinkActive="active"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="nav-link"
+                    >
+                      <i style="margin-left: 10px" class="{{ sub.icon }}"></i>
+                      <p style="margin-left: 5px">{{ sub.name }}</p>
+                    </a>
+                  </li>
+                }
+              </ul>
+            </li>
+            <!--ÇOKLU MENU-->
+          } @else {
+            <!--TEK MENU-->
+            <li *ngIf="menu.show" class="nav-item">
+              <a
+                href="#"
+                (click)="x($event)"
+                [routerLink]="menu.url"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                class="nav-link"
+              >
+                <i class="{{ menu.icon }} text-white"></i>
+                <p style="margin-left: 7px">{{ menu.name }}</p>
+              </a>
+            </li>
+            <!--TEK MENU-->
+          }
+        }
+      </ul>
+    </nav>
+    <!-- /.sidebar-menu -->
+  </div>
+  <!-- /.sidebar -->
+</aside>
+
+<!-- MODAL update
+<app-modal title="Şifre Güncelle" name="changePass">
+  <form
+    formValidate
+    #updateUserForm="ngForm"
+    (ngSubmit)="userEdit(updateUserForm)"
+  >
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Kullanıcı</label>
+            <p><dd>{{ this.authState.user$ | async }}</dd></p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">""""
+            <label>Yeni Şifre </label>
+            <input
+            required
+            name="password"
+              type="text"
+              class="form-control"
+              [(ngModel)]="user.password"
+            />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Yeni Şifre Tekrar </label>
+            <input
+            required
+            name="newPassword"
+              type="text"
+              class="form-control"
+              [(ngModel)]="user.newPassword"
+            />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Yeni Pin </label>
+            <input
+            required
+            name="newPin"
+              type="text"
+              class="form-control"
+              [(ngModel)]="user.pin"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer justify-content-between">
+      <button type="submit" class="btn btn-primary">Güncelle</button>
+    </div>
+  </form>
+</app-modal> -->

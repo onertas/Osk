@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AdminLTE 3 | Log in</title>
+  </head>
+  <style>
+
+
+.background {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Sayfanın tamamını kapsar */
+  background: url('https://ehub.enterprises.up.ac.za/wp-content/uploads/2024/01/AdobeStock_613562329-scaled.jpeg') no-repeat center center/cover;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Siyah transparan katman */
+}
+
+.content {
+  position: relative;
+  z-index: 1; /* İçeriği üst katmana getirir */
+  color: white;
+  text-align: center;
+  padding-top:2%;
+}
+
+
+
+  </style>
+  <body  class="hold-transition login-page background">
+    <div class="overlay"></div>
+
+    <div class="login-box style content" style="z-index: 2;">
+
+      <div class="login-logo">
+        <a style="color: rgb(190, 180, 180);" href="../../index2.html"><b>Comfytex </b>Meeting</a>
+
+
+      </div>
+
+      <div class="card">
+        <div class="card-body login-card-body">
+          <img style="margin-bottom: 20px;"  width="200px" src="images/sblogo.svg">
+
+            <div class="input-group mb-3">
+              <input
+              autocomplete="off"
+              (keyup.enter)="Login()"
+                type="text"
+                class="form-control"
+                id="username"
+                [(ngModel)]="email"
+                required
+              />
+
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-envelope"></span>
+                </div>
+              </div>
+            </div>
+            <div class="input-group mb-3">
+              <input  (keyup.enter)="Login()"
+                type="password"
+                class="form-control"
+                id="password"
+                [(ngModel)]="password"
+                required
+              />
+
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <!-- <div class="col-8">
+                <div class="icheck-primary">
+                  <input type="checkbox" id="remember" />
+                  <label for="remember"> Remember Me </label>
+                </div>
+              </div> -->
+
+              <div class="col-12">
+                <button  (click)="Login()"  class="btn btn-dark btn-block">Giriş Yap</button>
+
+              </div>
+            </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="/assets/plugins/jquery/jquery.min.js"></script>
+
+    <script src="/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script src="/assets/dist/js/adminlte.min.js?v=3.2.0"></script>
+  </body>
+</html>

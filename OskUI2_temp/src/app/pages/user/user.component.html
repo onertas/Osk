@@ -1,0 +1,127 @@
+<app-blank title="Sistem Kullanıcıları">
+  <app-section title="Kullanıcı Listesi">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
+      <button (click)="ResetForm()" data-toggle="modal" data-target="#userAddModal" class="btn btn-sm btn-dark">
+        <i class="fas fa-plus"></i> Yeni Kullanıcı
+      </button>
+      <input pInputText #globalFilter placeholder="Global filter" type="text" (input)="onGlobalFilter($event)" style="max-width:280px;" />
+    </div>
+
+    <p-table styleClass="p-datatable-sm fontstil13" #dt [value]="users" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,20,50]"
+      [sortMode]="'multiple'" [responsiveLayout]="'scroll'" [globalFilterFields]="['userName','fullName','email']" exportFilename="users">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="userName">Kullanıcı Adı <p-sortIcon field="userName"></p-sortIcon></th>
+          <th pSortableColumn="fullName">Ad Soyad <p-sortIcon field="fullName"></p-sortIcon></th>
+          <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
+          <th>Roller</th>
+          <th style="text-align: right">İşlemler</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-user>
+        <tr>
+          <td>{{ user.userName }}</td>
+          <td>{{ user.fullName }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <span *ngFor="let role of user.roles" class="badge bg-secondary me-1 fontstil13">{{ role }}</span>
+          </td>
+          <td style="text-align: right">
+            <app-grup-menu-component>
+              <a (click)="Edit(user)" data-toggle="modal" data-target="#userEditModal" class="dropdown-item pointer fontstil13" style="padding: 6px 12px; border-bottom: 1px solid #eee;">
+                <i style="width: 18px" class="fas fa-edit text-primary"></i>
+                Düzenle
+              </a>
+              <a (click)="Delete(user.id)" class="dropdown-item pointer fontstil13" style="padding: 6px 12px;">
+                <i style="width: 18px" class="fas fa-trash text-danger"></i>
+                Sil
+              </a>
+            </app-grup-menu-component>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr><td colspan="5">Kayıt bulunamadı.</td></tr>
+      </ng-template>
+    </p-table>
+  </app-section>
+</app-blank>
+
+<app-modal name="userAddModal" title="Yeni Kullanıcı Ekle">
+  <form #addForm="ngForm" (ngSubmit)="Add(addForm)">
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Kullanıcı Adı</label>
+        <input type="text" class="form-control" name="userName" [(ngModel)]="createModel.userName" required>
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Şifre</label>
+        <input type="password" class="form-control" name="password" [(ngModel)]="createModel.password" required>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Ad Soyad</label>
+        <input type="text" class="form-control" name="fullName" [(ngModel)]="createModel.fullName" required>
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>E-posta</label>
+        <input type="email" class="form-control" name="email" [(ngModel)]="createModel.email" required>
+      </div>
+    </div>
+    <div class="form-group mb-2">
+      <label>Roller</label>
+      <p-multiSelect [options]="availableRoles" [(ngModel)]="createModel.roles" optionLabel="name" 
+      optionValue="name" name="roles" placeholder="Rol Seçin" styleClass="w-100"></p-multiSelect>
+    </div>
+
+    <hr>
+    <div class="text-right d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!addForm.valid">
+        <i class="fa fa-save"></i> Kaydet
+      </button>
+    </div>
+  </form>
+</app-modal>
+
+<app-modal name="userEditModal" title="Kullanıcı Düzenle">
+  <form #editForm="ngForm" (ngSubmit)="Update(editForm)">
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Kullanıcı Adı</label>
+        <input type="text" class="form-control" name="updUserName" [(ngModel)]="updateModel.userName" required>
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Yeni Şifre (Boş bırakılabilir)</label>
+        <input type="password" class="form-control" name="updPassword" [(ngModel)]="updateModel.newPassword" placeholder="Değiştirmek için yazın">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Ad Soyad</label>
+        <input type="text" class="form-control" name="updFullName" [(ngModel)]="updateModel.fullName" required>
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>E-posta</label>
+        <input type="email" class="form-control" name="updEmail" [(ngModel)]="updateModel.email" required>
+      </div>
+    </div>
+    <div class="form-group mb-2">
+      <label>Roller</label>
+      <p-multiSelect [options]="availableRoles" [(ngModel)]="updateModel.roles" optionLabel="name" 
+      optionValue="name" name="updRoles" placeholder="Rol Seçin" styleClass="w-100"></p-multiSelect>
+    </div>
+
+    <hr>
+    <div class="text-right d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!editForm.valid">
+        <i class="fa fa-save"></i> Güncelle
+      </button>
+    </div>
+  </form>
+</app-modal>
