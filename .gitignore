@@ -1,0 +1,38 @@
+###########################################
+# .NET / Visual Studio
+###########################################
+**/bin/
+**/obj/
+**/.vs/
+*.user
+*.userosscache
+*.sln.docstates
+
+###########################################
+# Node / Angular
+###########################################
+**/node_modules/
+**/dist/
+**/tmp/
+**/out-tsc/
+**/.angular/cache/
+npm-debug.log
+yarn-error.log
+package-lock.json.backup
+
+###########################################
+# IDEs / Editors
+###########################################
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+.idea/
+
+###########################################
+# System Files
+###########################################
+.DS_Store
+Thumbs.db
