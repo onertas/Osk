@@ -3,6 +3,8 @@ using OskApi.Dtos.HealthFacilities;
 using OskApi.Dtos.Personnel;
 using OskApi.Entities.HealthFacilities;
 using OskApi.Entities.Personnel;
+using OskApi.Entities.Staff;
+using OskApi.Dtos.Staff;
 
 namespace OskApi.Shared.Mapping
 {
@@ -27,6 +29,21 @@ namespace OskApi.Shared.Mapping
             CreateMap<PmType, OskApi.Dtos.PmType.CreatePmTypeDto>().ReverseMap();
             CreateMap<PmType, OskApi.Dtos.PmType.ListPmTypeDto>().ReverseMap();
             CreateMap<PmType, OskApi.Dtos.PmType.UpdatePmTypeDto>().ReverseMap();
+
+            // Staff
+            CreateMap<Staff, CreateStaffDto>().ReverseMap();
+            CreateMap<Staff, UpdateStaffDto>().ReverseMap();
+            CreateMap<Staff, ListStaffDto>()
+                .ForMember(dest => dest.BranchName, opt => opt.MapFrom(src => src.Branch != null ? src.Branch.Name : ""))
+                .ForMember(dest => dest.HealthFacilityName, opt => opt.MapFrom(src => src.HealthFacility != null ? src.HealthFacility.Name : ""));
+
+            // TemporarayStaff
+            CreateMap<TemporarayStaff, CreateTemporarayStaffDto>().ReverseMap();
+            CreateMap<TemporarayStaff, UpdateTemporarayStaffDto>().ReverseMap();
+            CreateMap<TemporarayStaff, ListTemporarayStaffDto>()
+                .ForMember(dest => dest.BranchName, opt => opt.MapFrom(src => src.Branch != null ? src.Branch.Name : ""))
+                .ForMember(dest => dest.HealthFacilityName, opt => opt.MapFrom(src => src.HealthFacility != null ? src.HealthFacility.Name : ""))
+                .ForMember(dest => dest.PmTypeName, opt => opt.MapFrom(src => src.PmType != null ? src.PmType.Name : ""));
         }
     }
 }

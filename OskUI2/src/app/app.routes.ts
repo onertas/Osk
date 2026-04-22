@@ -65,6 +65,14 @@ export const routes: Routes = [
         path: 'users',
         loadComponent: () => import('./pages/user/user.component').then(m => m.UserComponent)
       },
+      {
+        path: 'staff',
+        loadComponent: () => import('./pages/staff/staff').then(m => m.StaffComponent)
+      },
+      {
+        path: 'temporaray-staff',
+        loadComponent: () => import('./pages/temporaray-staff/temporaray-staff').then(m => m.TemporarayStaffComponent)
+      },
       { path: '**', component: ErrorComponent },
       { path: 'errorpage', component: ErrorComponent },
     ],

@@ -1,11 +1,10 @@
-﻿using OskApi.Entities.HealthFacilities;
+using OskApi.Entities.HealthFacilities;
 using OskApi.Entities.Personnel;
 
 namespace OskApi.Entities.Staff
 {
     public class Staff : Entity
     {
-
         public Guid BranchId { get; set; }
         public Branch? Branch { get; set; }
 
@@ -18,7 +17,6 @@ namespace OskApi.Entities.Staff
 
     public class TemporarayStaff : Entity
     {
-
         public Guid BranchId { get; set; }
         public Branch? Branch { get; set; }
 

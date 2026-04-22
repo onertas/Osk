@@ -60,6 +60,19 @@ public class HealthFacilityController : ControllerBase
         return Ok(Result<List<HealthFacilityListDto>>.Ok(listdto, "Veri Listelendi"));
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var list = await _healthFacilityService.GetAll()
+            .Select(x => new HealthFacilityListDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+            }).ToListAsync();
+
+        return Ok(Result<List<HealthFacilityListDto>>.Ok(list, "Tüm Veriler Listelendi"));
+    }
+
     /// <summary>
     /// Belirli bir sağlık tesisini ID ile getir
     /// </summary>

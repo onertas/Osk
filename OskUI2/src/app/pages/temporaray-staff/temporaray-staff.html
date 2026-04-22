@@ -1,0 +1,137 @@
+<app-blank title="Geçici Kadro Yönetimi">
+  <app-section title="Geçici Kadro Listesi">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
+      <button data-toggle="modal" data-target="#addTempStaffModal" class="btn btn-sm btn-dark">
+        <i class="fas fa-plus"></i> Yeni Geçici Kadro Ekle
+      </button>
+      <input pInputText #globalFilter placeholder="Ara..." type="text" (input)="onGlobalFilter($event)" style="max-width:280px;" />
+    </div>
+
+    <p-table #dt [value]="tempStaffList" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20]" 
+      [sortMode]="'multiple'" [responsiveLayout]="'scroll'" 
+      styleClass="p-datatable-sm fontstil13"
+      [globalFilterFields]="['code', 'branchName', 'healthFacilityName', 'pmTypeName']">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="code" style="width: 120px">Kod <p-sortIcon field="code"></p-sortIcon></th>
+          <th pSortableColumn="branchName">Branş <p-sortIcon field="branchName"></p-sortIcon></th>
+          <th pSortableColumn="healthFacilityName">Sağlık Tesisi <p-sortIcon field="healthFacilityName"></p-sortIcon></th>
+          <th pSortableColumn="pmTypeName">Hareket Türü <p-sortIcon field="pmTypeName"></p-sortIcon></th>
+          <th pSortableColumn="count" style="width: 100px; text-align: center">Sayı <p-sortIcon field="count"></p-sortIcon></th>
+          <th style="width: 100px; text-align: right">İşlemler</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td>{{ item.code }}</td>
+          <td>{{ item.branchName }}</td>
+          <td>{{ item.healthFacilityName }}</td>
+          <td>{{ item.pmTypeName }}</td>
+          <td style="text-align: center">{{ item.count }}</td>
+          <td style="text-align: right">
+            <app-grup-menu-component>
+              <a (click)="edit(item)" data-toggle="modal" data-target="#editTempStaffModal" class="dropdown-item pointer fontstil13" style="padding: 6px 12px; border-bottom: 1px solid #eee;">
+                <i style="width: 18px" class="fas fa-edit text-primary"></i>
+                Düzenle
+              </a>
+              <a (click)="delete(item.id)" class="dropdown-item pointer fontstil13" style="padding: 6px 12px;">
+                <i style="width: 18px" class="fas fa-trash text-danger"></i>
+                Sil
+              </a>
+            </app-grup-menu-component>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6">Kayıt bulunamadı.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </app-section>
+</app-blank>
+
+<!-- Ekle Modal -->
+<app-modal name="addTempStaffModal" title="Yeni Geçici Kadro Ekle">
+  <form #addForm="ngForm" (ngSubmit)="add(addForm)">
+    <div class="form-group mb-3">
+      <label>Kod</label>
+      <input type="text" class="form-control" name="code" [(ngModel)]="newTempStaff.code">
+    </div>
+
+    <div class="form-group mb-3">
+      <label>Branş</label>
+      <p-select [options]="branches" [(ngModel)]="newTempStaff.branchId" optionLabel="name" optionValue="id" 
+        name="branchId" placeholder="Branş Seçin" styleClass="w-100" [required]="true" [filter]="true" filterBy="name"></p-select>
+    </div>
+
+    <div class="form-group mb-3">
+      <label>Sağlık Tesisi</label>
+      <p-select [options]="facilities" [(ngModel)]="newTempStaff.healthFacilityId" optionLabel="name" optionValue="id" 
+        name="healthFacilityId" placeholder="Tesis Seçin" styleClass="w-100" [required]="true" [filter]="true" filterBy="name"></p-select>
+    </div>
+
+    <div class="form-group mb-3">
+      <label>Hareket Türü</label>
+      <p-select [options]="pmTypes" [(ngModel)]="newTempStaff.pmTypeId" optionLabel="name" optionValue="id" 
+        name="pmTypeId" placeholder="Tür Seçin" styleClass="w-100" [required]="true" [filter]="true" filterBy="name"></p-select>
+    </div>
+
+    <div class="form-group mb-3">
+      <label>Sayı</label>
+      <input type="number" class="form-control" name="count" [(ngModel)]="newTempStaff.count" required>
+    </div>
+
+    <hr>
+    <div class="text-right d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!addForm.valid">
+        <i class="fa fa-save"></i> Kaydet
+      </button>
+    </div>
+  </form>
+</app-modal>
+
+<!-- Düzenle Modal -->
+<app-modal name="editTempStaffModal" title="Geçici Kadro Düzenle">
+  <form #editForm="ngForm" (ngSubmit)="update(editForm)">
+    <div class="form-group mb-3">
+      <label>Kod</label>
+      <input type="text" class="form-control" name="code" [(ngModel)]="updateTempStaff.code">
+    </div>
+
+    <div class="form-group mb-3">
+      <label>Branş</label>
+      <p-select [options]="branches" [(ngModel)]="updateTempStaff.branchId" optionLabel="name" optionValue="id" 
+        name="updBranchId" placeholder="Branş Seçin" styleClass="w-100" [required]="true" [filter]="true" filterBy="name"></p-select>
+    </div>
+
+    <div class="form-group mb-3">
+      <label>Sağlık Tesisi</label>
+      <p-select [options]="facilities" [(ngModel)]="updateTempStaff.healthFacilityId" optionLabel="name" optionValue="id" 
+        name="updHealthFacilityId" placeholder="Tesis Seçin" styleClass="w-100" [required]="true" [filter]="true" filterBy="name"></p-select>
+    </div>
+
+    <div class="form-group mb-3">
+      <label>Hareket Türü</label>
+      <p-select [options]="pmTypes" [(ngModel)]="updateTempStaff.pmTypeId" optionLabel="name" optionValue="id" 
+        name="updPmTypeId" placeholder="Tür Seçin" styleClass="w-100" [required]="true" [filter]="true" filterBy="name"></p-select>
+    </div>
+
+    <div class="form-group mb-3">
+      <label>Sayı</label>
+      <input type="number" class="form-control" name="count" [(ngModel)]="updateTempStaff.count" required>
+    </div>
+
+    <hr>
+    <div class="text-right d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!editForm.valid">
+        <i class="fa fa-save"></i> Güncelle
+      </button>
+    </div>
+  </form>
+</app-modal>
