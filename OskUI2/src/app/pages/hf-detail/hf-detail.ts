@@ -4,13 +4,15 @@ import { Modal } from '../../components/modal/modal';
 import { SharedModule } from '../../modules/shared.module';
 import { PersonnelMovementComponent } from '../personnel-movement/personnel-movement.component';
 import { IcBedComponent } from '../ic-bed/ic-bed.component';
+import { StaffComponent } from '../staff/staff';
+import { TemporarayStaffComponent } from '../temporaray-staff/temporaray-staff';
 import { HttpApiService } from '../../services/http-api-service';
 import { HfManagementListDto } from '../../dtos/healthFacility/hf-management-list.dto';
 
 @Component({
   selector: 'app-hf-detail',
   standalone: true,
-  imports: [SharedModule, PersonnelMovementComponent, IcBedComponent],
+  imports: [SharedModule, PersonnelMovementComponent, IcBedComponent, StaffComponent, TemporarayStaffComponent],
   templateUrl: './hf-detail.html',
   styleUrl: './hf-detail.css',
 })

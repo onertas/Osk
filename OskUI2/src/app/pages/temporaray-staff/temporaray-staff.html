@@ -1,7 +1,8 @@
-<app-blank title="Geçici Kadro Yönetimi">
-  <app-section title="Geçici Kadro Listesi">
+<ng-template #contentTemplate>
+  <app-section [title]="healthFacilityId ? '' : 'Geçici Kadro Listesi'">
     <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
-      <button data-toggle="modal" data-target="#addTempStaffModal" class="btn btn-sm btn-dark">
+      <div *ngIf="healthFacilityId"></div>
+      <button *ngIf="!healthFacilityId" data-toggle="modal" data-target="#addTempStaffModal" class="btn btn-sm btn-dark">
         <i class="fas fa-plus"></i> Yeni Geçici Kadro Ekle
       </button>
       <input pInputText #globalFilter placeholder="Ara..." type="text" (input)="onGlobalFilter($event)" style="max-width:280px;" />
@@ -16,10 +17,10 @@
         <tr>
           <th pSortableColumn="code" style="width: 120px">Kod <p-sortIcon field="code"></p-sortIcon></th>
           <th pSortableColumn="branchName">Branş <p-sortIcon field="branchName"></p-sortIcon></th>
-          <th pSortableColumn="healthFacilityName">Sağlık Tesisi <p-sortIcon field="healthFacilityName"></p-sortIcon></th>
+          <th *ngIf="!healthFacilityId" pSortableColumn="healthFacilityName">Sağlık Tesisi <p-sortIcon field="healthFacilityName"></p-sortIcon></th>
           <th pSortableColumn="pmTypeName">Hareket Türü <p-sortIcon field="pmTypeName"></p-sortIcon></th>
           <th pSortableColumn="count" style="width: 100px; text-align: center">Sayı <p-sortIcon field="count"></p-sortIcon></th>
-          <th style="width: 100px; text-align: right">İşlemler</th>
+          <th *ngIf="!healthFacilityId" style="width: 100px; text-align: right">İşlemler</th>
         </tr>
       </ng-template>
 
@@ -27,10 +28,10 @@
         <tr>
           <td>{{ item.code }}</td>
           <td>{{ item.branchName }}</td>
-          <td>{{ item.healthFacilityName }}</td>
+          <td *ngIf="!healthFacilityId">{{ item.healthFacilityName }}</td>
           <td>{{ item.pmTypeName }}</td>
           <td style="text-align: center">{{ item.count }}</td>
-          <td style="text-align: right">
+          <td *ngIf="!healthFacilityId" style="text-align: right">
             <app-grup-menu-component>
               <a (click)="edit(item)" data-toggle="modal" data-target="#editTempStaffModal" class="dropdown-item pointer fontstil13" style="padding: 6px 12px; border-bottom: 1px solid #eee;">
                 <i style="width: 18px" class="fas fa-edit text-primary"></i>
@@ -47,12 +48,20 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="6">Kayıt bulunamadı.</td>
+          <td [attr.colspan]="healthFacilityId ? 5 : 6">Kayıt bulunamadı.</td>
         </tr>
       </ng-template>
     </p-table>
   </app-section>
+</ng-template>
+
+<app-blank *ngIf="!healthFacilityId" title="Geçici Kadro Yönetimi">
+  <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
 </app-blank>
+
+<ng-container *ngIf="healthFacilityId">
+  <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+</ng-container>
 
 <!-- Ekle Modal -->
 <app-modal name="addTempStaffModal" title="Yeni Geçici Kadro Ekle">
@@ -68,10 +77,10 @@
         name="branchId" placeholder="Branş Seçin" styleClass="w-100" [required]="true" [filter]="true" filterBy="name"></p-select>
     </div>
 
-    <div class="form-group mb-3">
+    <div class="form-group mb-3" *ngIf="!healthFacilityId">
       <label>Sağlık Tesisi</label>
       <p-select [options]="facilities" [(ngModel)]="newTempStaff.healthFacilityId" optionLabel="name" optionValue="id" 
-        name="healthFacilityId" placeholder="Tesis Seçin" styleClass="w-100" [required]="true" [filter]="true" filterBy="name"></p-select>
+        name="healthFacilityId" placeholder="Tesis Seçin" styleClass="w-100" [required]="!healthFacilityId" [filter]="true" filterBy="name"></p-select>
     </div>
 
     <div class="form-group mb-3">
@@ -109,10 +118,10 @@
         name="updBranchId" placeholder="Branş Seçin" styleClass="w-100" [required]="true" [filter]="true" filterBy="name"></p-select>
     </div>
 
-    <div class="form-group mb-3">
+    <div class="form-group mb-3" *ngIf="!healthFacilityId">
       <label>Sağlık Tesisi</label>
       <p-select [options]="facilities" [(ngModel)]="updateTempStaff.healthFacilityId" optionLabel="name" optionValue="id" 
-        name="updHealthFacilityId" placeholder="Tesis Seçin" styleClass="w-100" [required]="true" [filter]="true" filterBy="name"></p-select>
+        name="updHealthFacilityId" placeholder="Tesis Seçin" styleClass="w-100" [required]="!healthFacilityId" [filter]="true" filterBy="name"></p-select>
     </div>
 
     <div class="form-group mb-3">

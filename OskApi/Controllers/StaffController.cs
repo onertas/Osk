@@ -27,6 +27,9 @@ public class StaffController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Add(CreateStaffDto model)
     {
+        var exists = await _staffService.GetAll().AnyAsync(x => x.HealthFacilityId == model.HealthFacilityId && x.BranchId == model.BranchId);
+        if (exists) return BadRequest(Result.Fail("Bu kurum için bu kadro zaten eklenmiş."));
+
         var entity = _mapper.Map<Staff>(model);
         await _staffService.AddAsync(entity);
         await _unitOfWork.SaveChangesAsync();
@@ -59,7 +62,19 @@ public class StaffController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var list = await _staffService.GetAll()
+        var list = await _staffService.GetAll().Where(i=>i.IsDeteled==false)
+            .Include(i => i.Branch)
+            .Include(i => i.HealthFacility)
+            .ToListAsync();
+
+        var mappedList = _mapper.Map<List<ListStaffDto>>(list);
+        return Ok(Result<List<ListStaffDto>>.Ok(mappedList));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetByHealthFacilityId([FromQuery] Guid id)
+    {
+        var list = await _staffService.GetAll().Where(i => i.IsDeteled == false && i.HealthFacilityId == id)
             .Include(i => i.Branch)
             .Include(i => i.HealthFacility)
             .ToListAsync();

@@ -27,6 +27,9 @@ public class TemporarayStaffController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Add(CreateTemporarayStaffDto model)
     {
+        var exists = await _temporarayStaffService.GetAll().AnyAsync(x => x.HealthFacilityId == model.HealthFacilityId && x.BranchId == model.BranchId && x.PmTypeId == model.PmTypeId);
+        if (exists) return BadRequest(Result.Fail("Bu kurum için aynı tipte bu kadro zaten eklenmiş."));
+
         var entity = _mapper.Map<TemporarayStaff>(model);
         await _temporarayStaffService.AddAsync(entity);
         await _unitOfWork.SaveChangesAsync();
@@ -59,7 +62,20 @@ public class TemporarayStaffController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var list = await _temporarayStaffService.GetAll()
+        var list = await _temporarayStaffService.GetAll().Where(i => i.IsDeteled == false)
+            .Include(i => i.Branch)
+            .Include(i => i.HealthFacility)
+            .Include(i => i.PmType)
+            .ToListAsync();
+
+        var mappedList = _mapper.Map<List<ListTemporarayStaffDto>>(list);
+        return Ok(Result<List<ListTemporarayStaffDto>>.Ok(mappedList));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetByHealthFacilityId([FromQuery] Guid id)
+    {
+        var list = await _temporarayStaffService.GetAll().Where(i => i.IsDeteled == false && i.HealthFacilityId == id)
             .Include(i => i.Branch)
             .Include(i => i.HealthFacility)
             .Include(i => i.PmType)

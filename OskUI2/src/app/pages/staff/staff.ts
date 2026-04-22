@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableModule, Table } from 'primeng/table';
@@ -32,7 +32,9 @@ import { HfManagementListDto } from '../../dtos/healthFacility/hf-management-lis
   ],
   templateUrl: './staff.html'
 })
-export class StaffComponent implements OnInit {
+export class StaffComponent implements OnInit, OnChanges {
+  @Input() healthFacilityId: string = '';
+
   http = inject(HttpApiService);
   swal = inject(SwalService);
 
@@ -47,9 +49,31 @@ export class StaffComponent implements OnInit {
   updateStaff: UpdateStaffDto = new UpdateStaffDto();
 
   ngOnInit(): void {
-    this.getAll();
+    if (!this.healthFacilityId) {
+      this.getAll();
+    }
     this.loadBranches();
     this.loadFacilities();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['healthFacilityId'] && this.healthFacilityId) {
+      this.getByFacilityId();
+      this.newStaff.healthFacilityId = this.healthFacilityId;
+    }
+  }
+
+  getByFacilityId() {
+    this.http.get<ListStaffDto[]>('Staff/GetByHealthFacilityId', { id: this.healthFacilityId }).subscribe({
+      next: (res: any) => {
+        if (res.success && res.data) {
+          this.staffList = res.data.map((item: any) => ({
+            ...item,
+            code: item.code || ''
+          }));
+        }
+      }
+    });
   }
 
   getAll() {
@@ -94,6 +118,14 @@ export class StaffComponent implements OnInit {
   }
 
   add(form: any) {
+    const exists = this.staffList.some(
+      s => s.healthFacilityId === this.newStaff.healthFacilityId && s.branchId === this.newStaff.branchId
+    );
+    if (exists) {
+      this.swal.showWarning("Bu kurum için bu kadro zaten eklenmiş.");
+      return;
+    }
+
     this.http.post('Staff/Add', this.newStaff).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -101,7 +133,12 @@ export class StaffComponent implements OnInit {
           this.modalCom?.close('addStaffModal');
           form.resetForm();
           this.newStaff = new CreateStaffDto();
-          this.getAll();
+          if (this.healthFacilityId) {
+            this.newStaff.healthFacilityId = this.healthFacilityId;
+            this.getByFacilityId();
+          } else {
+            this.getAll();
+          }
         }
       }
     });
@@ -123,7 +160,11 @@ export class StaffComponent implements OnInit {
         if (res.success) {
           this.swal.showSuccess("Başarıyla güncellendi");
           this.modalCom?.close('editStaffModal');
-          this.getAll();
+          if (this.healthFacilityId) {
+            this.getByFacilityId();
+          } else {
+            this.getAll();
+          }
         }
       }
     });
@@ -135,7 +176,11 @@ export class StaffComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.swal.showSuccess("Başarıyla silindi");
-            this.getAll();
+            if (this.healthFacilityId) {
+              this.getByFacilityId();
+            } else {
+              this.getAll();
+            }
           }
         }
       });

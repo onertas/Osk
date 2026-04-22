@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableModule, Table } from 'primeng/table';
@@ -33,7 +33,9 @@ import { ListPmTypeDto } from '../../dtos/pmType/list-pm-type.dto';
   ],
   templateUrl: './temporaray-staff.html'
 })
-export class TemporarayStaffComponent implements OnInit {
+export class TemporarayStaffComponent implements OnInit, OnChanges {
+  @Input() healthFacilityId: string = '';
+
   http = inject(HttpApiService);
   swal = inject(SwalService);
 
@@ -49,10 +51,32 @@ export class TemporarayStaffComponent implements OnInit {
   updateTempStaff: UpdateTemporarayStaffDto = new UpdateTemporarayStaffDto();
 
   ngOnInit(): void {
-    this.getAll();
+    if (!this.healthFacilityId) {
+      this.getAll();
+    }
     this.loadBranches();
     this.loadFacilities();
     this.loadPmTypes();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['healthFacilityId'] && this.healthFacilityId) {
+      this.getByFacilityId();
+      this.newTempStaff.healthFacilityId = this.healthFacilityId;
+    }
+  }
+
+  getByFacilityId() {
+    this.http.get<ListTemporarayStaffDto[]>('TemporarayStaff/GetByHealthFacilityId', { id: this.healthFacilityId }).subscribe({
+      next: (res: any) => {
+        if (res.success && res.data) {
+          this.tempStaffList = res.data.map((item: any) => ({
+            ...item,
+            code: item.code || ''
+          }));
+        }
+      }
+    });
   }
 
   getAll() {
@@ -107,6 +131,16 @@ export class TemporarayStaffComponent implements OnInit {
   }
 
   add(form: any) {
+    const exists = this.tempStaffList.some(
+      s => s.healthFacilityId === this.newTempStaff.healthFacilityId && 
+           s.branchId === this.newTempStaff.branchId && 
+           s.pmTypeId === this.newTempStaff.pmTypeId
+    );
+    if (exists) {
+      this.swal.showWarning("Bu kurum için aynı tipte bu kadro zaten eklenmiş.");
+      return;
+    }
+
     this.http.post('TemporarayStaff/Add', this.newTempStaff).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -114,7 +148,12 @@ export class TemporarayStaffComponent implements OnInit {
           this.modalCom?.close('addTempStaffModal');
           form.resetForm();
           this.newTempStaff = new CreateTemporarayStaffDto();
-          this.getAll();
+          if (this.healthFacilityId) {
+            this.newTempStaff.healthFacilityId = this.healthFacilityId;
+            this.getByFacilityId();
+          } else {
+            this.getAll();
+          }
         }
       }
     });
@@ -137,7 +176,11 @@ export class TemporarayStaffComponent implements OnInit {
         if (res.success) {
           this.swal.showSuccess("Başarıyla güncellendi");
           this.modalCom?.close('editTempStaffModal');
-          this.getAll();
+          if (this.healthFacilityId) {
+            this.getByFacilityId();
+          } else {
+            this.getAll();
+          }
         }
       }
     });
@@ -149,7 +192,11 @@ export class TemporarayStaffComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.swal.showSuccess("Başarıyla silindi");
-            this.getAll();
+            if (this.healthFacilityId) {
+              this.getByFacilityId();
+            } else {
+              this.getAll();
+            }
           }
         }
       });

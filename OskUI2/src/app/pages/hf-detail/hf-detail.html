@@ -7,6 +7,12 @@
             <a class="nav-link active" id="home-tab" data-toggle="pill" href="#home" role="tab">Genel Bilgiler</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" id="kadro-tab" data-toggle="pill" href="#kadro" role="tab">Kadro</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="gecici-kadro-tab" data-toggle="pill" href="#gecici-kadro" role="tab">Geçici Kadro</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" id="staff-tab" data-toggle="pill" href="#staff" role="tab">Personel</a>
           </li>
           <li class="nav-item">
@@ -55,6 +61,20 @@
                   <td colspan="3">{{ facility.address || '-' }}</td>
                 </tr>
               </table>
+            </div>
+          </div>
+
+          <!-- KADRO -->
+          <div class="tab-pane fade" id="kadro" role="tabpanel">
+            <div class="col-md-12 mt-1">
+              <app-staff [healthFacilityId]="healthFacilityId"></app-staff>
+            </div>
+          </div>
+
+          <!-- GEÇİCİ KADRO -->
+          <div class="tab-pane fade" id="gecici-kadro" role="tabpanel">
+            <div class="col-md-12 mt-1">
+              <app-temporaray-staff [healthFacilityId]="healthFacilityId"></app-temporaray-staff>
             </div>
           </div>
 
