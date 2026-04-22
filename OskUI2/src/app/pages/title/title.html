@@ -10,13 +10,19 @@
     <p-table styleClass="p-datatable-sm fontstil13" #dt [value]="titles" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,20,50]" [sortMode]="'multiple'" [responsiveLayout]="'scroll'" [globalFilterFields]="['name']" exportFilename="titles">
       <ng-template pTemplate="header">
         <tr>
+          <th pSortableColumn="code" style="width: 150px">Ünvan Kodu <p-sortIcon field="code"></p-sortIcon></th>
           <th pSortableColumn="name">Ünvan Adı <p-sortIcon field="name"></p-sortIcon></th>
-          <th style="text-align: right">İşlemler</th>
+          <th pSortableColumn="isDoctor" style="width: 120px">Doktor mu? <p-sortIcon field="isDoctor"></p-sortIcon></th>
+          <th style="text-align: right; width: 100px">İşlemler</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-title>
         <tr>
+          <td>{{ title.code }}</td>
           <td>{{ title.name }}</td>
+          <td style="text-align: center">
+            <i class="fas" [ngClass]="title.isDoctor ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'"></i>
+          </td>
           <td style="text-align: right">
             <app-grup-menu-component>
               <a (click)="Edit(title)" data-toggle="modal" data-target="#editTitleModal" class="dropdown-item pointer fontstil13" style="padding: 6px 12px; border-bottom: 1px solid #eee;">
@@ -33,7 +39,7 @@
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="2">Kayıt bulunamadı.</td>
+          <td colspan="4">Kayıt bulunamadı.</td>
         </tr>
       </ng-template>
     </p-table>
@@ -42,9 +48,25 @@
 
 <app-modal name="addTitleModal" title="Yeni Ünvan Ekle">
   <form #addForm="ngForm" (ngSubmit)="Add(addForm)">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group mb-2">
+          <label>Ünvan Kodu</label>
+          <input type="text" class="form-control" name="code" [(ngModel)]="newTitle.code">
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="form-group mb-2">
+          <label>Ünvan Adı</label>
+          <input type="text" class="form-control" name="name" [(ngModel)]="newTitle.name" required>
+        </div>
+      </div>
+    </div>
     <div class="form-group mb-2">
-      <label>Ünvan Adı</label>
-      <input type="text" class="form-control" name="name" [(ngModel)]="newTitle.name" required>
+      <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" id="isDoctorAdd" name="isDoctor" [(ngModel)]="newTitle.isDoctor">
+        <label class="custom-control-label" for="isDoctorAdd">Doktor mu?</label>
+      </div>
     </div>
     <hr>
     <div class="text-right d-flex justify-content-end gap-2">
@@ -56,9 +78,25 @@
 
 <app-modal name="editTitleModal" title="Ünvan Düzenle">
   <form #editForm="ngForm" (ngSubmit)="Update(editForm)">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group mb-2">
+          <label>Ünvan Kodu</label>
+          <input type="text" class="form-control" name="code" [(ngModel)]="updateTitle.code">
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="form-group mb-2">
+          <label>Ünvan Adı</label>
+          <input type="text" class="form-control" name="name" [(ngModel)]="updateTitle.name" required>
+        </div>
+      </div>
+    </div>
     <div class="form-group mb-2">
-      <label>Ünvan Adı</label>
-      <input type="text" class="form-control" name="name" [(ngModel)]="updateTitle.name" required>
+      <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" id="isDoctorEdit" name="isDoctor" [(ngModel)]="updateTitle.isDoctor">
+        <label class="custom-control-label" for="isDoctorEdit">Doktor mu?</label>
+      </div>
     </div>
     <hr>
     <div class="text-right d-flex justify-content-end gap-2">

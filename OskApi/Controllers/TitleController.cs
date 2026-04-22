@@ -58,6 +58,8 @@ public class TitleController : ControllerBase
             return NotFound(Result.Fail("Kayıt bulunamadı"));
 
         entity.Name = model.Name;
+        entity.Code = model.Code;
+        entity.IsDoctor = model.IsDoctor;
         
         _titleService.Update(entity);
         await _unitOfWork.SaveChangesAsync();

@@ -56,45 +56,27 @@ public class PmTypeController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Update(UpdatePmTypeDto model)
     {
-        var entity = await _pmTypeService.GetAll()
-            .FirstOrDefaultAsync(i => i.Id == model.Id);
-            
+        var entity = await _pmTypeService.GetAll().FirstOrDefaultAsync(i => i.Id == model.Id);
         if (entity == null)
-            return NotFound(Result.Fail("Kayıt bulunamadı."));
+            return NotFound(Result.Fail("Kayıt bulunamadı"));
 
         _mapper.Map(model, entity);
         
-        try
-        {
-            _pmTypeService.Update(entity);
-            await _unitOfWork.SaveChangesAsync();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return BadRequest(Result.Fail(e.Message));
-        }
+        _pmTypeService.Update(entity);
+        await _unitOfWork.SaveChangesAsync();
 
         return Ok(Result.Ok("Güncellendi"));
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> Delete(Guid id)
+    [HttpPost]
+    public async Task<IActionResult> Delete([FromBody] Guid id)
     {
         var entity = await _pmTypeService.GetAll().FirstOrDefaultAsync(i => i.Id == id);
         if (entity == null)
-            return NotFound(Result.Fail("Kayıt bulunamadı."));
+            return NotFound(Result.Fail("Kayıt bulunamadı"));
 
-        try
-        {
-            _pmTypeService.Delete(entity);
-            await _unitOfWork.SaveChangesAsync();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return BadRequest(Result.Fail(e.Message));
-        }
+        _pmTypeService.Delete(entity);
+        await _unitOfWork.SaveChangesAsync();
 
         return Ok(Result.Ok("Silindi"));
     }

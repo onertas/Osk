@@ -1,7 +1,7 @@
 export class UpdatePmTypeDto {
-    id: string = "";
-    name: string = "";
-    description: string = "";
+    id: string = '';
+    name: string = '';
+    description: string = '';
     order: number = 0;
     isUsingStaff: boolean = false;
     isBeforeStartStaff: boolean = false;

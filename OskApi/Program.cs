@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OskApi.Data;
 using OskApi.ServiceRegisration;
+using OskApi.Shared.Converters;
 using OskApi.Shared.Mapping;
 using System.Text;
 using System.Text.Json;
@@ -91,14 +92,11 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddControllers().AddJsonOptions(o =>
 {
     o.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    o.JsonSerializerOptions.Converters.Add(new TrimmingStringJsonConverter());
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-
-
-
 
 
 var app = builder.Build();

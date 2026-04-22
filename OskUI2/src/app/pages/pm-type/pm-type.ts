@@ -14,12 +14,11 @@ import { Blank } from '../../components/blank/blank';
 import { Section } from '../../components/section/section';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { GrupMenuComponent } from '../../components/grup-menu-component/grup-menu-component';
 
 @Component({
   selector: 'app-pm-type',
   standalone: true,
-  imports: [CommonModule, ButtonModule, InputTextModule, TableModule, CheckboxModule, SharedModule, Modal, Blank, Section, FormsModule, GrupMenuComponent],
+  imports: [CommonModule, ButtonModule, InputTextModule, TableModule, CheckboxModule, SharedModule, Modal, Blank, Section, FormsModule],
   templateUrl: './pm-type.html'
 })
 export class PmTypeComponent implements OnInit {
@@ -68,7 +67,7 @@ export class PmTypeComponent implements OnInit {
     });
   }
 
-  Edit(item: ListPmTypeDto) {
+  Edit(item: any) {
     this.updatePmType = { ...item };
   }
 
@@ -86,14 +85,14 @@ export class PmTypeComponent implements OnInit {
   }
 
   Delete(id: string) {
-    this.swal.showConfirmation("Silme İşlemi", "Bu kaydı silmek istediğinize emin misiniz?", () => {
-      this.http.delete(`PmType/Delete?id=${id}`).subscribe({
+    this.swal.showConfirmation("Silmek istediğinize emin misiniz?", "Bu işlem geri alınamaz!", () => {
+      this.http.post('PmType/Delete', `"${id}"`).subscribe({
         next: (res) => {
           this.GetAll();
           this.swal.showSuccess("Başarıyla silindi");
         },
         error: (err) => {
-          console.error('Error deleting PmType', err);
+          console.error("Error deleting PmType", err);
         }
       });
     });

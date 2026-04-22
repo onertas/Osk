@@ -61,6 +61,35 @@ public class HealthFacilityController : ControllerBase
     }
 
     /// <summary>
+    /// Belirli bir sağlık tesisini ID ile getir
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        var entity = await _healthFacilityService.GetAll()
+            .Include(i => i.HealthFacilityType)
+            .FirstOrDefaultAsync(i => i.Id == id);
+
+        if (entity == null)
+            return NotFound(Result.Fail("Kayıt bulunamadı"));
+
+        var dto = new HfManagementListDto
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            Address = entity.Address,
+            PhoneNumber = entity.PhoneNumber,
+            Email = entity.Email,
+            TaxNumber = entity.TaxNumber,
+            CorporationName = entity.CorporationName,
+            HealthFacilityTypeId = entity.HealthFacilityTypeId,
+            TypeName = entity.HealthFacilityType != null ? entity.HealthFacilityType.Name : ""
+        };
+
+        return Ok(Result<HfManagementListDto>.Ok(dto, "Veri getirildi"));
+    }
+
+    /// <summary>
     /// Tüm sağlık tesislerini sayfalı ve arama destekli listeler (Yönetim ekranı için)
     /// GET /api/HealthFacility/GetAllPaged?page=1&pageSize=10&search=xxx
     /// </summary>

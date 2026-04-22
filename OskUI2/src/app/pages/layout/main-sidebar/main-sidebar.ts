@@ -39,8 +39,7 @@ export class MainSidebar {
 
   
   ngOnInit(): void {
-
-
+    this.getHealthFacilityTypes();
 
     this.menus.forEach((element) => {
       let result =
@@ -60,6 +59,28 @@ export class MainSidebar {
           subElement.show = false;
         }
       });
+    });
+  }
+
+  getHealthFacilityTypes() {
+    this.http.get<any>("HealthFacilityType/GetHealthFacilityTypes", {}, (res: any) => {
+      const hfMenu = this.menus.find(x => x.name === 'Sağlık Kuruluşları');
+      if (hfMenu && res.data) {
+        hfMenu.subMenus = res.data.map((type: any) => {
+          const roles = ['All']; // Varsayılan olarak 'All', isterseniz veritabanından da çekebilirsiniz
+          const isVisible = roles.includes('All'); // Buraya ileride rol bazlı kontrol eklenebilir
+
+          return {
+            name: type.name,
+            isTitle: false,
+            icon: 'fas fa-hospital',
+            url: `/hf-list/${type.code}`,
+            roles: roles,
+            show: isVisible,
+            subMenus: []
+          };
+        });
+      }
     });
   }
 

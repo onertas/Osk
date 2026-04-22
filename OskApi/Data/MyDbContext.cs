@@ -1,4 +1,4 @@
-﻿using GenericRepository;
+using GenericRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +6,7 @@ using OskApi.Entities;
 using OskApi.Entities.Beds;
 using OskApi.Entities.HealthFacilities;
 using OskApi.Entities.Personnel;
+using OskApi.Entities.Staff;
 using OskApi.Entities.User;
 using System;
 using System.Reflection.Emit;
@@ -27,6 +28,8 @@ namespace OskApi.Data
         public DbSet<Personnel> Personnel { get; set; }
         public DbSet<PersonnelMovement> PersonnelMovements { get; set; }
         public DbSet<PmType> PmTypes { get; set; }
+        public DbSet<Staff> Staff { get; set; }
+        public DbSet<TemporarayStaff> TemporarayStaff { get; set; }
 
 
 

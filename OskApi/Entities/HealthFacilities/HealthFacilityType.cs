@@ -1,10 +1,9 @@
-﻿namespace OskApi.Entities.HealthFacilities
+namespace OskApi.Entities.HealthFacilities
 {
     public class HealthFacilityType : Entity
     {
-
         public string Name { get; set; } = null!;
-       public string? Description { get; set; }
-        
+        public string Code { get; set; } = null!;
+        public string? Description { get; set; }
     }
 }

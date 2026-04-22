@@ -25,17 +25,7 @@ export const Menus: MenuModel[] = [
     url: '/',
     roles: ['All'],
     show: true,
-    subMenus: [
-      {
-        name: 'Özel Hastaneler',
-        isTitle: false,
-        icon: 'fas fa-project-diagram',
-        url: '/hf-list/OH',
-        roles: ['All'],
-        show: true,
-        subMenus: [],
-      },
-    ],
+    subMenus: [],
   },
 
   {
