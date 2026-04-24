@@ -55,8 +55,13 @@ private baseUrl: string = api
       });
     }
 
+    let httpHeaders = headers ?? new HttpHeaders();
+    if (!httpHeaders.has('Content-Type')) {
+      httpHeaders = httpHeaders.set('Content-Type', 'application/json');
+    }
+
     return this.http
-      .post<Result<T>>(url, body, { headers, params: httpParams,withCredentials: true })
+      .post<Result<T>>(url, body, { headers: httpHeaders, params: httpParams, withCredentials: true })
       .pipe(catchError(this.handleError));
   }
 

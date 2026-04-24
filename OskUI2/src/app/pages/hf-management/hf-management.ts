@@ -138,19 +138,4 @@ export class HfManagementComponent implements OnInit {
       },
     });
   }
-
-  Delete(id: string) {
-    this.swal.showConfirmation(
-      'Silme İşlemi',
-      'Bu sağlık tesisini silmek istediğinize emin misiniz?',
-      () => {
-        this.http.post('HealthFacility/Delete', id).subscribe({
-          next: () => {
-            this.load();
-            this.swal.showSuccess('Başarıyla silindi');
-          },
-        });
-      }
-    );
-  }
 }

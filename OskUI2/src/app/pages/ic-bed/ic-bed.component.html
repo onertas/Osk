@@ -1,6 +1,12 @@
 <div class="row">
-  <div class="col-md-12 text-right d-flex justify-content-between align-items-center mb-2">
+  <div *ngIf="!healthFacilityId" class="col-md-12 text-right d-flex justify-content-between align-items-center mb-2">
     <h5 class="mb-0">Yoğun Bakım Yatakları</h5>
+    <button data-toggle="modal" data-target="#addIcBedModal" class="btn btn-sm btn-dark">
+      <i class="fas fa-plus"></i> Yeni Yatak Ekle
+    </button>
+  </div>
+  
+  <div *ngIf="healthFacilityId" class="col-md-12 text-right mb-2">
     <button data-toggle="modal" data-target="#addIcBedModal" class="btn btn-sm btn-dark">
       <i class="fas fa-plus"></i> Yeni Yatak Ekle
     </button>

@@ -1,5 +1,15 @@
 <ng-template #contentTemplate>
-  <app-section [title]="healthFacilityId ? '' : 'Kadro Listesi'">
+  <ng-container *ngIf="healthFacilityId; else sectionWrapper">
+    <ng-container *ngTemplateOutlet="mainContent"></ng-container>
+  </ng-container>
+
+  <ng-template #sectionWrapper>
+    <app-section title="Kadro Listesi">
+      <ng-container *ngTemplateOutlet="mainContent"></ng-container>
+    </app-section>
+  </ng-template>
+
+  <ng-template #mainContent>
     <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
       <div class="d-flex gap-2">
         <button *ngIf="!healthFacilityId" data-toggle="modal" data-target="#addStaffModal" class="btn btn-sm btn-dark">
@@ -54,7 +64,7 @@
         </tr>
       </ng-template>
     </p-table>
-  </app-section>
+  </ng-template>
 </ng-template>
 
 <app-blank *ngIf="!healthFacilityId" title="Kadro Yönetimi">

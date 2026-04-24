@@ -7,13 +7,14 @@
       <i class="fas fa-file-excel"></i> Excel'e Aktar
     </button>
   </div>
-  <input pInputText #globalFilter placeholder="Ara..." type="text" (input)="onGlobalFilter($event)" style="max-width:280px;" />
+  <input pInputText #globalFilter placeholder="Ara..." type="text" (input)="onGlobalFilter($event)"
+    style="max-width:280px;" />
 </div>
 
-<p-table styleClass="p-datatable-sm fontstil13" #dt [value]="movements" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5,10,20]" 
-  [sortMode]="'multiple'" [responsiveLayout]="'scroll'" 
+<p-table styleClass="p-datatable-sm fontstil13" #dt [value]="movements" [paginator]="true" [rows]="5"
+  [rowsPerPageOptions]="[5,10,20]" [sortMode]="'multiple'" [responsiveLayout]="'scroll'"
   [globalFilterFields]="['personnel.firstName','personnel.lastName','pmType.name','branch.name', 'description']">
-  
+
   <ng-template pTemplate="header">
     <tr>
       <th pSortableColumn="personnel.firstName">Adı <p-sortIcon field="personnel.firstName"></p-sortIcon></th>
@@ -36,7 +37,8 @@
       <td>{{ pm.finish ? (pm.finish | date:'dd.MM.yyyy HH:mm') : '-' }}</td>
       <td style="text-align: right">
         <app-grup-menu-component>
-          <a (click)="Edit(pm)" data-toggle="modal" data-target="#pmEditModal" class="dropdown-item pointer fontstil13" style="padding: 6px 12px; border-bottom: 1px solid #eee;">
+          <a (click)="Edit(pm)" data-toggle="modal" data-target="#pmEditModal" class="dropdown-item pointer fontstil13"
+            style="padding: 6px 12px; border-bottom: 1px solid #eee;">
             <i style="width: 18px" class="fas fa-edit text-primary"></i>
             Düzenle
           </a>
@@ -58,13 +60,14 @@
 
 <app-modal name="pmModal" title="Yeni Personel Hareketi">
   <form #addForm="ngForm" (ngSubmit)="Add(addForm)">
-    
+
     <div class="row">
       <div class="col-md-6 form-group mb-2">
         <label>Personel</label>
         <p-select [options]="personnelList" [(ngModel)]="newMovement.personnelId" (onChange)="onPersonnelChange($event)"
-          name="personnelId" placeholder="Personel Seçin (En az 2 karakter giriniz)" styleClass="w-100" [required]="true" optionValue="id"
-          [filter]="true" filterBy="firstName,lastName,identityNumber" optionLabel="firstName" (onFilter)="onPersonnelSearch($event)">
+          name="personnelId" placeholder="Personel Seçin (En az 2 karakter giriniz)" styleClass="w-100"
+          [required]="true" optionValue="id" [filter]="true" filterBy="firstName,lastName,identityNumber"
+          optionLabel="firstName" (onFilter)="onPersonnelSearch($event)">
           <ng-template let-person pTemplate="selectedItem">
             <div *ngIf="person">
               {{ person.firstName }} {{ person.lastName }}
@@ -80,7 +83,7 @@
       </div>
       <div class="col-md-6 form-group mb-2">
         <label>Hareket Türü</label>
-        <p-select [options]="pmTypes" [(ngModel)]="newMovement.pmTypeId" optionLabel="name" optionValue="id" 
+        <p-select [options]="pmTypes" [(ngModel)]="newMovement.pmTypeId" optionLabel="name" optionValue="id"
           name="pmTypeId" placeholder="Tür Seçin" styleClass="w-100" [required]="true"></p-select>
       </div>
     </div>
@@ -88,7 +91,7 @@
     <div class="row">
       <div class="col-md-12 form-group mb-2">
         <label>Branş</label>
-        <p-select [options]="filteredBranches" [(ngModel)]="newMovement.branchId" optionLabel="name" optionValue="id" 
+        <p-select [options]="filteredBranches" [(ngModel)]="newMovement.branchId" optionLabel="name" optionValue="id"
           name="branchId" placeholder="Branş Seçin" styleClass="w-100" [required]="true"></p-select>
       </div>
     </div>
@@ -96,14 +99,16 @@
     <div class="row">
       <div class="col-md-6 form-group mb-2 d-flex flex-column">
         <label>Başlangıç Tarihi</label>
-        <p-datepicker [(ngModel)]="newMovement.start" name="start" styleClass="w-100" [required]="true" [showTime]="true" hourFormat="24"></p-datepicker>
+        <p-datepicker [(ngModel)]="newMovement.start" name="start" styleClass="w-100" [required]="true"
+          [showTime]="true" hourFormat="24"></p-datepicker>
       </div>
       <div class="col-md-6 form-group mb-2 d-flex flex-column">
         <label>Bitiş Tarihi</label>
-        <p-datepicker [(ngModel)]="newMovement.finish" name="finish" styleClass="w-100" [showTime]="true" hourFormat="24"></p-datepicker>
+        <p-datepicker [(ngModel)]="newMovement.finish" name="finish" styleClass="w-100" [showTime]="true"
+          hourFormat="24"></p-datepicker>
       </div>
     </div>
-    
+
     <div class="row">
       <div class="col-md-6 form-group mb-2 d-flex flex-column">
         <label>Sözleşme Başlangıç</label>
@@ -139,13 +144,14 @@
 
 <app-modal name="pmEditModal" title="Personel Hareketi Düzenle">
   <form #editForm="ngForm" (ngSubmit)="Update(editForm)">
-    
+
     <div class="row">
       <div class="col-md-6 form-group mb-2">
         <label>Personel</label>
-        <p-select [options]="personnelList" [(ngModel)]="updateMovement.personnelId" (onChange)="onPersonnelChange($event, true)"
-          name="updPersonnelId" placeholder="Personel Seçin" styleClass="w-100" [required]="true" optionValue="id"
-          [filter]="true" filterBy="firstName,lastName,identityNumber" optionLabel="firstName" (onFilter)="onPersonnelSearch($event)">
+        <p-select [options]="personnelList" [(ngModel)]="updateMovement.personnelId"
+          (onChange)="onPersonnelChange($event, true)" name="updPersonnelId" placeholder="Personel Seçin"
+          styleClass="w-100" [required]="true" optionValue="id" [filter]="true"
+          filterBy="firstName,lastName,identityNumber" optionLabel="firstName" (onFilter)="onPersonnelSearch($event)">
           <ng-template let-person pTemplate="selectedItem">
             <div *ngIf="person">
               {{ person.firstName }} {{ person.lastName }}
@@ -161,7 +167,7 @@
       </div>
       <div class="col-md-6 form-group mb-2">
         <label>Hareket Türü</label>
-        <p-select [options]="pmTypes" [(ngModel)]="updateMovement.pmTypeId" optionLabel="name" optionValue="id" 
+        <p-select [options]="pmTypes" [(ngModel)]="updateMovement.pmTypeId" optionLabel="name" optionValue="id"
           name="updPmTypeId" placeholder="Tür Seçin" styleClass="w-100" [required]="true"></p-select>
       </div>
     </div>
@@ -169,7 +175,7 @@
     <div class="row">
       <div class="col-md-12 form-group mb-2">
         <label>Branş</label>
-        <p-select [options]="filteredBranches" [(ngModel)]="updateMovement.branchId" optionLabel="name" optionValue="id" 
+        <p-select [options]="filteredBranches" [(ngModel)]="updateMovement.branchId" optionLabel="name" optionValue="id"
           name="updBranchId" placeholder="Branş Seçin" styleClass="w-100" [required]="true"></p-select>
       </div>
     </div>
@@ -177,28 +183,33 @@
     <div class="row">
       <div class="col-md-6 form-group mb-2 d-flex flex-column">
         <label>Başlangıç Tarihi</label>
-        <p-datepicker [(ngModel)]="updateMovement.start" name="updStart" styleClass="w-100" [required]="true" [showTime]="true" hourFormat="24"></p-datepicker>
+        <p-datepicker [(ngModel)]="updateMovement.start" name="updStart" styleClass="w-100" [required]="true"
+          [showTime]="true" hourFormat="24"></p-datepicker>
       </div>
       <div class="col-md-6 form-group mb-2 d-flex flex-column">
         <label>Bitiş Tarihi</label>
-        <p-datepicker [(ngModel)]="updateMovement.finish" name="updFinish" styleClass="w-100" [showTime]="true" hourFormat="24"></p-datepicker>
+        <p-datepicker [(ngModel)]="updateMovement.finish" name="updFinish" styleClass="w-100" [showTime]="true"
+          hourFormat="24"></p-datepicker>
       </div>
     </div>
-    
+
     <div class="row">
       <div class="col-md-6 form-group mb-2 d-flex flex-column">
         <label>Sözleşme Başlangıç</label>
-        <p-datepicker [(ngModel)]="updateMovement.contractStart" name="updContractStart" styleClass="w-100"></p-datepicker>
+        <p-datepicker [(ngModel)]="updateMovement.contractStart" name="updContractStart"
+          styleClass="w-100"></p-datepicker>
       </div>
       <div class="col-md-6 form-group mb-2 d-flex flex-column">
         <label>Sözleşme Bitiş</label>
-        <p-datepicker [(ngModel)]="updateMovement.contractFinish" name="updContractFinish" styleClass="w-100"></p-datepicker>
+        <p-datepicker [(ngModel)]="updateMovement.contractFinish" name="updContractFinish"
+          styleClass="w-100"></p-datepicker>
       </div>
     </div>
 
     <div class="form-group mb-2 mt-2">
       <div class="form-check">
-        <p-checkbox [(ngModel)]="updateMovement.isSgk" name="updIsSgk" binary="true" inputId="updIsSgkCheck"></p-checkbox>
+        <p-checkbox [(ngModel)]="updateMovement.isSgk" name="updIsSgk" binary="true"
+          inputId="updIsSgkCheck"></p-checkbox>
         <label class="form-check-label ms-2" for="updIsSgkCheck">SGK'lı mı?</label>
       </div>
     </div>

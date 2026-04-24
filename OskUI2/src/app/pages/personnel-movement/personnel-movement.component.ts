@@ -138,6 +138,21 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
     });
   }
 
+  exportToExcel() {
+    const dataToExport = this.movements.map(m => ({
+      'Adı': m.personnel?.firstName,
+      'Soyadı': m.personnel?.lastName,
+      'Hareket Türü': m.pmType?.name,
+      'Branş': m.branch?.name,
+      'Başlangıç': m.start ? new Date(m.start).toLocaleString('tr-TR') : '-',
+      'Bitiş': m.finish ? new Date(m.finish).toLocaleString('tr-TR') : '-',
+      'Açıklama': m.description,
+      'SGK': m.isSgk ? 'Evet' : 'Hayır'
+    }));
+
+    this.excel.exportToExcel(dataToExport, 'Personel_Hareketleri');
+  }
+
   Add(form: any) {
     this.newMovement.healthFacilityId = this.healthFacilityId;
 
@@ -216,18 +231,5 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
     });
   }
 
-  exportToExcel() {
-    const dataToExport = this.movements.map(m => ({
-      'Adı': m.personnel?.firstName,
-      'Soyadı': m.personnel?.lastName,
-      'Hareket Türü': m.pmType?.name,
-      'Branş': m.branch?.name,
-      'Başlangıç': m.start ? new Date(m.start).toLocaleString('tr-TR') : '-',
-      'Bitiş': m.finish ? new Date(m.finish).toLocaleString('tr-TR') : '-',
-      'Açıklama': m.description,
-      'SGK': m.isSgk ? 'Evet' : 'Hayır'
-    }));
-
-    this.excel.exportToExcel(dataToExport, 'Personel_Hareketleri');
-  }
 }
+// End of PersonnelMovementComponent

@@ -8,6 +8,8 @@ import { StaffComponent } from '../staff/staff';
 import { TemporarayStaffComponent } from '../temporaray-staff/temporaray-staff';
 import { HttpApiService } from '../../services/http-api-service';
 import { HfManagementListDto } from '../../dtos/healthFacility/hf-management-list.dto';
+import { SwalService } from '../../services/swall.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-hf-detail',
@@ -19,6 +21,8 @@ import { HfManagementListDto } from '../../dtos/healthFacility/hf-management-lis
 export class HfDetailComponent implements OnInit {
   route = inject(ActivatedRoute);
   http = inject(HttpApiService);
+  swal = inject(SwalService);
+
   healthFacilityId: string = '';
   facility: HfManagementListDto = new HfManagementListDto();
   isLoading: boolean = true;
