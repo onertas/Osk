@@ -14,6 +14,7 @@ import { CreatePersonnelMovementDto } from '../../dtos/personnelMovement/create-
 import { ListPersonnelMovementDto } from '../../dtos/personnelMovement/list-personnel-movement.dto';
 import { UpdatePersonnelMovementDto } from '../../dtos/personnelMovement/update-personnel-movement.dto';
 import { ListPmTypeDto } from '../../dtos/pmType/list-pm-type.dto';
+import { ExcelService } from '../../services/excel.service';
 
 @Component({
   selector: 'app-personnel-movement',
@@ -26,6 +27,7 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
 
   http = inject(HttpApiService);
   swal = inject(SwalService);
+  excel = inject(ExcelService);
 
   @ViewChild('dt') table!: Table;
   @ViewChild(Modal) modalCom: Modal | undefined;
@@ -99,20 +101,19 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
     });
   }
 
-  onPersonnelChange(event: any) {
+  onPersonnelChange(event: any, isUpdate: boolean = false) {
     const selectedPersonId = event.value;
     const selectedPerson = this.personnelList.find(p => p.id === selectedPersonId);
+    const movement = isUpdate ? this.updateMovement : this.newMovement;
 
     if (selectedPerson && selectedPerson.branches && selectedPerson.branches.length > 0) {
-      // Assuming selectedPerson.branches contains branch names or data that we can use to filter.
-      // E.g., if selectedPerson.branches is a list of strings [ "Kardiyoloji" ]
       this.filteredBranches = this.branches.filter(b => selectedPerson.branches.includes(b.name));
     } else {
       this.filteredBranches = [];
     }
 
-    if (!this.filteredBranches.find(b => b.id === this.newMovement.branchId)) {
-      this.newMovement.branchId = '';
+    if (!this.filteredBranches.find(b => b.id === movement.branchId)) {
+      movement.branchId = '';
     }
   }
 
@@ -162,10 +163,19 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
 
   Edit(pm: any) {
     this.updateMovement = { ...pm };
-    // Optionally fetch specific personnel to populate dropdown
+
+    // Convert strings to Date objects for PrimeNG DatePicker
+    if (pm.start) this.updateMovement.start = new Date(pm.start);
+    if (pm.finish) this.updateMovement.finish = new Date(pm.finish);
+    if (pm.contractStart) this.updateMovement.contractStart = new Date(pm.contractStart);
+    if (pm.contractFinish) this.updateMovement.contractFinish = new Date(pm.contractFinish);
+
     if (pm.personnelId) {
-      this.searchPersonnel(pm.personnel?.firstName || '');
-      this.newMovement.branchId = pm.branchId;
+      if (pm.personnel && !this.personnelList.some(p => p.id === pm.personnelId)) {
+        this.personnelList = [pm.personnel];
+      }
+      this.onPersonnelChange({ value: pm.personnelId }, true);
+      this.updateMovement.branchId = pm.branchId;
     }
   }
 
@@ -204,5 +214,20 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
         }
       });
     });
+  }
+
+  exportToExcel() {
+    const dataToExport = this.movements.map(m => ({
+      'Adı': m.personnel?.firstName,
+      'Soyadı': m.personnel?.lastName,
+      'Hareket Türü': m.pmType?.name,
+      'Branş': m.branch?.name,
+      'Başlangıç': m.start ? new Date(m.start).toLocaleString('tr-TR') : '-',
+      'Bitiş': m.finish ? new Date(m.finish).toLocaleString('tr-TR') : '-',
+      'Açıklama': m.description,
+      'SGK': m.isSgk ? 'Evet' : 'Hayır'
+    }));
+
+    this.excel.exportToExcel(dataToExport, 'Personel_Hareketleri');
   }
 }

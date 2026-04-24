@@ -1,4 +1,4 @@
-﻿using GenericRepository;
+using GenericRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OskApi.Data;
@@ -39,6 +39,7 @@ namespace OskApi.ServiceRegisration
 
             // Interface olmayan servisler
             services.AddScoped<ChatService>();
+            services.AddScoped<OskApi.Rules.PmBusinessRules>();
 
             return services;
         }

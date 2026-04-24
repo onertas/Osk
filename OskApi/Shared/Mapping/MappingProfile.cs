@@ -5,6 +5,7 @@ using OskApi.Entities.HealthFacilities;
 using OskApi.Entities.Personnel;
 using OskApi.Entities.Staff;
 using OskApi.Dtos.Staff;
+using OskApi.Dtos.PersonnelMovement;
 
 namespace OskApi.Shared.Mapping
 {
@@ -24,8 +25,9 @@ namespace OskApi.Shared.Mapping
                         src.PersonnelBranches.Select(pb => pb.BranchId).ToList()));
 
             CreateMap<HealthFacility, CreateHealthFacilityDto>().ReverseMap();
-            CreateMap<PersonnelMovement, OskApi.Dtos.PersonnelMovement.CreatePersonelMovementDto>().ReverseMap();
-            CreateMap<PersonnelMovement, OskApi.Dtos.PersonnelMovement.ListPersonelMovementDto>().ReverseMap();
+            CreateMap<PersonnelMovement, CreatePersonelMovementDto>().ReverseMap();
+            CreateMap<PersonnelMovement, ListPersonelMovementDto>().ReverseMap();
+            CreateMap<PersonnelMovement, UpdatePersonelMovementDto>().ReverseMap();
             CreateMap<PmType, OskApi.Dtos.PmType.CreatePmTypeDto>().ReverseMap();
             CreateMap<PmType, OskApi.Dtos.PmType.ListPmTypeDto>().ReverseMap();
             CreateMap<PmType, OskApi.Dtos.PmType.UpdatePmTypeDto>().ReverseMap();

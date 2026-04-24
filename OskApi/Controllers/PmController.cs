@@ -15,18 +15,37 @@ public class PmController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPmService _pmService;
+    private readonly IPmTypeService _pmTypeService;
+    private readonly IStaffService _staffService;
     private readonly IMapper _mapper;
+    private readonly OskApi.Rules.PmBusinessRules _pmBusinessRules;
 
-    public PmController(IUnitOfWork unitOfWork, IPmService pmService, IMapper mapper)
+    public PmController(
+        IUnitOfWork unitOfWork, 
+        IPmService pmService, 
+        IPmTypeService pmTypeService,
+        IStaffService staffService,
+        IMapper mapper,
+        OskApi.Rules.PmBusinessRules pmBusinessRules)
     {
         _unitOfWork = unitOfWork;
         _pmService = pmService;
+        _pmTypeService = pmTypeService;
+        _staffService = staffService;
         _mapper = mapper;
+        _pmBusinessRules = pmBusinessRules;
     }
 
     [HttpPost]
     public async Task<IActionResult> Add(CreatePersonelMovementDto model)
     {
+        // İş Kurallarını Kontrol Et
+        var ruleResult = await _pmBusinessRules.CheckRulesForCreateAsync(model);
+        if (!ruleResult.Success)
+        {
+            return BadRequest(ruleResult);
+        }
+
         var entity = _mapper.Map<PersonnelMovement>(model);
         
         try
@@ -62,6 +81,8 @@ public class PmController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Update(UpdatePersonelMovementDto model)
     {
+        model.Start = model.Start.ToLocalTime();
+
         var entity = await _pmService.GetAll().FirstOrDefaultAsync(i => i.Id == model.Id);
         if (entity == null)
             return NotFound(Result.Fail("Kayıt bulunamadı"));

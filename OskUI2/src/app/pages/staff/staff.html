@@ -1,10 +1,14 @@
 <ng-template #contentTemplate>
   <app-section [title]="healthFacilityId ? '' : 'Kadro Listesi'">
     <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
-      <div *ngIf="healthFacilityId"></div>
-      <button *ngIf="!healthFacilityId" data-toggle="modal" data-target="#addStaffModal" class="btn btn-sm btn-dark">
-        <i class="fas fa-plus"></i> Yeni Kadro Ekle
-      </button>
+      <div class="d-flex gap-2">
+        <button *ngIf="!healthFacilityId" data-toggle="modal" data-target="#addStaffModal" class="btn btn-sm btn-dark">
+          <i class="fas fa-plus"></i> Yeni Kadro Ekle
+        </button>
+        <button (click)="exportToExcel()" class="btn btn-sm btn-success">
+          <i class="fas fa-file-excel"></i> Excel'e Aktar
+        </button>
+      </div>
       <input pInputText #globalFilter placeholder="Ara..." type="text" (input)="onGlobalFilter($event)" style="max-width:280px;" />
     </div>
 

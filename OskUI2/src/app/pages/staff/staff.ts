@@ -14,6 +14,7 @@ import { Section } from '../../components/section/section';
 import { CreateStaffDto, ListStaffDto, UpdateStaffDto } from '../../dtos/staff/staff-dtos';
 import { ListBranchDto } from '../../dtos/branch/ListBranchDto';
 import { HfManagementListDto } from '../../dtos/healthFacility/hf-management-list.dto';
+import { ExcelService } from '../../services/excel.service';
 
 @Component({
   selector: 'app-staff',
@@ -37,6 +38,7 @@ export class StaffComponent implements OnInit, OnChanges {
 
   http = inject(HttpApiService);
   swal = inject(SwalService);
+  excel = inject(ExcelService);
 
   @ViewChild('dt') table!: Table;
   @ViewChild(Modal) modalCom: Modal | undefined;
@@ -185,5 +187,15 @@ export class StaffComponent implements OnInit, OnChanges {
         }
       });
     });
+  }
+
+  exportToExcel() {
+    const dataToExport = this.staffList.map(s => ({
+      'Kod': s.code,
+      'Kuruluş': s.healthFacilityName,
+      'Branş': s.branchName,
+      'Sayı': s.count
+    }));
+    this.excel.exportToExcel(dataToExport, 'Kadro_Listesi');
   }
 }

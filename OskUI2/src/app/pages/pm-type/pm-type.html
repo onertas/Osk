@@ -17,11 +17,11 @@
           <th pSortableColumn="name">Adı <p-sortIcon field="name"></p-sortIcon></th>
           <th pSortableColumn="description">Açıklama <p-sortIcon field="description"></p-sortIcon></th>
           <th pSortableColumn="order" style="width: 80px">Sıra <p-sortIcon field="order"></p-sortIcon></th>
-          <th style="width: 100px; text-align: center">Personel</th>
+          <th style="width: 100px; text-align: center">Kadro</th>
           <th style="width: 100px; text-align: center">Yönetici</th>
-          <th style="width: 120px; text-align: center">Başlangıç Öncesi</th>
+          <th style="width: 120px; text-align: center">KAdrolu Başlama</th>
           <th style="width: 100px; text-align: center">Faaliyet2</th>
-          <th style="width: 100px; text-align: center">Tek Statü</th>
+          <th style="width: 100px; text-align: center">Tek Statümü</th>
           <th pSortableColumn="statusQuota" style="width: 80px">Kota <p-sortIcon field="statusQuota"></p-sortIcon></th>
           <th style="width: 100px; text-align: right">İşlemler</th>
         </tr>
@@ -94,7 +94,7 @@
       <div class="col-md-6 form-group mb-2">
         <div class="custom-control custom-checkbox">
           <input type="checkbox" class="custom-control-input" id="isUsingStaffAdd" name="isUsingStaff" [(ngModel)]="newPmType.isUsingStaff">
-          <label class="custom-control-label" for="isUsingStaffAdd">Personel Kullanır mı?</label>
+          <label class="custom-control-label" for="isUsingStaffAdd">Kadro Kullanırmı?</label>
         </div>
       </div>
       <div class="col-md-6 form-group mb-2">
@@ -106,7 +106,7 @@
       <div class="col-md-6 form-group mb-2 mt-2">
         <div class="custom-control custom-checkbox">
           <input type="checkbox" class="custom-control-input" id="isBeforeStartStaffAdd" name="isBeforeStartStaff" [(ngModel)]="newPmType.isBeforeStartStaff">
-          <label class="custom-control-label" for="isBeforeStartStaffAdd">Başlangıç Öncesi mi?</label>
+          <label class="custom-control-label" for="isBeforeStartStaffAdd">Kadrolu Başlama Zorunlu mu?</label>
         </div>
       </div>
       <div class="col-md-6 form-group mb-2 mt-2">
@@ -134,7 +134,9 @@
         <i class="fa fa-save"></i> Kaydet
       </button>
     </div>
+  
   </form>
+
 </app-modal>
 
 <app-modal name="editPmTypeModal" title="Hareket Türü Düzenle">
@@ -159,7 +161,7 @@
       <div class="col-md-6 form-group mb-2">
         <div class="custom-control custom-checkbox">
           <input type="checkbox" class="custom-control-input" id="isUsingStaffEdit" name="isUsingStaff" [(ngModel)]="updatePmType.isUsingStaff">
-          <label class="custom-control-label" for="isUsingStaffEdit">Personel Kullanır mı?</label>
+          <label class="custom-control-label" for="isUsingStaffEdit">Kadro Kullanır mı?</label>
         </div>
       </div>
       <div class="col-md-6 form-group mb-2">
@@ -171,7 +173,7 @@
       <div class="col-md-6 form-group mb-2 mt-2">
         <div class="custom-control custom-checkbox">
           <input type="checkbox" class="custom-control-input" id="isBeforeStartStaffEdit" name="isBeforeStartStaff" [(ngModel)]="updatePmType.isBeforeStartStaff">
-          <label class="custom-control-label" for="isBeforeStartStaffEdit">Başlangıç Öncesi mi?</label>
+          <label class="custom-control-label" for="isBeforeStartStaffEdit">Kadro Başlama Zorunlu mu?</label>
         </div>
       </div>
       <div class="col-md-6 form-group mb-2 mt-2">
