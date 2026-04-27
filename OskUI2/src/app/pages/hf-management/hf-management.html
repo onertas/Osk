@@ -6,13 +6,18 @@
       <span class="text-muted fontstil13">
         Toplam <strong>{{ totalRecords }}</strong> kayıt
       </span>
-      <input
-        pInputText
-        placeholder="Ara (Ad, Kurum, Vergi No...)"
-        type="text"
-        (input)="onSearch($event)"
-        style="max-width:300px;"
-      />
+      <div style="display:flex; gap:8px;">
+        <input
+          pInputText
+          placeholder="Ara (Ad, Kurum, Vergi No...)"
+          type="text"
+          (input)="onSearch($event)"
+          style="max-width:300px;"
+        />
+        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addHfModal" (click)="createModel = { healthFacilityTypeId: '', name: '' }">
+          <i class="fa fa-plus"></i> Yeni Ekle
+        </button>
+      </div>
     </div>
 
     <!-- Tablo -->
@@ -167,6 +172,73 @@
       <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
       <button type="submit" class="btn btn-primary btn-sm" [disabled]="!editForm.valid">
         <i class="fa fa-save"></i> Güncelle
+      </button>
+    </div>
+
+  </form>
+</app-modal>
+
+<!-- Ekleme Modalı -->
+<app-modal name="addHfModal" title="Yeni Sağlık Tesisi Ekle">
+  <form #addForm="ngForm" (ngSubmit)="Create(addForm)">
+
+    <div class="row">
+      <div class="col-md-8 form-group mb-2">
+        <label>Tesis Adı <span class="text-danger">*</span></label>
+        <input
+          type="text"
+          class="form-control"
+          name="addName"
+          [(ngModel)]="createModel.name"
+          required
+        />
+      </div>
+      <div class="col-md-4 form-group mb-2">
+        <label>Kurum Türü <span class="text-danger">*</span></label>
+        <select class="form-control" name="addType" [(ngModel)]="createModel.healthFacilityTypeId" required>
+          <option value="">Seçiniz...</option>
+          <option *ngFor="let type of hfTypes" [value]="type.id">{{ type.name }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Kurum Adı</label>
+        <input type="text" class="form-control" name="addCorporationName" [(ngModel)]="createModel.corporationName" />
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Vergi No</label>
+        <input type="text" class="form-control" name="addTaxNumber" [(ngModel)]="createModel.taxNumber" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Telefon</label>
+        <input type="text" class="form-control" name="addPhone" [(ngModel)]="createModel.phoneNumber" />
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>E-Posta</label>
+        <input type="email" class="form-control" name="addEmail" [(ngModel)]="createModel.email" />
+      </div>
+    </div>
+
+    <div class="form-group mb-2">
+      <label>Adres</label>
+      <textarea
+        class="form-control"
+        name="addAddress"
+        [(ngModel)]="createModel.address"
+        rows="2"
+      ></textarea>
+    </div>
+
+    <hr />
+    <div class="d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!addForm.valid">
+        <i class="fa fa-save"></i> Kaydet
       </button>
     </div>
 

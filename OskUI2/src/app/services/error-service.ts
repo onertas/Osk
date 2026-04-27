@@ -15,11 +15,16 @@ export class ErrorService {
   private readonly FLOOD_THRESHOLD = 2000; // 2 saniye içinde aynı hatayı gösterme
 
   errorHandler(err: HttpErrorResponse) {
-    const silentUrls = ['auth/IsAuthenticated', 'auth/refreshToken', 'auth/isauthenticated', 'auth/refreshtoken'];
+    const silentUrls = ['auth/IsAuthenticated', 'auth/refreshToken', 'auth/isauthenticated', 'auth/refreshtoken', 'auth/me'];
     const isSilent = silentUrls.some(url => err.url?.toLowerCase().includes(url.toLowerCase()));
 
     // Sessiz kontrollerde (IsAuthenticated vb.) 401 hatası gelirse hiçbir şey yapmıyoruz.
     if (isSilent && err.status === 401) {
+      return;
+    }
+
+    // Login sayfasında auth/login hatalarını login component'i ele alır.
+    if (err.url?.toLowerCase().includes('auth/login')) {
       return;
     }
 

@@ -15,6 +15,7 @@ import { HttpApiService } from '../../services/http-api-service';
 import { SwalService } from '../../services/swall.service';
 import { HfManagementListDto } from '../../dtos/healthFacility/hf-management-list.dto';
 import { UpdateHealthFacilityDto } from '../../dtos/healthFacility/update-health-facility.dto';
+import { CreateHealthFacilityDto } from '../../dtos/healthFacility/create-health-facility.dto';
 
 @Component({
   selector: 'app-hf-management',
@@ -60,6 +61,9 @@ export class HfManagementComponent implements OnInit {
 
   // Düzenleme modeli
   updateModel: UpdateHealthFacilityDto = new UpdateHealthFacilityDto();
+
+  // Ekleme modeli
+  createModel: CreateHealthFacilityDto = new CreateHealthFacilityDto();
 
   ngOnInit(): void {
     this.loadHfTypes();
@@ -135,6 +139,19 @@ export class HfManagementComponent implements OnInit {
         this.modalCom?.close('editHfModal');
         this.load();
         this.swal.showSuccess('Başarıyla güncellendi');
+      },
+    });
+  }
+
+  Create(form: any) {
+    if (form.invalid) return;
+    this.http.post('HealthFacility/Add', this.createModel).subscribe({
+      next: () => {
+        this.modalCom?.close('addHfModal');
+        this.load();
+        this.swal.showSuccess('Kuruluş başarıyla eklendi');
+        this.createModel = new CreateHealthFacilityDto();
+        form.resetForm();
       },
     });
   }
