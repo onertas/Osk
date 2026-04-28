@@ -1,7 +1,67 @@
-:host ::ng-deep .p-popover-content {
-    padding: 0 !important;
+/* Component Trigger */
+.grup-menu-trigger {
+    cursor: pointer;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #6c757d;
+    transition: all 0.2s ease;
+    display: inline-block;
 }
 
-.custom-menu-container {
+.grup-menu-trigger:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #333;
+}
+
+/* Popover Panel Sleekness (Global via ng-deep since appendTo="body") */
+::ng-deep .grup-menu-popover {
+    border-radius: 8px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
+    border: 1px solid #eaeaea !important;
+    min-width: 140px;
+    font-family: inherit;
+}
+
+::ng-deep .grup-menu-popover .p-popover-content {
+    padding: 6px !important; /* Small padding around the whole menu */
+}
+
+/* Style the links injected into ng-content */
+::ng-deep .grup-menu-popover .custom-menu-container {
     padding: 0;
+}
+
+::ng-deep .grup-menu-popover .custom-menu-container a {
+    padding: 8px 12px !important; /* Elegant padding */
+    border-radius: 6px !important;
+    transition: all 0.15s ease-in-out;
+    border-bottom: none !important; /* Remove legacy bottom border */
+    display: flex;
+    align-items: center;
+    color: #495057 !important;
+    font-size: 13px !important;
+    margin-bottom: 2px;
+    cursor: pointer;
+    text-decoration: none !important;
+}
+
+::ng-deep .grup-menu-popover .custom-menu-container a:last-child {
+    margin-bottom: 0;
+}
+
+::ng-deep .grup-menu-popover .custom-menu-container a i {
+    margin-right: 8px !important;
+    font-size: 13px !important;
+    width: 16px;
+    text-align: center;
+}
+
+::ng-deep .grup-menu-popover .custom-menu-container a:hover {
+    background-color: #f1f3f5 !important;
+    color: #0b22a5 !important; /* Theme primary color */
+}
+
+/* Optional: if any icon uses text-danger, ensure it keeps its color on hover if needed, or let it change. */
+::ng-deep .grup-menu-popover .custom-menu-container a:hover .text-danger {
+    color: #dc3545 !important;
 }
