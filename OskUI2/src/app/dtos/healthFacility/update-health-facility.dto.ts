@@ -8,4 +8,6 @@ export class UpdateHealthFacilityDto {
   email?: string;
   taxNumber?: string;
   corporationName?: string;
+  observationBedCount: number = 0;
+  totalBedCount: number = 0;
 }

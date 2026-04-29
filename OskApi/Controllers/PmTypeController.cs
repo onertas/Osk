@@ -46,7 +46,10 @@ public class PmTypeController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var list = await _pmTypeService.GetAll().Where(i=>i.IsDeteled==false).ToListAsync();
+        var list = await _pmTypeService.GetAll()
+            .Where(i => i.IsDeteled == false)
+            .OrderBy(i => i.Order)
+            .ToListAsync();
         var mappedList = _mapper.Map<List<ListPmTypeDto>>(list);
         
         var result = Result<List<ListPmTypeDto>>.Ok(mappedList);

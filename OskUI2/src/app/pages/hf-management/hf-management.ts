@@ -129,6 +129,8 @@ export class HfManagementComponent implements OnInit {
       email: item.email,
       taxNumber: item.taxNumber,
       corporationName: item.corporationName,
+      observationBedCount: item.observationBedCount,
+      totalBedCount: item.totalBedCount,
     };
   }
 
@@ -154,5 +156,9 @@ export class HfManagementComponent implements OnInit {
         form.resetForm();
       },
     });
+  }
+
+  resetCreateModel() {
+    this.createModel = new CreateHealthFacilityDto();
   }
 }

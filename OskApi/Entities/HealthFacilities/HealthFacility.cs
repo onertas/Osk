@@ -1,4 +1,4 @@
-﻿namespace OskApi.Entities.HealthFacilities
+namespace OskApi.Entities.HealthFacilities
 {
     public class HealthFacility:Entity
     {
@@ -11,6 +11,8 @@
         public string? Email { get; set; } 
         public string? TaxNumber { get; set; }
         public string? CorporationName { get; set; }
+        public int ObservationBedCount { get; set; }
+        public int TotalBedCount { get; set; }
 
     }
 }

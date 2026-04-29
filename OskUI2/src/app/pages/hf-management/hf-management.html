@@ -14,7 +14,7 @@
           (input)="onSearch($event)"
           style="max-width:300px;"
         />
-        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addHfModal" (click)="createModel = { healthFacilityTypeId: '', name: '' }">
+        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addHfModal" (click)="resetCreateModel()">
           <i class="fa fa-plus"></i> Yeni Ekle
         </button>
       </div>
@@ -44,6 +44,8 @@
           <th style="min-width:130px">E-Posta</th>
           <th style="min-width:120px">Vergi No</th>
           <th style="min-width:200px">Adres</th>
+          <th style="min-width:100px">Gözlem Yatak</th>
+          <th style="min-width:100px">Toplam Yatak</th>
           <th style="text-align:right; min-width:80px">İşlemler</th>
         </tr>
       </ng-template>
@@ -65,6 +67,8 @@
           >
             {{ item.address || '—' }}
           </td>
+          <td>{{ item.observationBedCount || 0 }}</td>
+          <td>{{ item.totalBedCount || 0 }}</td>
           <td style="text-align:right">
             <app-grup-menu-component>
               <a
@@ -84,7 +88,7 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="8" class="text-center text-muted py-3">
+          <td colspan="10" class="text-center text-muted py-3">
             <i class="fas fa-inbox me-2"></i> Kayıt bulunamadı.
           </td>
         </tr>
@@ -92,7 +96,7 @@
 
       <ng-template pTemplate="loadingbody">
         <tr *ngFor="let r of [1,2,3,4,5]">
-          <td colspan="8"><div style="height:22px; background:#f0f0f0; border-radius:4px;"></div></td>
+          <td colspan="10"><div style="height:22px; background:#f0f0f0; border-radius:4px;"></div></td>
         </tr>
       </ng-template>
     </p-table>
@@ -154,6 +158,17 @@
       <div class="col-md-6 form-group mb-2">
         <label>E-Posta</label>
         <input type="email" class="form-control" name="updEmail" [(ngModel)]="updateModel.email" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Gözlem Yatak Sayısı</label>
+        <input type="number" class="form-control" name="updObservationBedCount" [(ngModel)]="updateModel.observationBedCount" />
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Toplam Yatak Sayısı</label>
+        <input type="number" class="form-control" name="updTotalBedCount" [(ngModel)]="updateModel.totalBedCount" />
       </div>
     </div>
 
@@ -221,6 +236,17 @@
       <div class="col-md-6 form-group mb-2">
         <label>E-Posta</label>
         <input type="email" class="form-control" name="addEmail" [(ngModel)]="createModel.email" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Gözlem Yatak Sayısı</label>
+        <input type="number" class="form-control" name="addObservationBedCount" [(ngModel)]="createModel.observationBedCount" />
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Toplam Yatak Sayısı</label>
+        <input type="number" class="form-control" name="addTotalBedCount" [(ngModel)]="createModel.totalBedCount" />
       </div>
     </div>
 

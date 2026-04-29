@@ -116,7 +116,9 @@ export class TemporarayStaffComponent implements OnInit, OnChanges {
     this.http.get<ListPmTypeDto[]>('PmType/GetAll').subscribe({
       next: (res: any) => {
         if (res.success && res.data) {
-          this.pmTypes = res.data;
+          this.pmTypes = res.data
+            .filter((pm: ListPmTypeDto) => pm.isFaaliyet2Control === true)
+            .sort((a: ListPmTypeDto, b: ListPmTypeDto) => a.order - b.order);
         }
       }
     });

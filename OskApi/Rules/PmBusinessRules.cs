@@ -9,12 +9,18 @@ public class PmBusinessRules
 {
     private readonly IPmTypeService _pmTypeService;
     private readonly IStaffService _staffService;
+    private readonly ITemporarayStaffService _temporarayStaffService;
     private readonly IPmService _pmService;
 
-    public PmBusinessRules(IPmTypeService pmTypeService, IStaffService staffService, IPmService pmService)
+    public PmBusinessRules(
+        IPmTypeService pmTypeService, 
+        IStaffService staffService, 
+        ITemporarayStaffService temporarayStaffService,
+        IPmService pmService)
     {
         _pmTypeService = pmTypeService;
         _staffService = staffService;
+        _temporarayStaffService = temporarayStaffService;
         _pmService = pmService;
     }
 
@@ -22,35 +28,86 @@ public class PmBusinessRules
     {
         var pmType = await _pmTypeService.GetAll().FirstOrDefaultAsync(t => t.Id == model.PmTypeId);
         
-        // Sadece "KAD" (Kadrolu) kodlu tipler için kontrol yapılıyor (İstenirse IsUsingStaff de eklenebilir)
-        if (pmType != null && pmType.IsUsingStaff)
+        if (pmType == null)
+            return Result<string>.Fail("Hareket türü bulunamadı.");
+
+        // Genel Kural: Aynı kişi, aynı kurumda, aynı hareket türü ile birden fazla aktif kayda sahip olamaz.
+        var isDuplicateAtFacility = await _pmService.GetAll()
+            .AnyAsync(pm => pm.PersonnelId == model.PersonnelId 
+                         && pm.HealthFacilityId == model.HealthFacilityId
+                         && pm.PmTypeId == model.PmTypeId
+                         && (pm.Finish == null || pm.Finish >= DateTime.Now));
+
+        if (isDuplicateAtFacility)
+            return Result<string>.Fail("Bu personelin ilgili kurumda bu hareket türüyle devam eden aktif bir kaydı zaten mevcut.");
+
+        // 1- IsUsingStaff
+        if (pmType.IsUsingStaff)
         {
-            // 1. İlgili kurum ve branş (ünvan) için tanımlı kadroyu getir
             var staff = await _staffService.GetAll()
                 .FirstOrDefaultAsync(s => s.HealthFacilityId == model.HealthFacilityId && s.BranchId == model.BranchId);
 
             if (staff == null)
-                return Result<string>.Fail("İlgili tesis ve branş için kadro tanımlı değil. Lütfen önce kadro ekleyiniz.");
+                return Result<string>.Fail("İlgili tesis ve branş için kadro tanımlı değil.");
 
-            // 2. Aynı kurum ve branşta, "KAD" koduyla halihazırda başlamış personellerin sayısını al
             var activeCount = await _pmService.GetAll()
-                .Include(pm => pm.PmType)
                 .CountAsync(pm => pm.HealthFacilityId == model.HealthFacilityId 
                                && pm.BranchId == model.BranchId 
-                               && pm.PmType != null 
-                               && pm.PmType.Code == "KAD"
-                               && pm.Start <= DateTime.Now // Başlamış olanlar
-                               && pm.Finish == null); // Ve henüz bitiş tarihi gelmemiş / bitmemiş olanlar
+                               && pm.PmTypeId == model.PmTypeId
+                               && (pm.Finish == null || pm.Finish >= DateTime.Now));
 
-            // 3. Kadro sayısı ile mevcut aktif çalışan sayısını karşılaştır
             if (activeCount >= staff.Count)
-            {
-                return Result<string>.Fail($"Kadro yoktur. İlgili branşta boş kadrolu (KAD) pozisyon bulunmamaktadır. (Kapasite: {staff.Count}, Mevcut Başlamış: {activeCount})");
-            }
+                return Result<string>.Fail($"Kadro yetersiz. (Kapasite: {staff.Count}, Mevcut: {activeCount})");
         }
 
-        // Diğer kurallar buraya eklenebilir...
-        // Örneğin: IsUsingStaff = true olan diğer durumlar vs.
+        // 2- IsBeforeStartStaff
+        if (pmType.IsBeforeStartStaff)
+        {
+            var hasKadrolu = await _pmService.GetAll()
+                .Include(pm => pm.PmType)
+                .AnyAsync(pm => pm.PersonnelId == model.PersonnelId 
+                             && pm.PmType != null 
+                             && pm.PmType.Code == "KAD");
+
+            if (!hasKadrolu)
+                return Result<string>.Fail("Bu hareket türünü ekleyebilmek için personelin daha önce Kadrolu (KAD) olarak başlamış olması gerekmektedir.");
+        }
+
+        // 3- IsFaaliyet2Control
+        if (pmType.IsFaaliyet2Control)
+        {
+            var hasTempStaff = await _temporarayStaffService.GetAll()
+                .AnyAsync(ts => ts.HealthFacilityId == model.HealthFacilityId 
+                             && ts.BranchId == model.BranchId 
+                             && ts.PmTypeId == model.PmTypeId);
+
+            if (!hasTempStaff)
+                return Result<string>.Fail("Geçici kadroda bu tesis ve branş için ilgili hareket türüne ait kayıt bulunmamaktadır.");
+        }
+
+        // 4- IsOnlyOneStatu
+        if (pmType.IsOnlyOneStatu)
+        {
+            var existing = await _pmService.GetAll()
+                .AnyAsync(pm => pm.PersonnelId == model.PersonnelId 
+                             && pm.PmTypeId == model.PmTypeId
+                             && (pm.Finish == null || pm.Finish >= DateTime.Now));
+
+            if (existing)
+                return Result<string>.Fail("Bu hareket türünden personel için sadece 1 aktif kayıt olabilir.");
+        }
+
+        // 5- StatusQuota
+        if (pmType.StatusQuota > 0)
+        {
+            var activePersonelCount = await _pmService.GetAll()
+                .CountAsync(pm => pm.PersonnelId == model.PersonnelId
+                               && pm.PmTypeId == model.PmTypeId
+                               && (pm.Finish == null || pm.Finish >= DateTime.Now));
+
+            if (activePersonelCount >= pmType.StatusQuota)
+                return Result<string>.Fail($"Bu hareket türü için personel kotası dolmuştur. (Kota: {pmType.StatusQuota}, Mevcut: {activePersonelCount})");
+        }
 
         return Result<string>.Ok("Kurallar geçerli");
     }

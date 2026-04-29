@@ -84,7 +84,7 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
     this.http.get<ListPmTypeDto[]>('PmType/GetAll').subscribe({
       next: (res) => {
         if (res.success && res.data) {
-          this.pmTypes = res.data;
+          this.pmTypes = res.data.sort((a, b) => a.order - b.order);
         }
       }
     });
@@ -95,7 +95,7 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
       next: (res) => {
         if (res.success && res.data) {
           this.branches = res.data;
-          this.filteredBranches = res.data;
+          this.filteredBranches = [];
         }
       }
     });

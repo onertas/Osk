@@ -10,5 +10,7 @@ namespace OskApi.Dtos.HealthFacilities
         public string? Email { get; set; }
         public string? TaxNumber { get; set; }
         public string? CorporationName { get; set; }
+        public int ObservationBedCount { get; set; }
+        public int TotalBedCount { get; set; }
     }
 }

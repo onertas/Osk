@@ -96,7 +96,14 @@
     <div class="form-group mb-3">
       <label>Hareket Türü</label>
       <p-select [options]="pmTypes" [(ngModel)]="newTempStaff.pmTypeId" optionLabel="name" optionValue="id" 
-        name="pmTypeId" placeholder="Tür Seçin" styleClass="w-100" [required]="true" [filter]="true" filterBy="name"></p-select>
+        name="pmTypeId" placeholder="Tür Seçin" styleClass="w-100" [required]="true" [filter]="true" filterBy="name">
+        <ng-template pTemplate="item" let-pm>
+          <div>
+            <div>{{ pm.name }}</div>
+            <div style="font-size: 0.8rem; color: gray;">{{ pm.description }}</div>
+          </div>
+        </ng-template>
+      </p-select>
     </div>
 
     <div class="form-group mb-3">
@@ -137,7 +144,14 @@
     <div class="form-group mb-3">
       <label>Hareket Türü</label>
       <p-select [options]="pmTypes" [(ngModel)]="updateTempStaff.pmTypeId" optionLabel="name" optionValue="id" 
-        name="updPmTypeId" placeholder="Tür Seçin" styleClass="w-100" [required]="true" [filter]="true" filterBy="name"></p-select>
+        name="updPmTypeId" placeholder="Tür Seçin" styleClass="w-100" [required]="true" [filter]="true" filterBy="name">
+        <ng-template pTemplate="item" let-pm>
+          <div>
+            <div>{{ pm.name }}</div>
+            <div style="font-size: 0.8rem; color: gray;">{{ pm.description }}</div>
+          </div>
+        </ng-template>
+      </p-select>
     </div>
 
     <div class="form-group mb-3">

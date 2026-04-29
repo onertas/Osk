@@ -95,6 +95,8 @@ public class HealthFacilityController : ControllerBase
             Email = entity.Email,
             TaxNumber = entity.TaxNumber,
             CorporationName = entity.CorporationName,
+            ObservationBedCount = entity.ObservationBedCount,
+            TotalBedCount = entity.TotalBedCount,
             HealthFacilityTypeId = entity.HealthFacilityTypeId,
             TypeName = entity.HealthFacilityType != null ? entity.HealthFacilityType.Name : ""
         };
@@ -140,6 +142,8 @@ public class HealthFacilityController : ControllerBase
                 Email = x.Email,
                 TaxNumber = x.TaxNumber,
                 CorporationName = x.CorporationName,
+                ObservationBedCount = x.ObservationBedCount,
+                TotalBedCount = x.TotalBedCount,
                 HealthFacilityTypeId = x.HealthFacilityTypeId,
                 TypeName = x.HealthFacilityType != null ? x.HealthFacilityType.Name : ""
             })
@@ -174,6 +178,8 @@ public class HealthFacilityController : ControllerBase
         entity.Email = model.Email;
         entity.TaxNumber = model.TaxNumber;
         entity.CorporationName = model.CorporationName;
+        entity.ObservationBedCount = model.ObservationBedCount;
+        entity.TotalBedCount = model.TotalBedCount;
 
         _healthFacilityService.Update(entity);
         await _unitOfWork.SaveChangesAsync();

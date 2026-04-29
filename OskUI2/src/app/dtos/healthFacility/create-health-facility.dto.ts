@@ -6,4 +6,6 @@ export class CreateHealthFacilityDto {
   email?: string;
   taxNumber?: string;
   corporationName?: string;
+  observationBedCount: number = 0;
+  totalBedCount: number = 0;
 }
