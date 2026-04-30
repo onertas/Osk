@@ -9,9 +9,9 @@ using OskApi.Shared.Result;
 
 namespace OskApi.Controllers;
 
+    [Authorize]
     [Route("api/[controller]/[action]")]
     [ApiController]
-
     public class HealthFacilityTypeController : ControllerBase
     {
 
@@ -24,7 +24,6 @@ namespace OskApi.Controllers;
         _healthFacilityTypeService = healthFacilityTypeService;
     }
 
-    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetHealthFacilityTypes()
     {
@@ -35,7 +34,7 @@ namespace OskApi.Controllers;
         return Ok(res);
     }
 
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Add(HealthFacilityType model)
     {
@@ -46,7 +45,7 @@ namespace OskApi.Controllers;
         return Ok(Result.Ok("Eklendi"));
     }
 
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Update(HealthFacilityType model)
     {
@@ -63,7 +62,7 @@ namespace OskApi.Controllers;
         return Ok(Result.Ok("Güncellendi"));
     }
 
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Delete([FromBody] Guid id)
     {

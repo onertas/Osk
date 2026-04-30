@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { GenericHttpService } from '../../../services/generic.http.service';
 import { SwalService } from '../../../services/swall.service';
 import { StringService } from '../../../services/string.service';
-import { Menus } from '../../../constants/menu';
+import { Menus, MenuModel } from '../../../constants/menu';
 import { SharedModule } from '../../../modules/shared.module';
 import { AuthService, CurrentUser } from '../../../services/auth.service';
 import { Observable } from 'rxjs';
@@ -41,23 +41,33 @@ export class MainSidebar {
   ngOnInit(): void {
     this.getHealthFacilityTypes();
 
-    this.menus.forEach((element) => {
-      let result =
-        // tokenRoles.some((x) => element.roles.includes(x)) ||
-        element.roles.includes('All');
-
-      if (!result) {
-        element.show = false;
+    // Kullanıcı bilgisi yüklenince menüleri filtrele
+    this.authService.user$.subscribe(user => {
+      if (user) {
+        this.filterMenusByRole(user.roles);
       }
+    });
+  }
 
-      element.subMenus.forEach((subElement) => {
-        let result1 =
-          //  tokenRoles.some((x) => subElement.roles.includes(x)) ||
-          subElement.roles.includes('All');
+  /**
+   * Kullanıcının rollerine göre menüleri filtreler.
+   * 'All' rolü herkes tarafından görülebilir,
+   * diğer roller ise kullanıcının rollerine sahip olmasını gerektirir.
+   */
+  private filterMenusByRole(userRoles: string[]) {
+    this.menus.forEach((menu) => {
+      const hasAccess =
+        menu.roles.includes('All') ||
+        userRoles.some(r => menu.roles.includes(r));
 
-        if (!result1) {
-          subElement.show = false;
-        }
+      menu.show = hasAccess;
+
+      menu.subMenus.forEach((sub) => {
+        const subAccess =
+          sub.roles.includes('All') ||
+          userRoles.some(r => sub.roles.includes(r));
+
+        sub.show = subAccess;
       });
     });
   }
@@ -67,16 +77,13 @@ export class MainSidebar {
       const hfMenu = this.menus.find(x => x.name === 'Sağlık Kuruluşları');
       if (hfMenu && res.data) {
         hfMenu.subMenus = res.data.map((type: any) => {
-          const roles = ['All']; // Varsayılan olarak 'All', isterseniz veritabanından da çekebilirsiniz
-          const isVisible = roles.includes('All'); // Buraya ileride rol bazlı kontrol eklenebilir
-
           return {
             name: type.name,
             isTitle: false,
             icon: 'fas fa-hospital',
             url: `/hf-list/${type.code}`,
-            roles: roles,
-            show: isVisible,
+            roles: ['All'],
+            show: true,
             subMenus: []
           };
         });

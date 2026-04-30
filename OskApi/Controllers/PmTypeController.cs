@@ -1,5 +1,6 @@
 using AutoMapper;
 using GenericRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OskApi.Dtos.PmType;
@@ -9,6 +10,7 @@ using OskApi.Shared.Result;
 
 namespace OskApi.Controllers;
 
+[Authorize]
 [Route("api/[controller]/[action]")]
 [ApiController]
 public class PmTypeController : ControllerBase
@@ -24,6 +26,7 @@ public class PmTypeController : ControllerBase
         _mapper = mapper;
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Add(CreatePmTypeDto model)
     {
@@ -56,6 +59,7 @@ public class PmTypeController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Update(UpdatePmTypeDto model)
     {
@@ -71,6 +75,7 @@ public class PmTypeController : ControllerBase
         return Ok(Result.Ok("Güncellendi"));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Delete([FromBody] Guid id)
     {

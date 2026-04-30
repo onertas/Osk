@@ -1,5 +1,6 @@
 using AutoMapper;
 using GenericRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OskApi.Dtos.Beds;
@@ -9,6 +10,7 @@ using OskApi.Shared.Result;
 
 namespace OskApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class IcBedController : ControllerBase
@@ -26,6 +28,7 @@ namespace OskApi.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = "Admin,User")]
         [HttpPost]
         public async Task<IActionResult> Add(CreateIcBedDto model)
         {
@@ -47,6 +50,7 @@ namespace OskApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Update(UpdateIcBedDto model)
         {
@@ -70,6 +74,7 @@ namespace OskApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Delete([FromBody] Guid id)
         {

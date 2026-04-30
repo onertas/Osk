@@ -10,6 +10,7 @@ import { HttpApiService } from '../../services/http-api-service';
 import { HfManagementListDto } from '../../dtos/healthFacility/hf-management-list.dto';
 import { SwalService } from '../../services/swall.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-hf-detail',
@@ -22,12 +23,19 @@ export class HfDetailComponent implements OnInit {
   route = inject(ActivatedRoute);
   http = inject(HttpApiService);
   swal = inject(SwalService);
+  authService = inject(AuthService);
 
   healthFacilityId: string = '';
   facility: HfManagementListDto = new HfManagementListDto();
   isLoading: boolean = true;
+  isAdmin: boolean = false;
 
   ngOnInit(): void {
+    // Kullanıcı bilgisi yüklendiğinde isAdmin güncelle
+    this.authService.user$.subscribe(user => {
+      this.isAdmin = user?.roles.includes('Admin') ?? false;
+    });
+
     this.route.paramMap.subscribe(params => {
       this.healthFacilityId = params.get('id') || '';
       if (this.healthFacilityId) {

@@ -1,6 +1,6 @@
 using AutoMapper;
 using GenericRepository;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +11,7 @@ using OskApi.Shared.Result;
 
 namespace OskApi.Controllers;
 
+[Authorize]
 [Route("api/[controller]/[action]")]
 [ApiController]
 public class PersonnelController : ControllerBase
@@ -29,6 +30,7 @@ public class PersonnelController : ControllerBase
     }
 
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Add(CreatePersonnelDto model)
     {
@@ -59,6 +61,7 @@ public class PersonnelController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Update(UpdatePersonnelDto model)
     {
@@ -107,6 +110,7 @@ public class PersonnelController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete]
     public async Task<IActionResult> Delete(Guid id)
     {
@@ -119,6 +123,7 @@ public class PersonnelController : ControllerBase
         return Ok(Result.Ok("Silindi"));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {

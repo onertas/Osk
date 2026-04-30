@@ -1,6 +1,198 @@
-<app-blank>
-    <app-section>
-        <button (click)="ask()" class="btn btn-sm btn-dark">Sor</button>
-        <p>{{sonuc}}</p>
-    </app-section>
+<app-blank title="Dashboard">
+
+  <!-- ═══════════════════ TOPLAM ÖZET KARTLARI ═══════════════════ -->
+  <div class="dashboard-grid" [class.loaded]="isLoaded">
+
+    <!-- Toplam Kuruluş -->
+    <div class="summary-card card-gradient-indigo" style="animation-delay: 0.05s">
+      <div class="summary-card__icon">
+        <i class="fas fa-hospital"></i>
+      </div>
+      <div class="summary-card__content">
+        <span class="summary-card__value">{{ totalFacilities }}</span>
+        <span class="summary-card__label">Toplam Kuruluş</span>
+      </div>
+      <div class="summary-card__wave"></div>
+    </div>
+
+    <!-- Toplam Personel -->
+    <div class="summary-card card-gradient-emerald" style="animation-delay: 0.15s">
+      <div class="summary-card__icon">
+        <i class="fas fa-user-md"></i>
+      </div>
+      <div class="summary-card__content">
+        <span class="summary-card__value">{{ totalPersonnel }}</span>
+        <span class="summary-card__label">Toplam Personel</span>
+      </div>
+      <div class="summary-card__wave"></div>
+    </div>
+
+    <!-- Toplam YB Yatak -->
+    <div class="summary-card card-gradient-amber" style="animation-delay: 0.25s">
+      <div class="summary-card__icon">
+        <i class="fas fa-bed"></i>
+      </div>
+      <div class="summary-card__content">
+        <span class="summary-card__value">{{ totalIcBeds }}</span>
+        <span class="summary-card__label">Toplam YB Yatak</span>
+      </div>
+      <div class="summary-card__wave"></div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════ DETAY KARTLARI ═══════════════════ -->
+  <div class="detail-row" [class.loaded]="isLoaded">
+
+    <!-- ────── Kuruluş Sayıları ────── -->
+    <div class="detail-card" style="animation-delay: 0.3s">
+      <div class="detail-card__header">
+        <div class="detail-card__header-left">
+          <div class="detail-card__icon-box icon-indigo">
+            <i class="fas fa-hospital"></i>
+          </div>
+          <h3 class="detail-card__title">Kuruluş Sayıları</h3>
+        </div>
+      </div>
+      <div class="detail-card__body">
+        <div class="stat-list">
+          @for (item of facilityCounts; track item.typeName) {
+            <div class="stat-item">
+              <div class="stat-item__info">
+                <span class="stat-item__dot dot-indigo"></span>
+                <span class="stat-item__name">{{ item.typeName }}</span>
+              </div>
+              <span class="stat-item__count badge-indigo">{{ item.count }}</span>
+            </div>
+          }
+          @if (facilityCounts.length === 0) {
+            <div class="empty-state">
+              <i class="fas fa-inbox"></i>
+              <span>Veri bulunamadı</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- ────── Personel Sayıları ────── -->
+    <div class="detail-card" style="animation-delay: 0.4s">
+      <div class="detail-card__header">
+        <div class="detail-card__header-left">
+          <div class="detail-card__icon-box icon-emerald">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3 class="detail-card__title">Personel Sayıları</h3>
+        </div>
+      </div>
+      <div class="detail-card__body">
+        <div class="stat-list">
+          @for (item of personnelCounts; track item.titleName) {
+            <div class="stat-item">
+              <div class="stat-item__info">
+                <span class="stat-item__dot dot-emerald"></span>
+                <span class="stat-item__name">{{ item.titleName }}</span>
+              </div>
+              <span class="stat-item__count badge-emerald">{{ item.count }}</span>
+            </div>
+          }
+          @if (personnelCounts.length === 0) {
+            <div class="empty-state">
+              <i class="fas fa-inbox"></i>
+              <span>Veri bulunamadı</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- ────── YB Yatak Sayıları ────── -->
+    <div class="detail-card" style="animation-delay: 0.5s">
+      <div class="detail-card__header">
+        <div class="detail-card__header-left">
+          <div class="detail-card__icon-box icon-amber">
+            <i class="fas fa-procedures"></i>
+          </div>
+          <h3 class="detail-card__title">Yoğun Bakım Yatak Sayıları</h3>
+        </div>
+      </div>
+      <div class="detail-card__body">
+        <div class="stat-list">
+          @for (item of icBedCounts; track item.bedTypeName) {
+            <div class="stat-item">
+              <div class="stat-item__info">
+                <span class="stat-item__dot dot-amber"></span>
+                <span class="stat-item__name">{{ item.bedTypeName }}</span>
+              </div>
+              <span class="stat-item__count badge-amber">{{ item.count }}</span>
+            </div>
+          }
+          @if (icBedCounts.length === 0) {
+            <div class="empty-state">
+              <i class="fas fa-inbox"></i>
+              <span>Veri bulunamadı</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ GRAFİKLER ═══════════════════ -->
+  <div class="chart-row" [class.loaded]="isLoaded">
+
+    <!-- Kuruluş Dağılımı Pasta Grafiği -->
+    <div class="chart-card" style="animation-delay: 0.55s">
+      <div class="chart-card__header">
+        <div class="chart-card__header-left">
+          <div class="detail-card__icon-box icon-indigo">
+            <i class="fas fa-chart-pie"></i>
+          </div>
+          <h3 class="chart-card__title">Kuruluş Dağılımı</h3>
+        </div>
+      </div>
+      <div class="chart-card__body">
+        @if (facilityChartData) {
+          <p-chart type="doughnut" [data]="facilityChartData" [options]="facilityChartOptions" [style]="{'width': '100%', 'height': '300px'}"></p-chart>
+        }
+      </div>
+    </div>
+
+    <!-- Personel Dağılımı Bar Grafiği -->
+    <div class="chart-card chart-card--wide" style="animation-delay: 0.65s">
+      <div class="chart-card__header">
+        <div class="chart-card__header-left">
+          <div class="detail-card__icon-box icon-emerald">
+            <i class="fas fa-chart-bar"></i>
+          </div>
+          <h3 class="chart-card__title">Personel Dağılımı</h3>
+        </div>
+      </div>
+      <div class="chart-card__body">
+        @if (personnelChartData) {
+          <p-chart type="bar" [data]="personnelChartData" [options]="personnelChartOptions" [style]="{'width': '100%', 'height': '300px'}"></p-chart>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- YB Yatak Grafiği -->
+  <div class="chart-row chart-row--single" [class.loaded]="isLoaded">
+    <div class="chart-card chart-card--full" style="animation-delay: 0.75s">
+      <div class="chart-card__header">
+        <div class="chart-card__header-left">
+          <div class="detail-card__icon-box icon-amber">
+            <i class="fas fa-chart-bar"></i>
+          </div>
+          <h3 class="chart-card__title">Yoğun Bakım Yatak Dağılımı</h3>
+        </div>
+      </div>
+      <div class="chart-card__body">
+        @if (icBedChartData) {
+          <p-chart type="bar" [data]="icBedChartData" [options]="icBedChartOptions" [style]="{'width': '100%', 'height': '280px'}"></p-chart>
+        }
+      </div>
+    </div>
+  </div>
+
 </app-blank>

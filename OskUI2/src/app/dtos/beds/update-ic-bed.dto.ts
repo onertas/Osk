@@ -7,5 +7,6 @@ export class UpdateIcBedDto {
     icBedRegDate: Date = new Date();
     icBedRegNumber: string = '';
     icBedNameId: string = '';
+    icBedType: number = 0;
     isActive: boolean = true;
 }

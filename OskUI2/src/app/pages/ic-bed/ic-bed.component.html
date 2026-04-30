@@ -16,7 +16,7 @@
     <p-table [value]="beds" styleClass="p-datatable-sm fontstil13" [responsiveLayout]="'scroll'">
       <ng-template pTemplate="header">
         <tr>
-          <th>Yatak Birimi</th>
+          <th>Yatak Türü</th>
           <th>Tip</th>
           <th>Tescil Seviyesi</th>
           <th>Tescil Türü</th>
@@ -62,13 +62,13 @@
     <div class="row">
       <div class="col-md-6 form-group mb-2">
         <label>Yatak Tipi</label>
-        <p-select [options]="bedTypes" [(ngModel)]="selectedType" (onChange)="onTypeChange($event, 'add')"
+        <p-select [options]="bedTypes" [(ngModel)]="newBed.icBedType" (onChange)="onTypeChange($event, 'add')"
           name="type" placeholder="Tip Seçin" styleClass="w-100" [required]="true" optionValue="value" optionLabel="description"></p-select>
       </div>
       <div class="col-md-6 form-group mb-2">
-        <label>Yatak Birimi</label>
+        <label>Yatak Türü</label>
         <p-select [options]="filteredBedNames" [(ngModel)]="newBed.icBedNameId"
-          name="icBedNameId" placeholder="Birim Seçin" styleClass="w-100" [required]="true" optionValue="id" optionLabel="name" [disabled]="!selectedType"></p-select>
+          name="icBedNameId" placeholder="Tür Seçin" styleClass="w-100" [required]="true" optionValue="id" optionLabel="name" [disabled]="!newBed.icBedType"></p-select>
       </div>
     </div>
 
@@ -121,13 +121,13 @@
     <div class="row">
       <div class="col-md-6 form-group mb-2">
         <label>Yatak Tipi</label>
-        <p-select [options]="bedTypes" [(ngModel)]="selectedUpdateType" (onChange)="onTypeChange($event, 'edit')"
+        <p-select [options]="bedTypes" [(ngModel)]="updateBed.icBedType" (onChange)="onTypeChange($event, 'edit')"
           name="updType" placeholder="Tip Seçin" styleClass="w-100" [required]="true" optionValue="value" optionLabel="description"></p-select>
       </div>
       <div class="col-md-6 form-group mb-2">
-        <label>Yatak Birimi</label>
+        <label>Yatak Türü</label>
         <p-select [options]="filteredBedNames" [(ngModel)]="updateBed.icBedNameId"
-          name="updIcBedNameId" placeholder="Birim Seçin" styleClass="w-100" [required]="true" optionValue="id" optionLabel="name" [disabled]="!selectedUpdateType"></p-select>
+          name="updIcBedNameId" placeholder="Tür Seçin" styleClass="w-100" [required]="true" optionValue="id" optionLabel="name" [disabled]="!updateBed.icBedType"></p-select>
       </div>
     </div>
 

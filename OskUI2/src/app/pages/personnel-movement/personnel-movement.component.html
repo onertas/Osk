@@ -42,7 +42,7 @@
             <i style="width: 18px" class="fas fa-edit text-primary"></i>
             Düzenle
           </a>
-          <a (click)="Delete(pm.id)" class="dropdown-item pointer fontstil13" style="padding: 6px 12px;">
+          <a *ngIf="isAdmin" (click)="Delete(pm.id)" class="dropdown-item pointer fontstil13" style="padding: 6px 12px;">
             <i style="width: 18px" class="fas fa-trash text-danger"></i>
             Sil
           </a>

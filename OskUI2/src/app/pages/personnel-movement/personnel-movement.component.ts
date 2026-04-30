@@ -24,6 +24,7 @@ import { ExcelService } from '../../services/excel.service';
 })
 export class PersonnelMovementComponent implements OnInit, OnChanges {
   @Input() healthFacilityId: string = '';
+  @Input() isAdmin: boolean = false;
 
   http = inject(HttpApiService);
   swal = inject(SwalService);

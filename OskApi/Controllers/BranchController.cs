@@ -22,7 +22,7 @@ public class BranchController : ControllerBase
         _branchService = branchService;
     }
 
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Add(Branch model)
     {
@@ -40,6 +40,7 @@ public class BranchController : ControllerBase
         var res = Result<List<Branch>>.Ok(list, "Veri Listelendi");
         return Ok(res);
     }
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Update(Branch model)
     {
@@ -57,6 +58,7 @@ public class BranchController : ControllerBase
         return Ok(Result.Ok("Güncellendi"));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Delete([FromBody] Guid id)
     {

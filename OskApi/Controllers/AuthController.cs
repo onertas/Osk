@@ -27,6 +27,7 @@ public class AuthController : ControllerBase
         _tokenService = tokenService;
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> CreateUser(CreateUserDto dto)
     {

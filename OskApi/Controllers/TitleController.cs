@@ -29,7 +29,7 @@ public class TitleController : ControllerBase
     }
 
 
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Add(Title model)
     {
@@ -50,6 +50,8 @@ public class TitleController : ControllerBase
         var res = Result<List<Title>>.Ok(list, "Veri Listelendi");
         return Ok(res);
     }
+
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Update(Title model)
     {
@@ -67,6 +69,7 @@ public class TitleController : ControllerBase
         return Ok(Result.Ok("Güncellendi"));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Delete([FromBody] Guid id)
     {
@@ -80,4 +83,3 @@ public class TitleController : ControllerBase
         return Ok(Result.Ok("Silindi"));
     }
 }
-

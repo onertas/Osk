@@ -6,6 +6,8 @@ using OskApi.Entities.Personnel;
 using OskApi.Entities.Staff;
 using OskApi.Dtos.Staff;
 using OskApi.Dtos.PersonnelMovement;
+using OskApi.Entities.Beds;
+using OskApi.Dtos.Beds;
 
 namespace OskApi.Shared.Mapping
 {
@@ -46,6 +48,17 @@ namespace OskApi.Shared.Mapping
                 .ForMember(dest => dest.BranchName, opt => opt.MapFrom(src => src.Branch != null ? src.Branch.Name : ""))
                 .ForMember(dest => dest.HealthFacilityName, opt => opt.MapFrom(src => src.HealthFacility != null ? src.HealthFacility.Name : ""))
                 .ForMember(dest => dest.PmTypeName, opt => opt.MapFrom(src => src.PmType != null ? src.PmType.Name : ""));
+
+            // IcBed
+            CreateMap<IcBed, ListIcBedDto>()
+                .ForMember(dest => dest.IcBedName, opt => opt.MapFrom(src => src.IcBedName != null ? src.IcBedName.Name : ""))
+                .ForMember(dest => dest.IcBedType, opt => opt.MapFrom(src => src.IcBedName != null ? src.IcBedName.IcBedType.Value : 0))
+                .ForMember(dest => dest.IcBedTypeName, opt => opt.MapFrom(src => src.IcBedName != null ? src.IcBedName.IcBedType.Description : ""))
+                .ForMember(dest => dest.IcBedRegLevelName, opt => opt.MapFrom(src => src.IcBedRegLevel.Description))
+                .ForMember(dest => dest.IcBedRegTypeName, opt => opt.MapFrom(src => src.IcBedRegType.Description));
+
+            CreateMap<IcBed, CreateIcBedDto>().ReverseMap();
+            CreateMap<IcBed, UpdateIcBedDto>().ReverseMap();
         }
     }
 }

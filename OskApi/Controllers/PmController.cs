@@ -1,5 +1,6 @@
 using AutoMapper;
 using GenericRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OskApi.Dtos.PersonnelMovement;
@@ -9,6 +10,7 @@ using OskApi.Shared.Result;
 
 namespace OskApi.Controllers;
 
+[Authorize]
 [Route("api/[controller]/[action]")]
 [ApiController]
 public class PmController : ControllerBase
@@ -78,6 +80,7 @@ public class PmController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Update(UpdatePersonelMovementDto model)
     {
@@ -95,6 +98,7 @@ public class PmController : ControllerBase
         return Ok(Result.Ok("Güncellendi"));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Delete([FromBody] Guid id)
     {

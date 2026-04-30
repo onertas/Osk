@@ -26,7 +26,7 @@ public class HealthFacilityController : ControllerBase
         _mapper = mapper;
     }
 
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Add(CreateHealthFacilityDto model)
     {
@@ -108,6 +108,7 @@ public class HealthFacilityController : ControllerBase
     /// Tüm sağlık tesislerini sayfalı ve arama destekli listeler (Yönetim ekranı için)
     /// GET /api/HealthFacility/GetAllPaged?page=1&pageSize=10&search=xxx
     /// </summary>
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> GetAllPaged(int page = 1, int pageSize = 10, string? search = null)
     {
@@ -162,6 +163,7 @@ public class HealthFacilityController : ControllerBase
     /// <summary>
     /// Sağlık tesisi güncelle
     /// </summary>
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Update(UpdateHealthFacilityDto model)
     {
@@ -190,6 +192,7 @@ public class HealthFacilityController : ControllerBase
     /// <summary>
     /// Sağlık tesisi sil
     /// </summary>
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Delete([FromBody] Guid id)
     {

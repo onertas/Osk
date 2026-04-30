@@ -44,4 +44,8 @@ export class AuthService {
   hasRole(role: string) {
     return this.userSubject.value?.roles.includes(role) ?? false;
   }
+
+  get isAdmin() {
+    return this.hasRole('Admin');
+  }
 }

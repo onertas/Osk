@@ -43,15 +43,11 @@ export class IcBedComponent implements OnInit {
   newBed: CreateIcBedDto = new CreateIcBedDto();
   updateBed: UpdateIcBedDto = new UpdateIcBedDto();
 
-  // Lookups
+  // Lookup listeleri
   bedTypes: any[] = [];
-  bedNames: any[] = [];
   filteredBedNames: any[] = [];
   regLevels: any[] = [];
   regTypes: any[] = [];
-
-  selectedType: number | null = null;
-  selectedUpdateType: number | null = null;
 
   ngOnInit(): void {
     if (this.healthFacilityId) {
@@ -78,31 +74,41 @@ export class IcBedComponent implements OnInit {
     this.http.get<any[]>('IcBed/GetIcBedRegTypes').subscribe(res => {
       if (res.success && res.data) this.regTypes = res.data;
     });
-    // Initial fetch of all names for reference if needed, or we fetch on type change
-    this.http.get<any[]>('IcBed/GetIcBedNames').subscribe(res => {
-      if (res.success && res.data) this.bedNames = res.data;
-    });
   }
 
-  onTypeChange(typeValue: any, mode: 'add' | 'edit') {
-    const value = typeValue?.value || typeValue;
-    this.http.get<any[]>(`IcBed/GetIcBedNames?typeValue=${value}`).subscribe(res => {
+  // PrimeNG p-select (onChange) eventi { value: seçilenOptValue } objesi olarak gelir.
+  // optionValue="value" ile ngModel'e direkt int atanır, ama onChange hâlâ obje gönderir.
+  onTypeChange(event: any, mode: 'add' | 'edit') {
+    const typeValue: number = (event !== null && typeof event === 'object' && 'value' in event)
+      ? event.value
+      : Number(event);
+
+    this.http.get<any[]>(`IcBed/GetIcBedNames?typeValue=${typeValue}`).subscribe(res => {
       if (res.success && res.data) {
         this.filteredBedNames = res.data;
+      } else {
+        this.filteredBedNames = [];
       }
     });
   }
 
   Add(form: any) {
+    // healthFacilityId her zaman context'ten alınır — kullanıcı seçmez
     this.newBed.healthFacilityId = this.healthFacilityId;
+
+    if (!this.newBed.icBedNameId) {
+      this.swal.showError('Lütfen önce Yatak Tipi seçiniz.');
+      return;
+    }
+
     this.http.post('IcBed/Add', this.newBed).subscribe(res => {
       if (res.success) {
         this.modalCom?.close('addIcBedModal');
         form.resetForm();
         this.newBed = new CreateIcBedDto();
-        this.selectedType = null;
+        this.filteredBedNames = [];
         this.GetAll();
-        this.swal.showSuccess("Eklendi");
+        this.swal.showSuccess('Eklendi');
       }
     });
   }
@@ -117,28 +123,34 @@ export class IcBedComponent implements OnInit {
       icBedRegDate: new Date(bed.icBedRegDate),
       icBedRegNumber: bed.icBedRegNumber,
       icBedNameId: bed.icBedNameId,
+      icBedType: bed.icBedType,
       isActive: bed.isActive
     };
-    this.selectedUpdateType = bed.icBedType;
+    // Düzenleme modalı açılırken mevcut tipe ait filtrelenmiş listeyi yükle
     this.onTypeChange(bed.icBedType, 'edit');
   }
 
   Update(form: any) {
+    if (!this.updateBed.icBedNameId) {
+      this.swal.showError('Geçerli bir yatak türü belirlenemedi.');
+      return;
+    }
+
     this.http.post('IcBed/Update', this.updateBed).subscribe(res => {
       if (res.success) {
         this.modalCom?.close('editIcBedModal');
         this.GetAll();
-        this.swal.showSuccess("Güncellendi");
+        this.swal.showSuccess('Güncellendi');
       }
     });
   }
 
   Delete(id: string) {
-    this.swal.showConfirmation("Silmek istediğinize emin misiniz?", "Bu işlem geri alınamaz!", () => {
+    this.swal.showConfirmation('Silmek istediğinize emin misiniz?', 'Bu işlem geri alınamaz!', () => {
       this.http.post('IcBed/Delete', `"${id}"`).subscribe(res => {
         if (res.success) {
           this.GetAll();
-          this.swal.showSuccess("Silindi");
+          this.swal.showSuccess('Silindi');
         }
       });
     });

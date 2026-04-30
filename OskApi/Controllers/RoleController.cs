@@ -8,6 +8,7 @@ using OskApi.Shared.Result;
 
 namespace OskApi.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class RoleController : ControllerBase

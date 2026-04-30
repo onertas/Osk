@@ -11,6 +11,7 @@ namespace OskApi.Dtos.Beds
         public DateTime IcBedRegDate { get; set; }
         public string IcBedRegNumber { get; set; } = null!;
         public Guid IcBedNameId { get; set; }
+        public int IcBedType { get; set; }
         public bool IsActive { get; set; } = true;
     }
 }

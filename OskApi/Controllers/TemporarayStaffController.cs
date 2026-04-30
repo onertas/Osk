@@ -1,5 +1,6 @@
 using AutoMapper;
 using GenericRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OskApi.Dtos.Staff;
@@ -9,6 +10,7 @@ using OskApi.Shared.Result;
 
 namespace OskApi.Controllers;
 
+[Authorize]
 [Route("api/[controller]/[action]")]
 [ApiController]
 public class TemporarayStaffController : ControllerBase
@@ -24,6 +26,7 @@ public class TemporarayStaffController : ControllerBase
         _mapper = mapper;
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Add(CreateTemporarayStaffDto model)
     {
@@ -36,6 +39,7 @@ public class TemporarayStaffController : ControllerBase
         return Ok(Result.Ok("Eklendi"));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Update(UpdateTemporarayStaffDto model)
     {
@@ -48,6 +52,7 @@ public class TemporarayStaffController : ControllerBase
         return Ok(Result.Ok("Güncellendi"));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Delete([FromBody] Guid id)
     {
