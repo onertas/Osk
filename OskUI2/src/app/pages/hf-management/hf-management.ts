@@ -119,19 +119,8 @@ export class HfManagementComponent implements OnInit {
   }
 
   Edit(item: HfManagementListDto) {
-    this.updateModel = {
-      id: item.id,
-      name: item.name,
-      healthFacilityTypeId: item.healthFacilityTypeId,
-      typeName: item.typeName,
-      address: item.address,
-      phoneNumber: item.phoneNumber,
-      email: item.email,
-      taxNumber: item.taxNumber,
-      corporationName: item.corporationName,
-      observationBedCount: item.observationBedCount,
-      totalBedCount: item.totalBedCount,
-    };
+    this.updateModel = new UpdateHealthFacilityDto();
+    Object.assign(this.updateModel, item);
   }
 
   Update(form: any) {

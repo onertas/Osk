@@ -32,21 +32,17 @@ namespace OskApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(CreateIcBedDto model)
         {
-            var entity = _mapper.Map<IcBed>(model);
-            
-            // SmartEnum mapping from int values
-            entity.IcBedRegLevel = IcBedRegLevel.FromValue(model.IcBedRegLevel);
-            entity.IcBedRegType = IcBedRegType.FromValue(model.IcBedRegType);
-
             try
             {
+                var entity = _mapper.Map<IcBed>(model);
                 await _icBedService.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
                 return Ok(Result.Ok("Eklendi"));
             }
             catch (Exception ex)
             {
-                return BadRequest(Result.Fail(ex.Message));
+                var message = ex.InnerException?.Message ?? ex.Message;
+                return BadRequest(Result.Fail(message));
             }
         }
 
@@ -57,20 +53,17 @@ namespace OskApi.Controllers
             var entity = await _icBedService.GetAll().FirstOrDefaultAsync(x => x.Id == model.Id);
             if (entity == null) return NotFound(Result.Fail("Kayıt bulunamadı"));
 
-            _mapper.Map(model, entity);
-            
-            entity.IcBedRegLevel = IcBedRegLevel.FromValue(model.IcBedRegLevel);
-            entity.IcBedRegType = IcBedRegType.FromValue(model.IcBedRegType);
-
             try
             {
+                _mapper.Map(model, entity);
                 _icBedService.Update(entity);
                 await _unitOfWork.SaveChangesAsync();
                 return Ok(Result.Ok("Güncellendi"));
             }
             catch (Exception ex)
             {
-                return BadRequest(Result.Fail(ex.Message));
+                var message = ex.InnerException?.Message ?? ex.Message;
+                return BadRequest(Result.Fail(message));
             }
         }
 

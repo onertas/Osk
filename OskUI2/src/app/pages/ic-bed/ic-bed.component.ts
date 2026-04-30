@@ -109,6 +109,8 @@ export class IcBedComponent implements OnInit {
         this.filteredBedNames = [];
         this.GetAll();
         this.swal.showSuccess('Eklendi');
+      } else {
+        this.swal.showError(res.message || 'Ekleme işlemi başarısız oldu.');
       }
     });
   }
@@ -141,6 +143,8 @@ export class IcBedComponent implements OnInit {
         this.modalCom?.close('editIcBedModal');
         this.GetAll();
         this.swal.showSuccess('Güncellendi');
+      } else {
+        this.swal.showError(res.message || 'Güncelleme işlemi başarısız oldu.');
       }
     });
   }
