@@ -109,6 +109,29 @@ public class PmBusinessRules
                 return Result<string>.Fail($"Bu hareket türü için personel kotası dolmuştur. (Kota: {pmType.StatusQuota}, Mevcut: {activePersonelCount})");
         }
 
+        // 6- OHY24 Kuralı: İlgili branştaki OHY24 sayısı, hastanenin ilgili branştaki kadrosunun 1/3'ünü geçemez
+        if (pmType.Code == "OHY24")
+        {
+            var staff = await _staffService.GetAll()
+                .FirstOrDefaultAsync(s => s.HealthFacilityId == model.HealthFacilityId && s.BranchId == model.BranchId);
+
+            if (staff == null)
+                return Result<string>.Fail("İlgili tesis ve branş için kadro tanımlı değil (1/3 kuralı işletilemiyor).");
+
+            var activeOhy24Count = await _pmService.GetAll()
+                .CountAsync(pm => pm.HealthFacilityId == model.HealthFacilityId 
+                               && pm.BranchId == model.BranchId 
+                               && pm.PmTypeId == model.PmTypeId
+                               && (pm.Finish == null || pm.Finish >= DateTime.Now));
+
+            if(staff.Count>0 && staff.Count<3) staff.Count= 3; // Kadro 3'ten az ise, 1/3 kuralı işletilemeyeceği için kadroyu 3 olarak varsayıyoruz.
+
+            int limit = staff.Count / 3;
+
+            if (activeOhy24Count >= limit)
+                return Result<string>.Fail($"Bu branş için OHY24 hareket türü sayısı, kadronun 1/3'ünü geçemez. (Kadro: {staff.Count}, İzin Verilen: {limit}, Mevcut: {activeOhy24Count})");
+        }
+
         return Result<string>.Ok("Kurallar geçerli");
     }
 }
