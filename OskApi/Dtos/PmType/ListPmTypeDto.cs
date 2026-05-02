@@ -10,7 +10,6 @@ namespace OskApi.Dtos.PmType
         public bool IsBeforeStartStaff { get; set; }
         public bool IsManager { get; set; }
         public bool IsFaaliyet2Control { get; set; }
-        public bool IsOnlyOneStatu { get; set; }
         public int StatusQuota { get; set; }
     }
 }

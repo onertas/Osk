@@ -17,6 +17,7 @@
       <th pSortableColumn="lastName">Soyadı <p-sortIcon field="lastName"></p-sortIcon></th>
       <th pSortableColumn="email">E-posta <p-sortIcon field="email"></p-sortIcon></th>
       <th pSortableColumn="phoneNumber">Telefon <p-sortIcon field="phoneNumber"></p-sortIcon></th>
+      <th pSortableColumn="birthDate">Doğum Tarihi <p-sortIcon field="birthDate"></p-sortIcon></th>
       <th pSortableColumn="title">Ünvan <p-sortIcon field="title"></p-sortIcon></th>
       <th pSortableColumn="branches">Branş <p-sortIcon field="branches"></p-sortIcon></th>
       <th>İşlemler</th>
@@ -29,6 +30,7 @@
       <td>{{ person.lastName }}</td>
       <td>{{ person.email }}</td>
       <td>{{ person.phoneNumber }}</td>
+      <td>{{ person.birthDate | date:'dd.MM.yyyy' }}</td>
       <td>{{ person.title }}</td>
       <td>{{ person.branches.join(', ') }}</td>
       <td style="text-align: right">
@@ -81,9 +83,15 @@
         <input type="text" class="form-control" name="lastName" [(ngModel)]="newPersonnel.lastName" required>
       </div>
     </div>
-    <div class="form-group mb-2">
-      <label>Email</label>
-      <input type="email" class="form-control" name="email" [(ngModel)]="newPersonnel.email" required>
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Email</label>
+        <input type="email" class="form-control" name="email" [(ngModel)]="newPersonnel.email" required>
+      </div>
+      <div class="col-md-6 form-group mb-2 d-flex flex-column">
+        <label>Doğum Tarihi</label>
+        <p-datepicker [(ngModel)]="newPersonnel.birthDate" name="birthDate" styleClass="w-100" dateFormat="dd.mm.yy" [showIcon]="true"></p-datepicker>
+      </div>
     </div>
     <div class="form-group mb-2">
       <label>Branşlar</label>
@@ -128,9 +136,15 @@
         <input type="text" class="form-control" name="updLastName" [(ngModel)]="updatePersonnelModel.lastName" required>
       </div>
     </div>
-    <div class="form-group mb-2">
-      <label>Email</label>
-      <input type="email" class="form-control" name="updEmail" [(ngModel)]="updatePersonnelModel.email" required>
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Email</label>
+        <input type="email" class="form-control" name="updEmail" [(ngModel)]="updatePersonnelModel.email" required>
+      </div>
+      <div class="col-md-6 form-group mb-2 d-flex flex-column">
+        <label>Doğum Tarihi</label>
+        <p-datepicker [(ngModel)]="updatePersonnelModel.birthDate" name="updBirthDate" styleClass="w-100" dateFormat="dd.mm.yy" [showIcon]="true"></p-datepicker>
+      </div>
     </div>
     <div class="form-group mb-2">
       <label>Branşlar</label>

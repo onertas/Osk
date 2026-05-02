@@ -7,6 +7,5 @@ export class UpdatePmTypeDto {
     isBeforeStartStaff: boolean = false;
     isManager: boolean = false;
     isFaaliyet2Control: boolean = false;
-    isOnlyOneStatu: boolean = false;
     statusQuota: number = 0;
 }

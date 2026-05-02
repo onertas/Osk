@@ -11,17 +11,20 @@ public class PmBusinessRules
     private readonly IStaffService _staffService;
     private readonly ITemporarayStaffService _temporarayStaffService;
     private readonly IPmService _pmService;
+    private readonly IPersonnelService _personnelService;
 
     public PmBusinessRules(
         IPmTypeService pmTypeService, 
         IStaffService staffService, 
         ITemporarayStaffService temporarayStaffService,
-        IPmService pmService)
+        IPmService pmService,
+        IPersonnelService personnelService)
     {
         _pmTypeService = pmTypeService;
         _staffService = staffService;
         _temporarayStaffService = temporarayStaffService;
         _pmService = pmService;
+        _personnelService = personnelService;
     }
 
     public async Task<Result<string>> CheckRulesForCreateAsync(CreatePersonelMovementDto model)
@@ -85,18 +88,6 @@ public class PmBusinessRules
                 return Result<string>.Fail("Geçici kadroda bu tesis ve branş için ilgili hareket türüne ait kayıt bulunmamaktadır.");
         }
 
-        // 4- IsOnlyOneStatu
-        if (pmType.IsOnlyOneStatu)
-        {
-            var existing = await _pmService.GetAll()
-                .AnyAsync(pm => pm.PersonnelId == model.PersonnelId 
-                             && pm.PmTypeId == model.PmTypeId
-                             && (pm.Finish == null || pm.Finish >= DateTime.Now));
-
-            if (existing)
-                return Result<string>.Fail("Bu hareket türünden personel için sadece 1 aktif kayıt olabilir.");
-        }
-
         // 5- StatusQuota
         if (pmType.StatusQuota > 0)
         {
@@ -130,6 +121,26 @@ public class PmBusinessRules
 
             if (activeOhy24Count >= limit)
                 return Result<string>.Fail($"Bu branş için OHY24 hareket türü sayısı, kadronun 1/3'ünü geçemez. (Kadro: {staff.Count}, İzin Verilen: {limit}, Mevcut: {activeOhy24Count})");
+        }
+
+        // 7- OHY60 Kuralı: Eğer hareket türü OHY60 ise personelin yaşı 60 ve üstü olmalıdır.
+        if (pmType.Code == "OHY24-60")
+        {
+            var personnel = await _personnelService.GetAll()
+                .FirstOrDefaultAsync(p => p.Id == model.PersonnelId);
+
+            if (personnel == null)
+                return Result<string>.Fail("Personel bulunamadı.");
+
+            if (!personnel.BirthDate.HasValue)
+                return Result<string>.Fail("Personelin doğum tarihi bilgisi bulunmuyor. Lütfen önce doğum tarihini güncelleyiniz.");
+
+            var today = DateTime.Today;
+            var age = today.Year - personnel.BirthDate.Value.Year;
+            if (personnel.BirthDate.Value.Date > today.AddYears(-age)) age--;
+
+            if (age < 60)
+                return Result<string>.Fail($"OHY60 hareket türü için personelin yaşı 60 ve üzeri olmalıdır. (Mevcut yaş: {age})");
         }
 
         return Result<string>.Ok("Kurallar geçerli");

@@ -21,7 +21,6 @@
           <th style="width: 100px; text-align: center">Yönetici</th>
           <th style="width: 120px; text-align: center">KAdrolu Başlama</th>
           <th style="width: 100px; text-align: center">Faaliyet2</th>
-          <th style="width: 100px; text-align: center">Tek Statümü</th>
           <th pSortableColumn="statusQuota" style="width: 80px">Kota <p-sortIcon field="statusQuota"></p-sortIcon></th>
           <th style="width: 100px; text-align: right">İşlemler</th>
         </tr>
@@ -43,9 +42,6 @@
           </td>
           <td style="text-align: center">
             <i class="fas" [ngClass]="item.isFaaliyet2Control ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'"></i>
-          </td>
-          <td style="text-align: center">
-            <i class="fas" [ngClass]="item.isOnlyOneStatu ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'"></i>
           </td>
           <td style="text-align: center">{{ item.statusQuota }}</td>
           <td style="text-align: right">
@@ -116,12 +112,6 @@
         </div>
       </div>
       <div class="col-md-6 form-group mb-2 mt-2">
-        <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="isOnlyOneStatuAdd" name="isOnlyOneStatu" [(ngModel)]="newPmType.isOnlyOneStatu">
-          <label class="custom-control-label" for="isOnlyOneStatuAdd">Tek Statü mü?</label>
-        </div>
-      </div>
-      <div class="col-md-6 form-group mb-2 mt-2">
         <label>Statü Kotası</label>
         <input type="number" class="form-control" name="statusQuota" [(ngModel)]="newPmType.statusQuota">
       </div>
@@ -180,12 +170,6 @@
         <div class="custom-control custom-checkbox">
           <input type="checkbox" class="custom-control-input" id="isFaaliyet2ControlEdit" name="isFaaliyet2Control" [(ngModel)]="updatePmType.isFaaliyet2Control">
           <label class="custom-control-label" for="isFaaliyet2ControlEdit">Faaliyet2 Kontrol?</label>
-        </div>
-      </div>
-      <div class="col-md-6 form-group mb-2 mt-2">
-        <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="isOnlyOneStatuEdit" name="isOnlyOneStatu" [(ngModel)]="updatePmType.isOnlyOneStatu">
-          <label class="custom-control-label" for="isOnlyOneStatuEdit">Tek Statü mü?</label>
         </div>
       </div>
       <div class="col-md-6 form-group mb-2 mt-2">

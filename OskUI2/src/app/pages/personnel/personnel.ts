@@ -110,6 +110,7 @@ export class Personnel implements OnInit {
       email: person.email,
       phoneNumber: person.phoneNumber,
       isBanned: person.isBanned,
+      birthDate: person.birthDate ? new Date(person.birthDate) : undefined,
       personnelBranches: [...person.branchIds]
     };
   }

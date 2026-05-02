@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 
 namespace OskApi.Entities.Personnel;
 
@@ -11,6 +11,7 @@ public class Personnel : Entity
     public string PhoneNumber { get; set; } = string.Empty;
     public bool IsBanned { get; set; } = false;
     public string Description { get; set; } = string.Empty;
+    public DateTime? BirthDate { get; set; }
     public ICollection<PersonnelBranch>? PersonnelBranches { get; set; }
 
 

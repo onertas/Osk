@@ -45,7 +45,8 @@ public class PersonnelController : ControllerBase
             Email = model.Email,
             PhoneNumber = model.PhoneNumber,
             IdentityNumber = model.IdentityNumber,
-            IsBanned = model.IsBanned
+            IsBanned = model.IsBanned,
+            BirthDate = model.BirthDate
         };
 
         try
@@ -77,6 +78,7 @@ public class PersonnelController : ControllerBase
         entity.PhoneNumber = model.PhoneNumber;
         entity.IdentityNumber = model.IdentityNumber;
         entity.IsBanned = model.IsBanned;
+        entity.BirthDate = model.BirthDate;
 
         // Update Branches using DbContext to remove orphaned records
         if (entity.PersonnelBranches != null && entity.PersonnelBranches.Any())

@@ -5,6 +5,7 @@ export class CreatePersonnelDto {
   email: string = "";
   phoneNumber: string = "";
   isBanned: boolean = false;
+  birthDate?: string | Date;
   personnelBranches?: string[]; // Guid -> string olarak tutulur
 }
 

@@ -6,6 +6,7 @@ export class ListPersonnelDto {
     email: string = '';
     phoneNumber: string = '';
     isBanned: boolean = false;
+    birthDate?: string;
     title: string = '';
     branches: string[] = [];
     branchIds: string[] = [];

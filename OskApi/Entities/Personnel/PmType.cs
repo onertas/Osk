@@ -1,4 +1,4 @@
-﻿namespace OskApi.Entities.Personnel;
+namespace OskApi.Entities.Personnel;
 
 public class PmType : Entity
 {
@@ -9,7 +9,6 @@ public class PmType : Entity
     public bool IsBeforeStartStaff { get; set; }
     public bool IsManager { get; set; }
     public bool IsFaaliyet2Control { get; set; }
-    public bool IsOnlyOneStatu { get; set; }
     public int StatusQuota { get; set; }
 
 }

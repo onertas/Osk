@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OskApi.Data;
 using OskApi.Entities.HealthFacilities;
@@ -85,7 +85,6 @@ public class SeedData
                     Description = "Kadrolu personel",
                     Order = 1,
                     IsUsingStaff = true,
-                    IsOnlyOneStatu = true,
                     StatusQuota = 1
                 },
                 new PmType
@@ -95,7 +94,6 @@ public class SeedData
                     Description = "Geçici personel",
                     Order = 2,
                     IsUsingStaff = true,
-                    IsOnlyOneStatu = true,
                     StatusQuota = 1
                 }
             );
