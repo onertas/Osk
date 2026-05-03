@@ -12,5 +12,6 @@ namespace OskApi.Dtos.HealthFacilities
         public string? CorporationName { get; set; }
         public int ObservationBedCount { get; set; }
         public int TotalBedCount { get; set; }
+        public DateTime? OpeningDate { get; set; }
     }
 }

@@ -80,6 +80,23 @@ public class PmController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetByPersonnelId(Guid personnelId)
+    {
+        var list = await _pmService.GetAll()
+            .Include(i => i.PmType)
+            .Include(i => i.Branch)
+            .Include(i => i.HealthFacility)
+            .Include(i => i.Personnel)
+            .Where(i => i.PersonnelId == personnelId)
+            .ToListAsync();
+            
+        var mappedList = _mapper.Map<List<ListPersonelMovementDto>>(list);
+        
+        var result = Result<List<ListPersonelMovementDto>>.Ok(mappedList);
+        return Ok(result);
+    }
+
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> Update(UpdatePersonelMovementDto model)

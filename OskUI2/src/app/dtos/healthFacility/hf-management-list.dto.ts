@@ -10,4 +10,5 @@ export class HfManagementListDto {
   totalBedCount: number = 0;
   healthFacilityTypeId: string = '';
   typeName: string = '';
+  openingDate?: Date;
 }

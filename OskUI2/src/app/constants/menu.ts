@@ -120,6 +120,15 @@ export const Menus: MenuModel[] = [
     show: true,
     subMenus: [
       {
+        name: 'Personel Arama / Detay',
+        icon: 'fa fa-chevron-right fa-xs',
+        url: '/personnel-search',
+        isTitle: false,
+        roles: ['Admin'],
+        show: true,
+        subMenus: [],
+      },
+      {
         name: 'Kişi Bazlı Görev Raporu',
         icon: 'fa fa-chevron-right fa-xs',
         url: '/task-users',

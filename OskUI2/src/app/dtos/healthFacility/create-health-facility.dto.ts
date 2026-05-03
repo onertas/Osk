@@ -8,4 +8,5 @@ export class CreateHealthFacilityDto {
   corporationName?: string;
   observationBedCount: number = 0;
   totalBedCount: number = 0;
+  openingDate?: Date;
 }

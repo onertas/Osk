@@ -1,0 +1,121 @@
+<app-blank title="Personel Arama ve Detay">
+  <app-section title="Personel Ara">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="input-group">
+          <input 
+            type="text" 
+            class="form-control" 
+            placeholder="Ad, Soyad veya TC Kimlik No ile ara (en az 3 karakter)..." 
+            [(ngModel)]="searchText"
+            (keyup.enter)="onSearch()"
+          >
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="button" (click)="onSearch()" [disabled]="loadingSearch">
+              <i class="fa fa-search" *ngIf="!loadingSearch"></i>
+              <i class="fa fa-spinner fa-spin" *ngIf="loadingSearch"></i>
+              Ara
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Arama Sonuçları -->
+    <div class="row" *ngIf="searchResults.length > 0 && !selectedPersonnel">
+      <div class="col-md-12">
+        <p-table [value]="searchResults" styleClass="p-datatable-sm fontstil13" [responsiveLayout]="'scroll'">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>TC Kimlik No</th>
+              <th>Adı</th>
+              <th>Soyadı</th>
+              <th>Telefon</th>
+              <th style="text-align: right">İşlem</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-p>
+            <tr>
+              <td>{{ p.identityNumber }}</td>
+              <td>{{ p.firstName }}</td>
+              <td>{{ p.lastName }}</td>
+              <td>{{ p.phoneNumber }}</td>
+              <td style="text-align: right">
+                <button class="btn btn-sm btn-info" (click)="selectPersonnel(p)">
+                  <i class="fa fa-eye"></i> Detay
+                </button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+    
+    <div *ngIf="searchResults.length === 0 && searchText.length >= 3 && !loadingSearch && !selectedPersonnel" class="alert alert-warning">
+      Sonuç bulunamadı.
+    </div>
+  </app-section>
+
+  <!-- Seçilen Personelin Detayları ve Hareketleri -->
+  <app-section title="Personel Detayı ve Hareket Geçmişi" *ngIf="selectedPersonnel">
+    
+    <div class="mb-3 d-flex justify-content-between">
+      <h5>{{ selectedPersonnel.firstName }} {{ selectedPersonnel.lastName }} ({{ selectedPersonnel.identityNumber }})</h5>
+      <button class="btn btn-secondary btn-sm" (click)="selectedPersonnel = null; personnelMovements = []">
+        <i class="fa fa-arrow-left"></i> Geri Dön
+      </button>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-3"><strong>Telefon:</strong> {{ selectedPersonnel.phoneNumber || 'Yok' }}</div>
+      <div class="col-md-3"><strong>Email:</strong> {{ selectedPersonnel.email || 'Yok' }}</div>
+      <div class="col-md-3"><strong>Doğum Tarihi:</strong> {{ (selectedPersonnel.birthDate | date:'dd.MM.yyyy') || 'Yok' }}</div>
+    </div>
+
+    <hr>
+    <h6>Çalıştığı Kurumlar (Hareket Geçmişi)</h6>
+    
+    <div *ngIf="loadingDetails" class="text-center py-3">
+      <i class="fa fa-spinner fa-spin fa-2x"></i> Yükleniyor...
+    </div>
+
+    <p-table 
+      *ngIf="!loadingDetails" 
+      [value]="personnelMovements" 
+      styleClass="p-datatable-sm fontstil13 p-datatable-striped" 
+      [responsiveLayout]="'scroll'">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Kurum Adı</th>
+          <th>Hareket Türü</th>
+          <th>Branş</th>
+          <th>Başlama Tarihi</th>
+          <th>Ayrılış Tarihi</th>
+          <th>SGK Durumu</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-pm>
+        <tr>
+          <td>{{ pm.healthFacility?.name }}</td>
+          <td>
+            <span class="badge bg-secondary">{{ pm.pmType?.name }}</span>
+          </td>
+          <td>{{ pm.branch?.name }}</td>
+          <td>{{ pm.start | date:'dd.MM.yyyy' }}</td>
+          <td>{{ pm.finish ? (pm.finish | date:'dd.MM.yyyy') : 'Devam Ediyor' }}</td>
+          <td>
+            <span class="badge" [ngClass]="pm.isSgk ? 'bg-success' : 'bg-warning'">
+              {{ pm.isSgk ? 'SGK Var' : 'SGK Yok' }}
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="text-center text-muted">Kayıtlı hareket bulunmuyor.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+  </app-section>
+</app-blank>

@@ -10,4 +10,5 @@ export class UpdateHealthFacilityDto {
   public corporationName?: string;
   public observationBedCount: number = 0;
   public totalBedCount: number = 0;
+  public openingDate?: Date;
 }

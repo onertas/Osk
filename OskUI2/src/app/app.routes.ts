@@ -87,6 +87,11 @@ export const routes: Routes = [
         canActivate: [adminGuard],
         loadComponent: () => import('./pages/temporaray-staff/temporaray-staff').then(m => m.TemporarayStaffComponent)
       },
+      {
+        path: 'personnel-search',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./pages/personnel-search/personnel-search.component').then(m => m.PersonnelSearchComponent)
+      },
       { path: '**', component: ErrorComponent },
       { path: 'errorpage', component: ErrorComponent },
     ],

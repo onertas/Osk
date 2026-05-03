@@ -12,19 +12,22 @@ public class PmBusinessRules
     private readonly ITemporarayStaffService _temporarayStaffService;
     private readonly IPmService _pmService;
     private readonly IPersonnelService _personnelService;
+    private readonly IHealthFacilityService _healthFacilityService;
 
     public PmBusinessRules(
         IPmTypeService pmTypeService, 
         IStaffService staffService, 
         ITemporarayStaffService temporarayStaffService,
         IPmService pmService,
-        IPersonnelService personnelService)
+        IPersonnelService personnelService,
+        IHealthFacilityService healthFacilityService)
     {
         _pmTypeService = pmTypeService;
         _staffService = staffService;
         _temporarayStaffService = temporarayStaffService;
         _pmService = pmService;
         _personnelService = personnelService;
+        _healthFacilityService = healthFacilityService;
     }
 
     public async Task<Result<string>> CheckRulesForCreateAsync(CreatePersonelMovementDto model)
@@ -47,20 +50,29 @@ public class PmBusinessRules
         // 1- IsUsingStaff
         if (pmType.IsUsingStaff)
         {
-            var staff = await _staffService.GetAll()
-                .FirstOrDefaultAsync(s => s.HealthFacilityId == model.HealthFacilityId && s.BranchId == model.BranchId);
+            var targetFacility = await _healthFacilityService.GetAll()
+                .Include(hf => hf.HealthFacilityType)
+                .FirstOrDefaultAsync(hf => hf.Id == model.HealthFacilityId);
 
-            if (staff == null)
-                return Result<string>.Fail("İlgili tesis ve branş için kadro tanımlı değil.");
+            bool isTargetMh = targetFacility?.HealthFacilityType?.Code == "MH";
 
-            var activeCount = await _pmService.GetAll()
-                .CountAsync(pm => pm.HealthFacilityId == model.HealthFacilityId 
-                               && pm.BranchId == model.BranchId 
-                               && pm.PmTypeId == model.PmTypeId
-                               && (pm.Finish == null || pm.Finish >= DateTime.Now));
+            if (!isTargetMh)
+            {
+                var staff = await _staffService.GetAll()
+                    .FirstOrDefaultAsync(s => s.HealthFacilityId == model.HealthFacilityId && s.BranchId == model.BranchId);
 
-            if (activeCount >= staff.Count)
-                return Result<string>.Fail($"Kadro yetersiz. (Kapasite: {staff.Count}, Mevcut: {activeCount})");
+                if (staff == null)
+                    return Result<string>.Fail("İlgili tesis ve branş için kadro tanımlı değil.");
+
+                var activeCount = await _pmService.GetAll()
+                    .CountAsync(pm => pm.HealthFacilityId == model.HealthFacilityId 
+                                   && pm.BranchId == model.BranchId 
+                                   && pm.PmTypeId == model.PmTypeId
+                                   && (pm.Finish == null || pm.Finish >= DateTime.Now));
+
+                if (activeCount >= staff.Count)
+                    return Result<string>.Fail($"Kadro yetersiz. (Kapasite: {staff.Count}, Mevcut: {activeCount})");
+            }
         }
 
         // 2- IsBeforeStartStaff
@@ -141,6 +153,23 @@ public class PmBusinessRules
 
             if (age < 60)
                 return Result<string>.Fail($"OHY60 hareket türü için personelin yaşı 60 ve üzeri olmalıdır. (Mevcut yaş: {age})");
+        }
+
+        // 8- OHY24-MUH Kuralı: Personel daha önce MH kodlu ve açılış tarihi 01.07.2023 öncesi olan bir kurumda başlamış olmalı.
+        if (pmType.Code == "OHY24-MUH")
+        {
+            var hasStartedInMHBefore = await _pmService.GetAll()
+                .Include(pm => pm.HealthFacility)
+                .ThenInclude(hf => hf.HealthFacilityType)
+                .AnyAsync(pm => pm.PersonnelId == model.PersonnelId
+                             && pm.HealthFacility != null
+                             && pm.HealthFacility.HealthFacilityType != null
+                             && pm.HealthFacility.HealthFacilityType.Code == "MH"
+                             && pm.HealthFacility.OpeningDate != null
+                             && pm.HealthFacility.OpeningDate < new DateTime(2023, 7, 1));
+
+            if (!hasStartedInMHBefore)
+                return Result<string>.Fail("OHY24-MUH hareket türü eklenebilmesi için personelin daha önce açılış tarihi 01.07.2023'ten önce olan ve türü Muayenehane (MH) olan bir kurumda başlamış olması gerekmektedir.");
         }
 
         return Result<string>.Ok("Kurallar geçerli");

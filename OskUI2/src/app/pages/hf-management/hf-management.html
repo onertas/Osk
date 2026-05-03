@@ -172,6 +172,13 @@
       </div>
     </div>
 
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Kurum Açılış Tarihi</label>
+        <input type="date" class="form-control" name="updOpeningDate" [ngModel]="updateModel.openingDate | date:'yyyy-MM-dd'" (ngModelChange)="updateModel.openingDate = $event" />
+      </div>
+    </div>
+
     <div class="form-group mb-2">
       <label>Adres</label>
       <textarea
@@ -247,6 +254,13 @@
       <div class="col-md-6 form-group mb-2">
         <label>Toplam Yatak Sayısı</label>
         <input type="number" class="form-control" name="addTotalBedCount" [(ngModel)]="createModel.totalBedCount" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
+        <label>Kurum Açılış Tarihi</label>
+        <input type="date" class="form-control" name="addOpeningDate" [ngModel]="createModel.openingDate | date:'yyyy-MM-dd'" (ngModelChange)="createModel.openingDate = $event" />
       </div>
     </div>
 
