@@ -8,6 +8,7 @@ import * as XLSX from 'xlsx';
 import { InputTextModule } from 'primeng/inputtext';
 import { SharedModule } from '../../modules/shared.module';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { SelectModule } from 'primeng/select';
 import { TableModule, Table } from 'primeng/table';
 import { HttpApiService } from '../../services/http-api-service';
 import { ListPersonnelDto } from '../../dtos/personnel/ListPersonnelDto';
@@ -20,7 +21,7 @@ import { UpdatePersonnelDto } from '../../dtos/personnel/UpdatePersonnelDto';
 
 @Component({
   selector: 'app-personnel',
-  imports: [ButtonModule, Modal, InputMaskModule, DatePickerModule, InputTextModule, SharedModule, MultiSelectModule, TableModule, Modal],
+  imports: [ButtonModule, Modal, InputMaskModule, DatePickerModule, InputTextModule, SharedModule, MultiSelectModule, SelectModule, TableModule, Modal],
   templateUrl: './personnel.html',
   styleUrl: './personnel.css',
 })
@@ -37,16 +38,22 @@ export class Personnel implements OnInit {
   updatePersonnelModel: UpdatePersonnelDto = new UpdatePersonnelDto();
   personnel: ListPersonnelDto[] = [];
   branches: any[] = [];
+  titles: any[] = [];
+  filteredBranches: any[] = [];
+  selectedTitleId: string = "";
   //#endregion
 
   //#region METHODS
   ngOnInit(): void {
     this.GetAll();
     this.GetBranches();
+    this.GetTitles();
   }
 
   ResetForm() {
     this.newPersonnel = new CreatePersonnelDto();
+    this.selectedTitleId = "";
+    this.filteredBranches = [];
   }
 
   onGlobalFilter(event: Event) {
@@ -113,6 +120,18 @@ export class Personnel implements OnInit {
       birthDate: person.birthDate ? new Date(person.birthDate) : undefined,
       personnelBranches: [...person.branchIds]
     };
+
+    // Find the titleId from the first branch if available
+    if (person.branchIds && person.branchIds.length > 0) {
+      const firstBranch = this.branches.find(b => b.id === person.branchIds[0]);
+      if (firstBranch) {
+        this.selectedTitleId = firstBranch.titleId;
+        this.onTitleChange(this.selectedTitleId);
+      }
+    } else {
+      this.selectedTitleId = "";
+      this.filteredBranches = [];
+    }
   }
 
   Delete(id: string) {
@@ -142,6 +161,27 @@ export class Personnel implements OnInit {
         this.branches = res.data;
       }
     });
+  }
+
+  GetTitles() {
+    this.http.get<any[]>('title/getall').subscribe(res => {
+      if (res.success && res.data) {
+        this.titles = res.data;
+      }
+    });
+  }
+
+  onTitleChange(titleId: string) {
+    this.filteredBranches = this.branches.filter(b => b.titleId === titleId);
+    const validBranchIds = this.filteredBranches.map(b => b.id);
+
+    if (this.newPersonnel.personnelBranches) {
+      this.newPersonnel.personnelBranches = this.newPersonnel.personnelBranches.filter(id => validBranchIds.includes(id));
+    }
+
+    if (this.updatePersonnelModel.personnelBranches) {
+      this.updatePersonnelModel.personnelBranches = this.updatePersonnelModel.personnelBranches.filter(id => validBranchIds.includes(id));
+    }
   }
   //#endregion
 
