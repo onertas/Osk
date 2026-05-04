@@ -8,12 +8,16 @@
             class="form-control" 
             placeholder="Ad, Soyad veya TC Kimlik No ile ara (en az 3 karakter)..." 
             [(ngModel)]="searchText"
-            (keyup.enter)="onSearch()"
+            (ngModelChange)="searchPerformed = false"
           >
           <div class="input-group-append">
             <button class="btn btn-primary" type="button" (click)="onSearch()" [disabled]="loadingSearch">
-              <i class="fa fa-search" *ngIf="!loadingSearch"></i>
-              <i class="fa fa-spinner fa-spin" *ngIf="loadingSearch"></i>
+              @if (!loadingSearch){
+                <i class="fa fa-search"></i>
+              }
+              @else {
+                <i class="fa fa-spinner fa-spin"></i>
+              }
               Ara
             </button>
           </div>
@@ -51,7 +55,7 @@
       </div>
     </div>
     
-    <div *ngIf="searchResults.length === 0 && searchText.length >= 3 && !loadingSearch && !selectedPersonnel" class="alert alert-warning">
+    <div *ngIf="searchPerformed && searchResults.length === 0 && searchText.length >= 3 && !loadingSearch && !selectedPersonnel" class="alert alert-warning">
       Sonuç bulunamadı.
     </div>
   </app-section>

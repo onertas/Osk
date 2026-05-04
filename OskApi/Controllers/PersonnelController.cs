@@ -119,6 +119,13 @@ public class PersonnelController : ControllerBase
         var entity = await _personnelService.GetAll().FirstOrDefaultAsync(i => i.Id == id);
         if (entity == null) return NotFound(Result.Fail("Personel bulunamadı"));
 
+        // Personelin hareket kaydı varsa silinemez
+        var hasMovements = await _context.PersonnelMovements.AnyAsync(m => m.PersonnelId == id);
+        if (hasMovements)
+        {
+            return BadRequest(Result.Fail("Bu personelin hareket kaydı bulunduğu için silinemez. Önce hareketlerini silmelisiniz."));
+        }
+
         _personnelService.Delete(entity);
         await _unitOfWork.SaveChangesAsync();
 

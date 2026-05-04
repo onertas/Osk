@@ -22,6 +22,7 @@ export class PersonnelSearchComponent {
   
   loadingSearch: boolean = false;
   loadingDetails: boolean = false;
+  searchPerformed: boolean = false;
 
   onSearch() {
     if (!this.searchText || this.searchText.length < 3) {
@@ -29,7 +30,10 @@ export class PersonnelSearchComponent {
       return;
     }
 
+    this.selectedPersonnel = null;
+    this.personnelMovements = [];
     this.loadingSearch = true;
+    this.searchPerformed = true;
     this.http.get<any>(`Personnel/Search?query=${this.searchText}`).subscribe({
       next: (res) => {
         if (res.success && res.data) {
