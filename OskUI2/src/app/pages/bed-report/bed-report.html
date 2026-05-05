@@ -1,0 +1,180 @@
+<app-blank title="Yatak Raporu">
+    <!-- Summary Stats -->
+    <div class="row">
+        <div class="col-lg-2 col-6">
+            <div class="small-box bg-dark shadow-sm">
+                <div class="inner text-white">
+                    <h3>{{ stats.totalBeds }}</h3>
+                    <p>Toplam Yatak</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-bed"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-6">
+            <div class="small-box bg-info shadow-sm">
+                <div class="inner text-white">
+                    <h3>{{ stats.eriskin }}</h3>
+                    <p>Erişkin Yatak</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-6">
+            <div class="small-box bg-primary shadow-sm">
+                <div class="inner text-white">
+                    <h3>{{ stats.cocuk }}</h3>
+                    <p>Çocuk Yatak</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-child"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-teal shadow-sm">
+                <div class="inner text-white">
+                    <h3>{{ stats.yenidogan }}</h3>
+                    <p>Yenidoğan Yatak</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-baby"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-olive shadow-sm">
+                <div class="inner text-white">
+                    <h3>{{ stats.servis }}</h3>
+                    <p>Servis Yatağı</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-hospital-alt"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card card-outline card-dark shadow-sm">
+        <div class="card-header">
+            <h3 class="card-title font-weight-bold"><i class="fas fa-filter mr-2"></i>Gelişmiş Filtreler</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" (click)="resetFilters()" title="Filtreleri Sıfırla">
+                    <i class="fas fa-sync"></i> Sıfırla
+                </button>
+            </div>
+        </div>
+        <div class="card-body p-3">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group mb-2">
+                        <label class="small text-muted mb-1">Sağlık Kuruluşu</label>
+                        <p-select [options]="facilities" [(ngModel)]="filterModel.healthFacilityId" (onChange)="applyFilters()"
+                            optionLabel="name" optionValue="id" [filter]="true" placeholder="Tümü" styleClass="w-100 p-inputtext-sm"></p-select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group mb-2">
+                        <label class="small text-muted mb-1">Yatak Tipi</label>
+                        <p-select [options]="bedTypes" [(ngModel)]="filterModel.icBedType" (onChange)="applyFilters()"
+                            optionLabel="description" optionValue="value" placeholder="Tümü" styleClass="w-100 p-inputtext-sm"></p-select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group mb-2">
+                        <label class="small text-muted mb-1">Seviye</label>
+                        <p-select [options]="regLevels" [(ngModel)]="filterModel.icBedRegLevel" (onChange)="applyFilters()"
+                            optionLabel="description" optionValue="value" placeholder="Tümü" styleClass="w-100 p-inputtext-sm"></p-select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group mb-2">
+                        <label class="small text-muted mb-1">Durum</label>
+                        <p-select [options]="activeOptions" [(ngModel)]="filterModel.isActive" (onChange)="applyFilters()"
+                            optionLabel="label" optionValue="value" styleClass="w-100 p-inputtext-sm"></p-select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group mb-2">
+                        <label class="small text-muted mb-1">Arama</label>
+                        <div class="p-input-icon-left w-100">
+                            <i class="fas fa-search ml-2" style="position: absolute; z-index: 1; top: 50%; transform: translateY(-50%); color: #aaa;"></i>
+                            <input pInputText type="text" [(ngModel)]="filterModel.search" (input)="applyFilters()"
+                                placeholder="Tür, Tescil No, Kuruluş..." class="w-100 p-inputtext-sm" style="padding-left: 2.5rem;" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="card card-dark shadow-sm">
+        <div class="card-header border-0">
+            <h3 class="card-title">Yatak Listesi</h3>
+            <div class="card-tools">
+                <button (click)="exportToExcel()" class="btn btn-sm btn-success">
+                    <i class="fas fa-file-excel mr-1"></i> Excel'e Aktar
+                </button>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <p-table #dt [value]="filteredBeds" [paginator]="true" [rows]="15" [rowsPerPageOptions]="[15,30,50,100]"
+                styleClass="p-datatable-sm p-datatable-striped fontstil13" [loading]="loading" [responsiveLayout]="'scroll'">
+                
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="healthFacilityName">Kuruluş <p-sortIcon field="healthFacilityName"></p-sortIcon></th>
+                        <th pSortableColumn="icBedName">Yatak Türü <p-sortIcon field="icBedName"></p-sortIcon></th>
+                        <th pSortableColumn="icBedTypeName">Tip <p-sortIcon field="icBedTypeName"></p-sortIcon></th>
+                        <th pSortableColumn="icBedRegLevelName">Seviye <p-sortIcon field="icBedRegLevelName"></p-sortIcon></th>
+                        <th pSortableColumn="quantity" style="text-align: center;">Adet <p-sortIcon field="quantity"></p-sortIcon></th>
+                        <th pSortableColumn="icBedRegNumber">Tescil No <p-sortIcon field="icBedRegNumber"></p-sortIcon></th>
+                        <th pSortableColumn="icBedRegDate">Tescil Tarihi <p-sortIcon field="icBedRegDate"></p-sortIcon></th>
+                        <th style="width: 80px; text-align: center;">İşlem</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-bed>
+                    <tr [ngClass]="{'text-danger': !bed.isActive}">
+                        <td>{{ bed.healthFacilityName }}</td>
+                        <td>
+                            <span class="font-weight-bold">{{ bed.icBedName }}</span>
+                        </td>
+                        <td>{{ bed.icBedTypeName }}</td>
+                        <td>
+                            <span class="badge" [ngClass]="{
+                                'badge-info': bed.icBedRegLevel === 1,
+                                'badge-warning': bed.icBedRegLevel === 2,
+                                'badge-danger': bed.icBedRegLevel === 3
+                            }">{{ bed.icBedRegLevelName }}</span>
+                        </td>
+                        <td style="text-align: center;">
+                            <span class="badge badge-dark p-2">{{ bed.quantity }}</span>
+                        </td>
+                        <td>{{ bed.icBedRegNumber }}</td>
+                        <td>{{ bed.icBedRegDate | date: 'dd.MM.yyyy' }}</td>
+                        <td style="text-align: center;">
+                            <a [routerLink]="['/hf-detail', bed.healthFacilityId]" class="btn btn-xs btn-outline-info" title="Kuruluş Detayı">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="8" class="text-center p-5">
+                            <i class="fas fa-info-circle fa-2x text-muted mb-2"></i>
+                            <p class="text-muted">Kayıtlı yatak bulunamadı.</p>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</app-blank>

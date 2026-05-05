@@ -91,6 +91,11 @@ export class IcBedComponent implements OnInit, OnChanges {
     }
   }
 
+  resetCreateModel() {
+    this.newBed = new CreateIcBedDto();
+    this.filteredBedNames = [];
+  }
+
   onGlobalFilter(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.table.filterGlobal(value, 'contains');

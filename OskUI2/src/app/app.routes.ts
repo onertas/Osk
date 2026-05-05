@@ -97,6 +97,16 @@ export const routes: Routes = [
         canActivate: [adminGuard],
         loadComponent: () => import('./pages/ic-bed/ic-bed.component').then(m => m.IcBedComponent)
       },
+      {
+        path: 'hf-report',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./pages/hf-report/hf-report').then(m => m.HfReportComponent)
+      },
+      {
+        path: 'bed-report',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./pages/bed-report/bed-report').then(m => m.BedReportComponent)
+      },
       { path: '**', component: ErrorComponent },
       { path: 'errorpage', component: ErrorComponent },
     ],

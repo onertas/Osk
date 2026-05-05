@@ -11,11 +11,12 @@
 
   <ng-template #mainContent>
     <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
-      <div *ngIf="healthFacilityId"></div>
-      <button *ngIf="!healthFacilityId" data-toggle="modal" data-target="#addTempStaffModal" class="btn btn-sm btn-dark">
-        <i class="fas fa-plus"></i> Yeni Geçici Kadro Ekle
-      </button>
-      <input pInputText #globalFilter placeholder="Ara..." type="text" (input)="onGlobalFilter($event)" style="max-width:280px;" />
+      <div class="d-flex gap-2">
+        <button data-toggle="modal" data-target="#addTempStaffModal" class="btn btn-xs btn-dark">
+          <i class="fas fa-plus"></i> Yeni Geçici Kadro Ekle
+        </button>
+      </div>
+      <input pInputText #globalFilter placeholder="Ara..." type="text" (input)="onGlobalFilter($event)" class="fontstil13" style="max-width:280px;" />
     </div>
 
     <p-table #dt [value]="tempStaffList" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20]" 
@@ -30,7 +31,7 @@
           <th *ngIf="!healthFacilityId" pSortableColumn="healthFacilityName">Sağlık Tesisi <p-sortIcon field="healthFacilityName"></p-sortIcon></th>
           <th pSortableColumn="pmTypeName">Hareket Türü <p-sortIcon field="pmTypeName"></p-sortIcon></th>
           <th pSortableColumn="count" style="width: 100px; text-align: center">Sayı <p-sortIcon field="count"></p-sortIcon></th>
-          <th *ngIf="!healthFacilityId" style="width: 100px; text-align: right">İşlemler</th>
+          <th style="width: 100px; text-align: right">İşlemler</th>
         </tr>
       </ng-template>
 
@@ -41,7 +42,7 @@
           <td *ngIf="!healthFacilityId">{{ item.healthFacilityName }}</td>
           <td>{{ item.pmTypeName }}</td>
           <td style="text-align: center">{{ item.count }}</td>
-          <td *ngIf="!healthFacilityId" style="text-align: right">
+          <td style="text-align: right">
             <app-grup-menu-component>
               <a (click)="edit(item)" data-toggle="modal" data-target="#editTempStaffModal" class="dropdown-item pointer fontstil13" style="padding: 6px 12px; border-bottom: 1px solid #eee;">
                 <i style="width: 18px" class="fas fa-edit text-primary"></i>

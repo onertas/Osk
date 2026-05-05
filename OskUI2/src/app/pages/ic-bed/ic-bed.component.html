@@ -10,11 +10,13 @@
 
 <ng-template #content>
 <div class="row">
-  <div *ngIf="!isReadOnly" class="col-md-12 text-right mb-2">
-    <button data-toggle="modal" data-target="#addIcBedModal" class="btn btn-sm btn-dark">
-      <i class="fas fa-plus"></i> Yeni Yatak Ekle
-    </button>
-  </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
+      <div class="d-flex gap-2">
+        <button *ngIf="!isReadOnly" class="btn btn-xs btn-dark" data-toggle="modal" data-target="#addIcBedModal" (click)="resetCreateModel()">
+          <i class="fa fa-plus"></i> Yeni Yatak Ekle
+        </button>
+      </div>
+    </div>
   
   <!-- Advanced Filters -->
   <div class="col-md-12" *ngIf="showFilters">

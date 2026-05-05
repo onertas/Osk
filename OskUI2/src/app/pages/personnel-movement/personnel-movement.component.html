@@ -1,14 +1,14 @@
 <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
-  <div class="d-flex gap-2">
+  <div class="d-flex gap-2 fontstil13">
     <button data-toggle="modal" data-target="#pmModal" class="btn btn-xs btn-dark">
       <i class="fas fa-plus"></i> Yeni Personel
     </button>
-    <button (click)="exportToExcel()" class="btn btn-xs btn-success ml-3">
+    <button (click)="exportToExcel()" class="btn btn-xs btn-success">
       <i class="fas fa-file-excel"></i> Excel'e Aktar
     </button>
   </div>
   <input pInputText #globalFilter placeholder="Ara..." type="text" (input)="onGlobalFilter($event)"
-    style="max-width:280px;" />
+    class="fontstil13" style="max-width:280px;" />
 </div>
 
 <p-table styleClass="p-datatable-sm fontstil13" #dt [value]="movements" [paginator]="true" [rows]="5"

@@ -1,0 +1,77 @@
+<app-blank title="Sağlık Tesisleri Raporu">
+    <div class="card card-outline card-dark">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-filter mr-2"></i>Filtreler</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label>Kurum Türü</label>
+                        <p-select [options]="facilityTypes" [(ngModel)]="filterModel.healthFacilityTypeId" 
+                            (onChange)="search()"
+                            optionLabel="name" optionValue="id" placeholder="Tür Seçin" 
+                            styleClass="w-100" [filter]="true" filterBy="name" [showClear]="true"></p-select>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label>Arama (İsim, Vergi No, vb.)</label>
+                        <input pInputText type="text" [(ngModel)]="filterModel.search" (input)="onSearchInput()" class="w-100" placeholder="Ara...">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <div class="d-flex">
+                            <button (click)="exportToExcel()" class="btn btn-success btn-sm" title="Excel'e Aktar">
+                                <i class="fas fa-file-excel mr-1"></i> Excel'e Aktar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card card-dark mt-3">
+        <div class="card-body p-0">
+            <p-table [value]="facilities" [paginator]="true" [rows]="pageSize" [totalRecords]="totalRecords"
+                [lazy]="true" (onLazyLoad)="onPageChange($event)" [loading]="loading"
+                styleClass="p-datatable-sm fontstil13" [rowsPerPageOptions]="[10,20,50]">
+                
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Kuruluş Adı</th>
+                        <th>Tür</th>
+                        <th>Şirket/Kurum</th>
+                        <th>Telefon</th>
+                        <th style="width: 100px; text-align: center;">T. Yatak</th>
+                        <th style="width: 80px; text-align: center;">İşlem</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.typeName }}</td>
+                        <td>{{ item.corporationName }}</td>
+                        <td>{{ item.phoneNumber }}</td>
+                        <td style="text-align: center;">{{ item.totalBedCount }}</td>
+                        <td style="text-align: center;">
+                            <a [routerLink]="['/hf-detail', item.id]" class="btn btn-xs btn-outline-info" title="Detay">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="6" class="text-center p-4">Kayıt bulunamadı. Lütfen filtreleri kullanarak arama yapın.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</app-blank>
