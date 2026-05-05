@@ -97,7 +97,7 @@
           <!-- YATAK -->
           <div class="tab-pane fade" id="bed" role="tabpanel">
             <div class="col-md-12 mt-1">
-              <app-ic-bed [healthFacilityId]="healthFacilityId" [isReadOnly]="true" (totalBedsCount)="onBedsLoaded($event)"></app-ic-bed>
+              <app-ic-bed [healthFacilityId]="healthFacilityId" [isReadOnly]="true" [showFilters]="false" (totalBedsCount)="onBedsLoaded($event)"></app-ic-bed>
             </div>
           </div>
 

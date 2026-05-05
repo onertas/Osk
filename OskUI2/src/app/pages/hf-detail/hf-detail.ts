@@ -15,7 +15,13 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-hf-detail',
   standalone: true,
-  imports: [SharedModule, PersonnelMovementComponent, IcBedComponent, StaffComponent, TemporarayStaffComponent],
+  imports: [
+    SharedModule, 
+    PersonnelMovementComponent, 
+    IcBedComponent,
+    StaffComponent, 
+    TemporarayStaffComponent,
+  ],
   templateUrl: './hf-detail.html',
   styleUrl: './hf-detail.css',
 })
@@ -32,11 +38,6 @@ export class HfDetailComponent implements OnInit {
   
   totalIcBeds: number = 0;
   isBedsLoaded: boolean = false;
-
-  onBedsLoaded(count: number) {
-    this.totalIcBeds = count;
-    this.isBedsLoaded = true;
-  }
 
   ngOnInit(): void {
     // Kullanıcı bilgisi yüklendiğinde isAdmin güncelle
@@ -65,5 +66,10 @@ export class HfDetailComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  onBedsLoaded(count: number) {
+    this.totalIcBeds = count;
+    this.isBedsLoaded = true;
   }
 }

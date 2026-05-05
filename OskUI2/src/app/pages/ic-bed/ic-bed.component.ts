@@ -1,7 +1,7 @@
 import { Component, inject, Input, Output, EventEmitter, OnInit, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TableModule } from 'primeng/table';
+import { TableModule, Table } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
@@ -11,6 +11,7 @@ import { SharedModule } from '../../modules/shared.module';
 import { Modal } from '../../components/modal/modal';
 import { HttpApiService } from '../../services/http-api-service';
 import { SwalService } from '../../services/swall.service';
+import { ExcelService } from '../../services/excel.service';
 import { ListIcBedDto } from '../../dtos/beds/list-ic-bed.dto';
 import { CreateIcBedDto } from '../../dtos/beds/create-ic-bed.dto';
 import { UpdateIcBedDto } from '../../dtos/beds/update-ic-bed.dto';
@@ -36,24 +37,47 @@ import { HfManagementListDto } from '../../dtos/healthFacility/hf-management-lis
 export class IcBedComponent implements OnInit, OnChanges {
   @Input() healthFacilityId: string = '';
   @Input() isReadOnly: boolean = false;
+  @Input() showFilters: boolean = true;
   @Output() totalBedsCount = new EventEmitter<number>();
+  
+  @ViewChild('dt') table!: Table;
   @ViewChild(Modal) modalCom: Modal | undefined;
 
   http = inject(HttpApiService);
   swal = inject(SwalService);
+  excel = inject(ExcelService);
 
   beds: ListIcBedDto[] = [];
   allBeds: ListIcBedDto[] = [];
+  filteredBeds: ListIcBedDto[] = [];
   showInactive: boolean = false;
+  
   newBed: CreateIcBedDto = new CreateIcBedDto();
   updateBed: UpdateIcBedDto = new UpdateIcBedDto();
 
+  // Filters
+  bedFilterModel = {
+    healthFacilityId: null as string | null,
+    icBedType: null as number | null,
+    icBedNameId: null as string | null,
+    icBedRegLevel: null as number | null,
+    icBedRegType: null as number | null,
+    isActive: true as boolean | null,
+    search: ''
+  };
+
   // Lookup listeleri
   bedTypes: any[] = [];
-  filteredBedNames: any[] = [];
+  bedNames: any[] = [];
+  filteredBedNames: any[] = []; // Used in Add/Edit modals
   regLevels: any[] = [];
   regTypes: any[] = [];
   facilities: HfManagementListDto[] = [];
+  activeOptions = [
+    { label: 'Hepsi', value: null },
+    { label: 'Aktif', value: true },
+    { label: 'Pasif', value: false }
+  ];
 
   ngOnInit(): void {
     this.GetAll();
@@ -67,6 +91,27 @@ export class IcBedComponent implements OnInit, OnChanges {
     }
   }
 
+  onGlobalFilter(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.table.filterGlobal(value, 'contains');
+  }
+
+  exportToExcel() {
+    const dataToExport = this.filteredBeds.map(b => ({
+      'Kuruluş': b.healthFacilityName,
+      'Yatak Türü': b.icBedName,
+      'Tip': b.icBedTypeName,
+      'Tescil Seviyesi': b.icBedRegLevelName,
+      'Tescil Türü': b.icBedRegTypeName,
+      'Adet': b.quantity,
+      'Tescil No': b.icBedRegNumber,
+      'Tescil Tarihi': b.icBedRegDate ? new Date(b.icBedRegDate).toLocaleDateString('tr-TR') : '-',
+      'Durum': b.isActive ? 'Aktif' : 'Pasif'
+    }));
+
+    this.excel.exportToExcel(dataToExport, 'Yogun_Bakim_Yataklari');
+  }
+
   GetAll() {
     let url = 'IcBed/GetAll';
     if (this.healthFacilityId) {
@@ -76,23 +121,47 @@ export class IcBedComponent implements OnInit, OnChanges {
     this.http.get<ListIcBedDto[]>(url).subscribe(res => {
       if (res.success && res.data) {
         this.allBeds = res.data;
-        this.filterBeds();
+        this.applyBedFilters();
       }
     });
   }
 
-  filterBeds() {
-    if (this.isReadOnly || !this.showInactive) {
-      this.beds = this.allBeds.filter(b => b.isActive);
-    } else {
-      this.beds = [...this.allBeds];
-    }
-    
-    // Aktif yatakların toplam adedini hesapla ve üst bileşene gönder
+  applyBedFilters() {
+    this.filteredBeds = this.allBeds.filter(bed => {
+      const matchHf = this.bedFilterModel.healthFacilityId === null || bed.healthFacilityId === this.bedFilterModel.healthFacilityId;
+      const matchType = this.bedFilterModel.icBedType === null || bed.icBedType === this.bedFilterModel.icBedType;
+      const matchName = this.bedFilterModel.icBedNameId === null || bed.icBedNameId === this.bedFilterModel.icBedNameId;
+      const matchLevel = this.bedFilterModel.icBedRegLevel === null || bed.icBedRegLevel === this.bedFilterModel.icBedRegLevel;
+      const matchRegType = this.bedFilterModel.icBedRegType === null || bed.icBedRegType === this.bedFilterModel.icBedRegType;
+      const matchActive = this.bedFilterModel.isActive === null || bed.isActive === this.bedFilterModel.isActive;
+      
+      const searchStr = this.bedFilterModel.search.toLocaleLowerCase('tr-TR');
+      const matchSearch = !searchStr || 
+        (bed.icBedName?.toLocaleLowerCase('tr-TR').includes(searchStr)) ||
+        (bed.icBedRegNumber?.toLocaleLowerCase('tr-TR').includes(searchStr)) ||
+        (bed.healthFacilityName?.toLocaleLowerCase('tr-TR').includes(searchStr));
+
+      return matchHf && matchType && matchName && matchLevel && matchRegType && matchActive && matchSearch;
+    });
+
+    // Aktif yatakların toplam adedini hesapla (tüm data üzerinden)
     const totalActiveCount = this.allBeds
       .filter(b => b.isActive)
       .reduce((sum, current) => sum + (current.quantity || 0), 0);
     this.totalBedsCount.emit(totalActiveCount);
+  }
+
+  resetBedFilters() {
+    this.bedFilterModel = {
+      healthFacilityId: null,
+      icBedType: null,
+      icBedNameId: null,
+      icBedRegLevel: null,
+      icBedRegType: null,
+      isActive: true,
+      search: ''
+    };
+    this.applyBedFilters();
   }
 
   loadFacilities() {
@@ -107,19 +176,13 @@ export class IcBedComponent implements OnInit, OnChanges {
   }
 
   GetLookups() {
-    this.http.get<any[]>('IcBed/GetIcBedTypes').subscribe(res => {
-      if (res.success && res.data) this.bedTypes = res.data;
-    });
-    this.http.get<any[]>('IcBed/GetIcBedRegLevels').subscribe(res => {
-      if (res.success && res.data) this.regLevels = res.data;
-    });
-    this.http.get<any[]>('IcBed/GetIcBedRegTypes').subscribe(res => {
-      if (res.success && res.data) this.regTypes = res.data;
-    });
+    this.http.get<any[]>('IcBed/GetIcBedTypes').subscribe(res => this.bedTypes = res.data || []);
+    this.http.get<any[]>('IcBed/GetIcBedNames').subscribe(res => this.bedNames = res.data || []);
+    this.http.get<any[]>('IcBed/GetIcBedRegLevels').subscribe(res => this.regLevels = res.data || []);
+    this.http.get<any[]>('IcBed/GetIcBedRegTypes').subscribe(res => this.regTypes = res.data || []);
   }
 
-  // PrimeNG p-select (onChange) eventi { value: seçilenOptValue } objesi olarak gelir.
-  // optionValue="value" ile ngModel'e direkt int atanır, ama onChange hâlâ obje gönderir.
+  // Used for Add/Edit modals specifically
   onTypeChange(event: any, mode: 'add' | 'edit') {
     const typeValue: number = (event !== null && typeof event === 'object' && 'value' in event)
       ? event.value
@@ -171,7 +234,6 @@ export class IcBedComponent implements OnInit, OnChanges {
       icBedType: bed.icBedType,
       isActive: bed.isActive
     };
-    // Düzenleme modalı açılırken mevcut tipe ait filtrelenmiş listeyi yükle
     this.onTypeChange(bed.icBedType, 'edit');
   }
 

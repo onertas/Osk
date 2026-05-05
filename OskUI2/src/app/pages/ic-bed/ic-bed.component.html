@@ -10,28 +10,77 @@
 
 <ng-template #content>
 <div class="row">
-  <div *ngIf="!isReadOnly" class="col-md-12 text-right d-flex justify-content-between align-items-center mb-2">
-    <div class="form-check d-flex align-items-center m-0">
-      <p-checkbox [(ngModel)]="showInactive" (onChange)="filterBeds()" binary="true" inputId="showInactiveCb"></p-checkbox>
-      <label class="form-check-label ml-2 mb-0" for="showInactiveCb">Pasif Kayıtları Göster</label>
-    </div>
+  <div *ngIf="!isReadOnly" class="col-md-12 text-right mb-2">
     <button data-toggle="modal" data-target="#addIcBedModal" class="btn btn-sm btn-dark">
       <i class="fas fa-plus"></i> Yeni Yatak Ekle
     </button>
   </div>
   
+  <!-- Advanced Filters -->
+  <div class="col-md-12" *ngIf="showFilters">
+    <div class="card card-outline card-secondary mb-3">
+      <div class="card-body p-2">
+        <div class="row">
+          <div class="col-md-2 form-group mb-1" *ngIf="!healthFacilityId">
+            <label class="small mb-0">Kuruluş</label>
+            <p-select [options]="facilities" [(ngModel)]="bedFilterModel.healthFacilityId" (onChange)="applyBedFilters()"
+              optionLabel="name" optionValue="id" [filter]="true" placeholder="Tümü" styleClass="w-100 p-inputtext-sm"></p-select>
+          </div>
+          <div [ngClass]="healthFacilityId ? 'col-md-2' : 'col-md-2'" class="form-group mb-1">
+            <label class="small mb-0">Yatak Tipi</label>
+            <p-select [options]="bedTypes" [(ngModel)]="bedFilterModel.icBedType" (onChange)="applyBedFilters()"
+              optionLabel="description" optionValue="value" [filter]="true" placeholder="Tümü" styleClass="w-100 p-inputtext-sm"></p-select>
+          </div>
+          <div [ngClass]="healthFacilityId ? 'col-md-2' : 'col-md-2'" class="form-group mb-1">
+            <label class="small mb-0">Yatak Türü</label>
+            <p-select [options]="bedNames" [(ngModel)]="bedFilterModel.icBedNameId" (onChange)="applyBedFilters()"
+              optionLabel="name" optionValue="id" [filter]="true" placeholder="Tümü" styleClass="w-100 p-inputtext-sm"></p-select>
+          </div>
+          <div [ngClass]="healthFacilityId ? 'col-md-2' : 'col-md-1'" class="form-group mb-1">
+            <label class="small mb-0">Seviye</label>
+            <p-select [options]="regLevels" [(ngModel)]="bedFilterModel.icBedRegLevel" (onChange)="applyBedFilters()"
+              optionLabel="description" optionValue="value" [filter]="true" placeholder="Tümü" styleClass="w-100 p-inputtext-sm"></p-select>
+          </div>
+          <div [ngClass]="healthFacilityId ? 'col-md-2' : 'col-md-1'" class="form-group mb-1">
+            <label class="small mb-0">Tescil Türü</label>
+            <p-select [options]="regTypes" [(ngModel)]="bedFilterModel.icBedRegType" (onChange)="applyBedFilters()"
+              optionLabel="description" optionValue="value" [filter]="true" placeholder="Tümü" styleClass="w-100 p-inputtext-sm"></p-select>
+          </div>
+          <div [ngClass]="healthFacilityId ? 'col-md-1' : 'col-md-1'" class="form-group mb-1">
+            <label class="small mb-0">Durum</label>
+            <p-select [options]="activeOptions" [(ngModel)]="bedFilterModel.isActive" (onChange)="applyBedFilters()"
+              optionLabel="label" optionValue="value" styleClass="w-100 p-inputtext-sm"></p-select>
+          </div>
+          <div [ngClass]="healthFacilityId ? 'col-md-3' : 'col-md-3'" class="form-group mb-1 d-flex align-items-end gap-1">
+            <div class="flex-grow-1">
+              <label class="small mb-0">Arama</label>
+              <input pInputText type="text" [(ngModel)]="bedFilterModel.search" (input)="applyBedFilters()"
+                placeholder="Kuruluş, Tür, Tescil No..." class="w-100 p-inputtext-sm" />
+            </div>
+            <button pButton icon="fas fa-sync" class="p-button-sm p-button-secondary" (click)="resetBedFilters()" title="Filtreleri Sıfırla"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="col-md-12">
-    <p-table [value]="beds" styleClass="p-datatable-sm fontstil13" [responsiveLayout]="'scroll'">
+    <p-table #dt [value]="filteredBeds" styleClass="p-datatable-sm fontstil13" [responsiveLayout]="'scroll'">
+      <ng-template pTemplate="caption">
+        <div class="d-flex justify-content-end">
+          <button pButton label="Excel" icon="fas fa-file-excel" class="p-button-sm p-button-success" (click)="exportToExcel()"></button>
+        </div>
+      </ng-template>
       <ng-template pTemplate="header">
         <tr>
-          <th *ngIf="!healthFacilityId">Kuruluş</th>
-          <th>Yatak Türü</th>
-          <th>Tip</th>
-          <th>Tescil Seviyesi</th>
-          <th>Tescil Türü</th>
-          <th>Adet</th>
-          <th>Tescil No</th>
-          <th>Tescil Tarihi</th>
+          <th *ngIf="!healthFacilityId" pSortableColumn="healthFacilityName">Kuruluş <p-sortIcon field="healthFacilityName"></p-sortIcon></th>
+          <th pSortableColumn="icBedName">Yatak Türü <p-sortIcon field="icBedName"></p-sortIcon></th>
+          <th pSortableColumn="icBedTypeName">Tip <p-sortIcon field="icBedTypeName"></p-sortIcon></th>
+          <th pSortableColumn="icBedRegLevelName">Tescil Seviyesi <p-sortIcon field="icBedRegLevelName"></p-sortIcon></th>
+          <th pSortableColumn="icBedRegTypeName">Tescil Türü <p-sortIcon field="icBedRegTypeName"></p-sortIcon></th>
+          <th pSortableColumn="quantity">Adet <p-sortIcon field="quantity"></p-sortIcon></th>
+          <th pSortableColumn="icBedRegNumber">Tescil No <p-sortIcon field="icBedRegNumber"></p-sortIcon></th>
+          <th pSortableColumn="icBedRegDate">Tescil Tarihi <p-sortIcon field="icBedRegDate"></p-sortIcon></th>
           <th *ngIf="!isReadOnly" style="width: 80px; text-align: right">İşlemler</th>
         </tr>
       </ng-template>
