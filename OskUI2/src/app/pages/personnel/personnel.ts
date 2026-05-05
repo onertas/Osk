@@ -37,15 +37,23 @@ export class Personnel implements OnInit {
   newPersonnel: CreatePersonnelDto = new CreatePersonnelDto();
   updatePersonnelModel: UpdatePersonnelDto = new UpdatePersonnelDto();
   personnel: ListPersonnelDto[] = [];
+  totalRecords: number = 0;
+  loading: boolean = true;
+  lastTableLazyLoadEvent: any;
+  searchQuery: string = "";
+
   branches: any[] = [];
   titles: any[] = [];
   filteredBranches: any[] = [];
   selectedTitleId: string = "";
+
+  selectedPersonnel: any = null;
+  personnelMovements: any[] = [];
+  loadingDetails: boolean = false;
   //#endregion
 
   //#region METHODS
   ngOnInit(): void {
-    this.GetAll();
     this.GetBranches();
     this.GetTitles();
   }
@@ -56,9 +64,33 @@ export class Personnel implements OnInit {
     this.filteredBranches = [];
   }
 
-  onGlobalFilter(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    this.table.filterGlobal(value, 'contains');
+  loadPersonnel(event?: any) {
+    this.loading = true;
+    this.lastTableLazyLoadEvent = event || this.lastTableLazyLoadEvent;
+    
+    const page = (this.lastTableLazyLoadEvent?.first / this.lastTableLazyLoadEvent?.rows) + 1 || 1;
+    const pageSize = this.lastTableLazyLoadEvent?.rows || 10;
+    
+    this.http.get<any>('personnel/GetAllPaged', {
+      page: page,
+      pageSize: pageSize,
+      search: this.searchQuery
+    }).subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          this.personnel = res.data.items;
+          this.totalRecords = res.data.totalCount;
+        }
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      }
+    });
+  }
+
+  onSearchChange() {
+    this.loadPersonnel();
   }
   Add(form: any) {
     if (!this.newPersonnel.personnelBranches || this.newPersonnel.personnelBranches.length == 0) {
@@ -73,7 +105,7 @@ export class Personnel implements OnInit {
           this.modalCom?.close('acAdd');
           form.resetForm();
           this.newPersonnel = new CreatePersonnelDto();
-          this.GetAll();
+          this.loadPersonnel();
         } else {
           this.swal.showError(response.message || "Bir hata oluştu");
         }
@@ -96,7 +128,7 @@ export class Personnel implements OnInit {
           this.swal.showSuccess("Güncellendi");
           this.modalCom?.close('acEdit');
         
-          this.GetAll();
+          this.loadPersonnel();
         } else {
           this.swal.showError(response.message || "Bir hata oluştu");
         }
@@ -139,21 +171,31 @@ export class Personnel implements OnInit {
       this.http.delete(`personnel/delete?id=${id}`).subscribe(res => {
         if (res.success) {
           this.swal.showSuccess("Silindi");
-          this.GetAll();
+          this.loadPersonnel();
         }
       });
     });
   }
 
-  GetAll() {
-    this.http.get<ListPersonnelDto[]>('personnel/getall').subscribe(res => {
+  selectPersonnel(personnel: any) {
+    this.selectedPersonnel = personnel;
+    this.loadMovements(personnel.id);
+  }
 
-      if (res.success && res.data) {
-        this.personnel = res.data;
-       
-      }
+  loadMovements(personnelId: string) {
+    this.loadingDetails = true;
+    this.http.get<any>(`Pm/GetByPersonnelId?personnelId=${personnelId}`).subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          this.personnelMovements = res.data;
+        }
+        this.loadingDetails = false;
+      },
+      error: () => (this.loadingDetails = false)
     });
   }
+
+
 
   GetBranches() {
     this.http.get<any[]>('branch/getall').subscribe(res => {

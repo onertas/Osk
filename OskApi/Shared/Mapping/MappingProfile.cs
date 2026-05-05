@@ -57,7 +57,8 @@ namespace OskApi.Shared.Mapping
                 .ForMember(dest => dest.IcBedType, opt => opt.MapFrom(src => src.IcBedName != null ? src.IcBedName.IcBedType.Value : 0))
                 .ForMember(dest => dest.IcBedTypeName, opt => opt.MapFrom(src => src.IcBedName != null ? src.IcBedName.IcBedType.Description : ""))
                 .ForMember(dest => dest.IcBedRegLevelName, opt => opt.MapFrom(src => src.IcBedRegLevel.Description))
-                .ForMember(dest => dest.IcBedRegTypeName, opt => opt.MapFrom(src => src.IcBedRegType.Description));
+                .ForMember(dest => dest.IcBedRegTypeName, opt => opt.MapFrom(src => src.IcBedRegType.Description))
+                .ForMember(dest => dest.HealthFacilityName, opt => opt.MapFrom(src => src.HealthFacility != null ? src.HealthFacility.Name : ""));
 
             CreateMap<CreateIcBedDto, IcBed>()
                 .ForMember(dest => dest.IcBedRegLevel, opt => opt.MapFrom(src => IcBedRegLevel.FromValue(src.IcBedRegLevel)))

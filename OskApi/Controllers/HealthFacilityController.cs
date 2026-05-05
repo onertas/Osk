@@ -47,8 +47,6 @@ public class HealthFacilityController : ControllerBase
             .Include(i => i.HealthFacilityType)
             .ToListAsync();
 
-        if (list == null || list.Count == 0)
-            return NotFound(Result.Fail("Veri bulunamadı"));
 
         var listdto = list.Select(x => new HealthFacilityListDto
         {
@@ -64,10 +62,12 @@ public class HealthFacilityController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var list = await _healthFacilityService.GetAll()
+            .Include(x => x.HealthFacilityType)
             .Select(x => new HealthFacilityListDto
             {
                 Id = x.Id,
                 Name = x.Name,
+                TypeName = x.HealthFacilityType != null ? x.HealthFacilityType.Name : ""
             }).ToListAsync();
 
         return Ok(Result<List<HealthFacilityListDto>>.Ok(list, "Tüm Veriler Listelendi"));

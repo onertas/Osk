@@ -23,6 +23,13 @@
         </ul>
       </div>
       <div class="card-body">
+        <div *ngIf="!isLoading && isBedsLoaded && facility.totalBedCount !== totalIcBeds" class="alert alert-warning d-flex align-items-center p-2 mb-3 fontstil13" role="alert">
+          <i class="fas fa-exclamation-triangle fa-lg mr-3"></i>
+          <div>
+            <strong>Uyarı:</strong> Kuruluşun kayıtlı Toplam Yatak Sayısı (<strong>{{ facility.totalBedCount || 0 }}</strong>) ile sistemdeki aktif yoğun bakım yataklarının toplamı (<strong>{{ totalIcBeds }}</strong>) uyuşmuyor! Lütfen kontrol ediniz.
+          </div>
+        </div>
+
         <div class="tab-content" id="custom-tabs-one-tabContent">
 
           <!-- GENEL BİLGİLER -->
@@ -90,7 +97,7 @@
           <!-- YATAK -->
           <div class="tab-pane fade" id="bed" role="tabpanel">
             <div class="col-md-12 mt-1">
-              <app-ic-bed [healthFacilityId]="healthFacilityId"></app-ic-bed>
+              <app-ic-bed [healthFacilityId]="healthFacilityId" [isReadOnly]="true" (totalBedsCount)="onBedsLoaded($event)"></app-ic-bed>
             </div>
           </div>
 

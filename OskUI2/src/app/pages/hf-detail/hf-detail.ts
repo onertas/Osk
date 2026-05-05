@@ -29,6 +29,14 @@ export class HfDetailComponent implements OnInit {
   facility: HfManagementListDto = new HfManagementListDto();
   isLoading: boolean = true;
   isAdmin: boolean = false;
+  
+  totalIcBeds: number = 0;
+  isBedsLoaded: boolean = false;
+
+  onBedsLoaded(count: number) {
+    this.totalIcBeds = count;
+    this.isBedsLoaded = true;
+  }
 
   ngOnInit(): void {
     // Kullanıcı bilgisi yüklendiğinde isAdmin güncelle

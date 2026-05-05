@@ -54,9 +54,8 @@ export class ErrorService {
         break;
 
       case 401:
-        localStorage.removeItem('loggedUser');
-        this.swalService.showError("Oturumunuz sona erdi. Güvenliğiniz için tekrar giriş yapmanız gerekiyor.");
-        this.route.navigateByUrl('/login');
+        // 401 hatası authInterceptor tarafından yönetilir (Refresh Token denemesi yapılır).
+        // Eğer refresh de başarısız olursa interceptor kullanıcıyı login'e yönlendirir.
         break;
 
       case 403:

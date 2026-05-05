@@ -1,6 +1,7 @@
 export interface ListIcBedDto {
     id: string;
     healthFacilityId: string;
+    healthFacilityName: string;
     icBedRegLevel: number;
     icBedRegLevelName: string;
     icBedRegType: number;

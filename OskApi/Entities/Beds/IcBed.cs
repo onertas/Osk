@@ -1,8 +1,9 @@
-﻿namespace OskApi.Entities.Beds
+namespace OskApi.Entities.Beds
 {
     public class IcBed : Entity
     {
         public Guid HealthFacilityId { get; set; }
+        public Entities.HealthFacilities.HealthFacility? HealthFacility { get; set; }
         public IcBedRegLevel IcBedRegLevel { get; set; } = IcBedRegLevel.Seviye1;
         public IcBedRegType IcBedRegType { get; set; } = IcBedRegType.Kesin;
         public int Quantity { get; set; }

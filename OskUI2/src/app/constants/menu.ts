@@ -108,6 +108,15 @@ export const Menus: MenuModel[] = [
         show: true,
         subMenus: [],
       },
+      {
+        name: 'Yatak Yönetimi',
+        icon: 'fa fa-chevron-right fa-xs',
+        url: '/ic-bed',
+        isTitle: false,
+        roles: ['Admin'],
+        show: true,
+        subMenus: [],
+      },
     ],
   },
 
@@ -120,9 +129,9 @@ export const Menus: MenuModel[] = [
     show: true,
     subMenus: [
       {
-        name: 'Personel Arama / Detay',
+        name: 'Personel Hareket Raporu',
         icon: 'fa fa-chevron-right fa-xs',
-        url: '/personnel-search',
+        url: '/pm-report',
         isTitle: false,
         roles: ['Admin'],
         show: true,

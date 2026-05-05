@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, Input, Output, EventEmitter, OnInit, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
@@ -14,6 +14,7 @@ import { SwalService } from '../../services/swall.service';
 import { ListIcBedDto } from '../../dtos/beds/list-ic-bed.dto';
 import { CreateIcBedDto } from '../../dtos/beds/create-ic-bed.dto';
 import { UpdateIcBedDto } from '../../dtos/beds/update-ic-bed.dto';
+import { HfManagementListDto } from '../../dtos/healthFacility/hf-management-list.dto';
 
 @Component({
   selector: 'app-ic-bed',
@@ -32,14 +33,18 @@ import { UpdateIcBedDto } from '../../dtos/beds/update-ic-bed.dto';
   ],
   templateUrl: './ic-bed.component.html',
 })
-export class IcBedComponent implements OnInit {
+export class IcBedComponent implements OnInit, OnChanges {
   @Input() healthFacilityId: string = '';
+  @Input() isReadOnly: boolean = false;
+  @Output() totalBedsCount = new EventEmitter<number>();
   @ViewChild(Modal) modalCom: Modal | undefined;
 
   http = inject(HttpApiService);
   swal = inject(SwalService);
 
   beds: ListIcBedDto[] = [];
+  allBeds: ListIcBedDto[] = [];
+  showInactive: boolean = false;
   newBed: CreateIcBedDto = new CreateIcBedDto();
   updateBed: UpdateIcBedDto = new UpdateIcBedDto();
 
@@ -48,18 +53,55 @@ export class IcBedComponent implements OnInit {
   filteredBedNames: any[] = [];
   regLevels: any[] = [];
   regTypes: any[] = [];
+  facilities: HfManagementListDto[] = [];
 
   ngOnInit(): void {
-    if (this.healthFacilityId) {
+    this.GetAll();
+    this.GetLookups();
+    this.loadFacilities();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['healthFacilityId']) {
       this.GetAll();
     }
-    this.GetLookups();
   }
 
   GetAll() {
-    this.http.get<ListIcBedDto[]>(`IcBed/GetAllByHfId?healthFacilityId=${this.healthFacilityId}`).subscribe(res => {
+    let url = 'IcBed/GetAll';
+    if (this.healthFacilityId) {
+      url = `IcBed/GetAllByHfId?healthFacilityId=${this.healthFacilityId}`;
+    }
+
+    this.http.get<ListIcBedDto[]>(url).subscribe(res => {
       if (res.success && res.data) {
-        this.beds = res.data;
+        this.allBeds = res.data;
+        this.filterBeds();
+      }
+    });
+  }
+
+  filterBeds() {
+    if (this.isReadOnly || !this.showInactive) {
+      this.beds = this.allBeds.filter(b => b.isActive);
+    } else {
+      this.beds = [...this.allBeds];
+    }
+    
+    // Aktif yatakların toplam adedini hesapla ve üst bileşene gönder
+    const totalActiveCount = this.allBeds
+      .filter(b => b.isActive)
+      .reduce((sum, current) => sum + (current.quantity || 0), 0);
+    this.totalBedsCount.emit(totalActiveCount);
+  }
+
+  loadFacilities() {
+    this.http.get<HfManagementListDto[]>('HealthFacility/GetAll').subscribe(res => {
+      if (res.success && res.data) {
+        this.facilities = res.data.filter(f => 
+          f.typeName === 'Özel Hastane' || 
+          f.typeName === 'Tıp Merkezi'
+        );
       }
     });
   }
@@ -93,8 +135,9 @@ export class IcBedComponent implements OnInit {
   }
 
   Add(form: any) {
-    // healthFacilityId her zaman context'ten alınır — kullanıcı seçmez
-    this.newBed.healthFacilityId = this.healthFacilityId;
+    if (this.healthFacilityId) {
+      this.newBed.healthFacilityId = this.healthFacilityId;
+    }
 
     if (!this.newBed.icBedNameId) {
       this.swal.showError('Lütfen önce Yatak Tipi seçiniz.');

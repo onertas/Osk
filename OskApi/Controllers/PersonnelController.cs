@@ -148,6 +148,48 @@ public class PersonnelController : ControllerBase
 
     }
 
+    [Authorize(Roles = "Admin,User")]
+    [HttpGet]
+    public async Task<IActionResult> GetAllPaged(int page = 1, int pageSize = 10, string? search = null)
+    {
+        var query = _personnelService.GetAll()
+            .Include(i => i.PersonnelBranches!)
+                .ThenInclude(i => i.Branch!)
+                    .ThenInclude(b => b.Title)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var s = search.ToLower();
+            query = query.Where(w =>
+                w.FirstName.ToLower().Contains(s) ||
+                w.LastName.ToLower().Contains(s) ||
+                (w.IdentityNumber != null && w.IdentityNumber.Contains(s)) ||
+                (w.Email != null && w.Email.ToLower().Contains(s))
+            );
+        }
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .OrderBy(o => o.FirstName)
+            .ThenBy(o => o.LastName)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        var mappedItems = _mapper.Map<List<ListPersonnelDto>>(items);
+
+        return Ok(Result<object>.Ok(new
+        {
+            items = mappedItems,
+            totalCount,
+            page,
+            pageSize,
+            totalPages = (int)Math.Ceiling((double)totalCount / pageSize)
+        }, "Listelendi"));
+    }
+
     [HttpGet]
     public async Task<IActionResult> Search([FromQuery] string? query)
     {

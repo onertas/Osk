@@ -1,0 +1,128 @@
+<app-blank title="Personel Hareket Raporu">
+  <app-section title="Filtreleme Seçenekleri" class="d-print-none">
+    <div class="row g-3 fontstil13">
+      <!-- Hareket Tipi -->
+      <div class="col-md-3">
+        <label class="form-label">Hareket Tipi</label>
+        <p-select [options]="pmTypes" [(ngModel)]="filterModel.pmTypeId" (onChange)="onFilterChange()"
+          optionLabel="name" optionValue="id" [filter]="true" filterBy="name" [showClear]="true" placeholder="Tümü" styleClass="w-100"></p-select>
+      </div>
+
+      <!-- Kurum Türü -->
+      <div class="col-md-3">
+        <label class="form-label">Kurum Türü</label>
+        <p-select [options]="facilityTypes" [(ngModel)]="filterModel.healthFacilityTypeId" (onChange)="onFilterChange()"
+          optionLabel="name" optionValue="id" [filter]="true" filterBy="name" [showClear]="true" placeholder="Tümü" styleClass="w-100"></p-select>
+      </div>
+
+      <!-- Kurum -->
+      <div class="col-md-3">
+        <label class="form-label">Kurum</label>
+        <p-select [options]="facilities" [(ngModel)]="filterModel.healthFacilityId" (onChange)="onFilterChange()"
+          optionLabel="name" optionValue="id" [filter]="true" filterBy="name" [showClear]="true" placeholder="Tümü" styleClass="w-100"></p-select>
+      </div>
+
+      <!-- Aktif/Pasif -->
+      <div class="col-md-3">
+        <label class="form-label">Durum</label>
+        <p-select [options]="activeOptions" [(ngModel)]="filterModel.isActive" (onChange)="onFilterChange()"
+          optionLabel="label" optionValue="value" [showClear]="false" styleClass="w-100"></p-select>
+      </div>
+
+      <!-- Ünvan -->
+      <div class="col-md-3">
+        <label class="form-label">Ünvan</label>
+        <p-select [options]="titles" [(ngModel)]="filterModel.titleId" (onChange)="onFilterChange()"
+          optionLabel="name" optionValue="id" [filter]="true" filterBy="name" [showClear]="true" placeholder="Tümü" styleClass="w-100"></p-select>
+      </div>
+
+      <!-- Branş -->
+      <div class="col-md-3">
+        <label class="form-label">Branş</label>
+        <p-select [options]="branches" [(ngModel)]="filterModel.branchId" (onChange)="onFilterChange()"
+          optionLabel="name" optionValue="id" [filter]="true" filterBy="name" [showClear]="true" placeholder="Tümü" styleClass="w-100"></p-select>
+      </div>
+
+      <!-- Personel Arama -->
+      <div class="col-md-3">
+        <label class="form-label">Personel (Ad/Soyad/TC)</label>
+        <input pInputText type="text" [(ngModel)]="filterModel.search" (input)="onFilterChange()" 
+          placeholder="Ara..." class="w-100" />
+      </div>
+
+      <!-- Butonlar -->
+      <div class="col-md-3 d-flex align-items-end gap-2">
+        <button (click)="resetFilters()" class="btn btn-xs btn-outline-secondary flex-fill shadow-sm">
+          <i class="pi pi-refresh mr-1"></i> Sıfırla
+        </button>
+        <button (click)="exportExcel()" class="btn btn-xs btn-success flex-fill shadow-sm ml-2">
+          <i class="pi pi-file-excel mr-1"></i> Excel
+        </button>
+        <button onclick="window.print()" class="btn btn-xs btn-primary flex-fill shadow-sm ml-2">
+          <i class="pi pi-print mr-1"></i> Yazdır
+        </button>
+      </div>
+    </div>
+  </app-section>
+
+  <app-section title="Hareket Listesi">
+    <p-table 
+      [value]="movements" 
+      [lazy]="true" 
+      (onLazyLoad)="loadReport($event)"
+      [paginator]="true" 
+      [rows]="10" 
+      [totalRecords]="totalRecords" 
+      [loading]="loading"
+      [rowsPerPageOptions]="[10,20,50,100]" 
+      styleClass="p-datatable-sm fontstil12 p-datatable-striped" 
+      [responsiveLayout]="'scroll'">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Personel</th>
+          <th>TC Kimlik No</th>
+          <th>Kurum / Tür</th>
+          <th>Hareket Tipi</th>
+          <th>Ünvan / Branş</th>
+          <th>Başlama</th>
+          <th>Ayrılış</th>
+          <th>Durum</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-m>
+        <tr>
+          <td><strong>{{ m.personnel?.firstName }} {{ m.personnel?.lastName }}</strong></td>
+          <td>{{ m.personnel?.identityNumber }}</td>
+          <td>
+            {{ m.healthFacility?.name }} <br>
+            <small class="text-muted">{{ m.healthFacility?.healthFacilityType?.name }}</small>
+          </td>
+          <td>
+            <span class="badge bg-info text-dark">{{ m.pmType?.name }}</span>
+          </td>
+          <td>
+            {{ m.branch?.title?.name }} <br>
+            <small class="text-muted">{{ m.branch?.name }}</small>
+          </td>
+          <td>{{ m.start | date:'dd.MM.yyyy' }}</td>
+          <td>{{ m.finish ? (m.finish | date:'dd.MM.yyyy') : '-' }}</td>
+          <td>
+            @if (!m.finish) {
+              <span class="badge bg-success">Aktif</span>
+            } @else {
+              <span class="badge bg-secondary">Pasif</span>
+            }
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="8" class="text-center py-4">Filtrelere uygun hareket kaydı bulunamadı.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </app-section>
+</app-blank>

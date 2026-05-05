@@ -4,6 +4,7 @@ namespace OskApi.Entities.Beds
 {
     public class IcBedRegLevel : SmartEnum<IcBedRegLevel>
     {
+        public static readonly IcBedRegLevel Yok = new(nameof(Yok), 0, "Yok");
         public static readonly IcBedRegLevel Seviye1 = new(nameof(Seviye1), 1, "Seviye 1");
         public static readonly IcBedRegLevel Seviye2 = new(nameof(Seviye2), 2, "Seviye 2");
         public static readonly IcBedRegLevel Seviye3 = new(nameof(Seviye3), 3, "Seviye 3");

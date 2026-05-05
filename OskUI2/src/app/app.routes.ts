@@ -88,9 +88,14 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/temporaray-staff/temporaray-staff').then(m => m.TemporarayStaffComponent)
       },
       {
-        path: 'personnel-search',
+        path: 'pm-report',
         canActivate: [adminGuard],
-        loadComponent: () => import('./pages/personnel-search/personnel-search.component').then(m => m.PersonnelSearchComponent)
+        loadComponent: () => import('./pages/pm-report/pm-report').then(m => m.PmReportComponent)
+      },
+      {
+        path: 'ic-bed',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./pages/ic-bed/ic-bed.component').then(m => m.IcBedComponent)
       },
       { path: '**', component: ErrorComponent },
       { path: 'errorpage', component: ErrorComponent },

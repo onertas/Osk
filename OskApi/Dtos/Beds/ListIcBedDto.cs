@@ -4,6 +4,7 @@ namespace OskApi.Dtos.Beds
     {
         public Guid Id { get; set; }
         public Guid HealthFacilityId { get; set; }
+        public string HealthFacilityName { get; set; } = null!;
         public int IcBedRegLevel { get; set; }
         public string IcBedRegLevelName { get; set; } = null!;
         public int IcBedRegType { get; set; }

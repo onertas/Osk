@@ -13,10 +13,12 @@ public class PmBusinessRules
     private readonly IPmService _pmService;
     private readonly IPersonnelService _personnelService;
     private readonly IHealthFacilityService _healthFacilityService;
+    private readonly IBranchService _branchService;
 
     public PmBusinessRules(
         IPmTypeService pmTypeService, 
-        IStaffService staffService, 
+        IStaffService staffService,
+        IBranchService branchService,
         ITemporarayStaffService temporarayStaffService,
         IPmService pmService,
         IPersonnelService personnelService,
@@ -28,14 +30,19 @@ public class PmBusinessRules
         _pmService = pmService;
         _personnelService = personnelService;
         _healthFacilityService = healthFacilityService;
+            _branchService = branchService;
     }
 
     public async Task<Result<string>> CheckRulesForCreateAsync(CreatePersonelMovementDto model)
     {
         var pmType = await _pmTypeService.GetAll().FirstOrDefaultAsync(t => t.Id == model.PmTypeId);
-        
-        if (pmType == null)
-            return Result<string>.Fail("Hareket türü bulunamadı.");
+        if (pmType == null) return Result<string>.Fail("Hareket türü bulunamadı.");
+
+        var branch = await _branchService.GetAll().Include(i=>i.Title).FirstOrDefaultAsync(b => b.Id == model.BranchId);
+        if (branch==null || branch.Title == null) return Result<string>.Fail("Branş bulunamadı.");
+
+
+
 
         // Genel Kural: Aynı kişi, aynı kurumda, aynı hareket türü ile birden fazla aktif kayda sahip olamaz.
         var isDuplicateAtFacility = await _pmService.GetAll()
@@ -48,13 +55,13 @@ public class PmBusinessRules
             return Result<string>.Fail("Bu personelin ilgili kurumda bu hareket türüyle devam eden aktif bir kaydı zaten mevcut.");
 
         // 1- IsUsingStaff
-        if (pmType.IsUsingStaff)
+        if (pmType.IsUsingStaff && !(branch.Title?.Code == "SPR"))
         {
             var targetFacility = await _healthFacilityService.GetAll()
                 .Include(hf => hf.HealthFacilityType)
                 .FirstOrDefaultAsync(hf => hf.Id == model.HealthFacilityId);
 
-            bool isTargetMh = targetFacility?.HealthFacilityType?.Code == "MH";
+            bool isTargetMh = targetFacility?.HealthFacilityType?.Code == "MH";//muayenehane ise kadro kontrolü yapmayacağız, çünkü muayenehanelerde kadro zorunluluğu yok.
 
             if (!isTargetMh)
             {

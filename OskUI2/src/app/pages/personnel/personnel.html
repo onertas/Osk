@@ -4,12 +4,19 @@
     <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
   <button (click)="ResetForm()" data-toggle="modal" data-target="#acAdd" class="btn btn-sm btn-dark"><i class="fas fa-plus"></i> Yeni
     Personel</button>
-  <input pInputText #globalFilter placeholder="Global filter" type="text" (input)="onGlobalFilter($event)"
+  <input pInputText placeholder="Ara (Ad, Soyad, TC, Email)..." type="text" [(ngModel)]="searchQuery" (input)="onSearchChange()"
     style="max-width:280px;" />
 </div>
-<p-table styleClass="p-datatable-sm fontstil13" #dt [value]="personnel" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5,10,20]" 
-[sortMode]="'multiple'"
-  [responsiveLayout]="'scroll'" [globalFilterFields]="['firstName','lastName','email','phone']"
+<p-table styleClass="p-datatable-sm fontstil13" #dt 
+  [value]="personnel" 
+  [lazy]="true" 
+  (onLazyLoad)="loadPersonnel($event)"
+  [paginator]="true" 
+  [rows]="10" 
+  [totalRecords]="totalRecords" 
+  [loading]="loading"
+  [rowsPerPageOptions]="[5,10,20,50]" 
+  [responsiveLayout]="'scroll'"
   exportFilename="personnel">
   <ng-template pTemplate="header">
     <tr>
@@ -35,6 +42,10 @@
       <td>{{ person.branches.join(', ') }}</td>
       <td style="text-align: right">
         <app-grup-menu-component>
+          <a (click)="selectPersonnel(person)" class="dropdown-item pointer fontstil13" style="padding: 6px 12px; border-bottom: 1px solid #eee;">
+            <i style="width: 18px" class="fas fa-eye text-info"></i>
+            Detay / Hareketler
+          </a>
           <a (click)="Edit(person)" data-toggle="modal" data-target="#acEdit" class="dropdown-item pointer fontstil13" style="padding: 6px 12px; border-bottom: 1px solid #eee;">
             <i style="width: 18px" class="fas fa-edit text-primary"></i>
             Düzenle
@@ -50,10 +61,68 @@
 
   <ng-template pTemplate="emptymessage">
     <tr>
-      <td colspan="7">No personnel found.</td>
+      <td colspan="8">Personel bulunamadı.</td>
     </tr>
   </ng-template>
 </p-table>
+
+<!-- ────── Personel Detayı ve Hareket Geçmişi ────── -->
+@if (selectedPersonnel) {
+  <app-section [title]="selectedPersonnel.firstName + ' ' + selectedPersonnel.lastName + ' - Hareket Geçmişi'">
+    <div class="mb-3 d-flex justify-content-end">
+      <button class="btn btn-secondary btn-sm" (click)="selectedPersonnel = null; personnelMovements = []">
+        <i class="fa fa-times"></i> Detayı Kapat
+      </button>
+    </div>
+
+    <div class="row mb-3 fontstil13">
+      <div class="col-md-3"><strong>TC No:</strong> {{ selectedPersonnel.identityNumber }}</div>
+      <div class="col-md-3"><strong>Telefon:</strong> {{ selectedPersonnel.phoneNumber || 'Yok' }}</div>
+      <div class="col-md-3"><strong>Email:</strong> {{ selectedPersonnel.email || 'Yok' }}</div>
+      <div class="col-md-3"><strong>Branşlar:</strong> {{ selectedPersonnel.branches.join(', ') }}</div>
+    </div>
+
+    <hr>
+    
+    <p-table 
+      [value]="personnelMovements" 
+      [loading]="loadingDetails"
+      styleClass="p-datatable-sm fontstil12 p-datatable-striped" 
+      [responsiveLayout]="'scroll'">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Kurum Adı</th>
+          <th>Hareket Türü</th>
+          <th>Branş</th>
+          <th>Başlama Tarihi</th>
+          <th>Ayrılış Tarihi</th>
+          <th>SGK Durumu</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-pm>
+        <tr>
+          <td>{{ pm.healthFacility?.name }}</td>
+          <td>
+            <span class="badge bg-secondary">{{ pm.pmType?.name }}</span>
+          </td>
+          <td>{{ pm.branch?.name }}</td>
+          <td>{{ pm.start | date:'dd.MM.yyyy' }}</td>
+          <td>{{ pm.finish ? (pm.finish | date:'dd.MM.yyyy') : 'Devam Ediyor' }}</td>
+          <td>
+            <span class="badge" [ngClass]="pm.isSgk ? 'bg-success' : 'bg-warning'">
+              {{ pm.isSgk ? 'SGK Var' : 'SGK Yok' }}
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="text-center text-muted py-3">Kayıtlı hareket bulunmuyor.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </app-section>
+}
   </app-section>
 </app-blank>
 

@@ -1,10 +1,10 @@
-<app-blank title="Dashboard">
+<app-blank title="gjklhkl">
 
   <!-- ═══════════════════ TOPLAM ÖZET KARTLARI ═══════════════════ -->
-  <div class="dashboard-grid" [class.loaded]="isLoaded">
+  <div class="dashboard-grid">
 
     <!-- Toplam Kuruluş -->
-    <div class="summary-card card-gradient-indigo" style="animation-delay: 0.05s">
+    <div class="summary-card card-indigo">
       <div class="summary-card__icon">
         <i class="fas fa-hospital"></i>
       </div>
@@ -12,11 +12,10 @@
         <span class="summary-card__value">{{ totalFacilities }}</span>
         <span class="summary-card__label">Toplam Kuruluş</span>
       </div>
-      <div class="summary-card__wave"></div>
     </div>
 
     <!-- Toplam Personel -->
-    <div class="summary-card card-gradient-emerald" style="animation-delay: 0.15s">
+    <div class="summary-card card-emerald">
       <div class="summary-card__icon">
         <i class="fas fa-user-md"></i>
       </div>
@@ -24,11 +23,10 @@
         <span class="summary-card__value">{{ totalPersonnel }}</span>
         <span class="summary-card__label">Toplam Personel</span>
       </div>
-      <div class="summary-card__wave"></div>
     </div>
 
     <!-- Toplam YB Yatak -->
-    <div class="summary-card card-gradient-amber" style="animation-delay: 0.25s">
+    <div class="summary-card card-amber">
       <div class="summary-card__icon">
         <i class="fas fa-bed"></i>
       </div>
@@ -36,16 +34,15 @@
         <span class="summary-card__value">{{ totalIcBeds }}</span>
         <span class="summary-card__label">Toplam YB Yatak</span>
       </div>
-      <div class="summary-card__wave"></div>
     </div>
 
   </div>
 
   <!-- ═══════════════════ DETAY KARTLARI ═══════════════════ -->
-  <div class="detail-row" [class.loaded]="isLoaded">
+  <div class="detail-row">
 
     <!-- ────── Kuruluş Sayıları ────── -->
-    <div class="detail-card" style="animation-delay: 0.3s">
+    <div class="detail-card">
       <div class="detail-card__header">
         <div class="detail-card__header-left">
           <div class="detail-card__icon-box icon-indigo">
@@ -76,7 +73,7 @@
     </div>
 
     <!-- ────── Personel Sayıları ────── -->
-    <div class="detail-card" style="animation-delay: 0.4s">
+    <div class="detail-card">
       <div class="detail-card__header">
         <div class="detail-card__header-left">
           <div class="detail-card__icon-box icon-emerald">
@@ -107,7 +104,7 @@
     </div>
 
     <!-- ────── YB Yatak Sayıları ────── -->
-    <div class="detail-card" style="animation-delay: 0.5s">
+    <div class="detail-card">
       <div class="detail-card__header">
         <div class="detail-card__header-left">
           <div class="detail-card__icon-box icon-amber">
@@ -139,10 +136,10 @@
   </div>
 
   <!-- ═══════════════════ GRAFİKLER ═══════════════════ -->
-  <div class="chart-row" [class.loaded]="isLoaded">
+  <div class="chart-row">
 
     <!-- Kuruluş Dağılımı Pasta Grafiği -->
-    <div class="chart-card" style="animation-delay: 0.55s">
+    <div class="chart-card">
       <div class="chart-card__header">
         <div class="chart-card__header-left">
           <div class="detail-card__icon-box icon-indigo">
@@ -159,7 +156,7 @@
     </div>
 
     <!-- Personel Dağılımı Bar Grafiği -->
-    <div class="chart-card chart-card--wide" style="animation-delay: 0.65s">
+    <div class="chart-card chart-card--wide">
       <div class="chart-card__header">
         <div class="chart-card__header-left">
           <div class="detail-card__icon-box icon-emerald">
@@ -177,8 +174,8 @@
   </div>
 
   <!-- YB Yatak Grafiği -->
-  <div class="chart-row chart-row--single" [class.loaded]="isLoaded">
-    <div class="chart-card chart-card--full" style="animation-delay: 0.75s">
+  <div class="chart-row chart-row--single">
+    <div class="chart-card chart-card--full">
       <div class="chart-card__header">
         <div class="chart-card__header-left">
           <div class="detail-card__icon-box icon-amber">

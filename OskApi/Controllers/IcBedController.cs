@@ -91,7 +91,20 @@ namespace OskApi.Controllers
         {
             var list = await _icBedService.GetAll()
                 .Include(x => x.IcBedName)
+                .Include(x => x.HealthFacility)
                 .Where(x => x.HealthFacilityId == healthFacilityId)
+                .ToListAsync();
+
+            var mappedList = _mapper.Map<List<ListIcBedDto>>(list);
+            return Ok(Result<List<ListIcBedDto>>.Ok(mappedList));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var list = await _icBedService.GetAll()
+                .Include(x => x.IcBedName)
+                .Include(x => x.HealthFacility)
                 .ToListAsync();
 
             var mappedList = _mapper.Map<List<ListIcBedDto>>(list);
