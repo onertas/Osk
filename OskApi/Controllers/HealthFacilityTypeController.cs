@@ -30,7 +30,7 @@ namespace OskApi.Controllers;
         var list = await _healthFacilityTypeService.GetAll().ToListAsync();
 
 
-        var res=Result<List<HealthFacilityType>>.Ok(list);
+        var res=Result<List<HealthFacilityType>>.Ok(list.OrderBy(i => i.MenuOrder).ToList());
         return Ok(res);
     }
 
@@ -55,6 +55,11 @@ namespace OskApi.Controllers;
 
         entity.Name = model.Name;
         entity.Code = model.Code;
+        entity.ShowBed = model.ShowBed;
+        entity.ShowDevice = model.ShowDevice;
+        entity.ShowStaff = model.ShowStaff;
+        entity.ShowTempStaff = model.ShowTempStaff;
+        entity.ShowPm = model.ShowPm;
         
         _healthFacilityTypeService.Update(entity);
         await _unitOfWork.SaveChangesAsync();

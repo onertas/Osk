@@ -5,6 +5,7 @@ import { TableModule, Table } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
+import { DatePickerModule } from 'primeng/datepicker';
 import { SharedModule } from '../../modules/shared.module';
 import { HttpApiService } from '../../services/http-api-service';
 import { SwalService } from '../../services/swall.service';
@@ -26,6 +27,7 @@ import { ExcelService } from '../../services/excel.service';
     InputTextModule, 
     ButtonModule, 
     SelectModule,
+    DatePickerModule,
     SharedModule, 
     Modal, 
     Blank, 
@@ -49,6 +51,21 @@ export class StaffComponent implements OnInit, OnChanges {
 
   newStaff: CreateStaffDto = new CreateStaffDto();
   updateStaff: UpdateStaffDto = new UpdateStaffDto();
+
+  formatStaffNo(no: any): string {
+    if (!no) return '-';
+    return no.toString().padStart(4, '0');
+  }
+
+  private formatDate(date: any): string | null {
+    if (!date) return null;
+    const d = new Date(date);
+    const month = '' + (d.getMonth() + 1);
+    const day = '' + d.getDate();
+    const year = d.getFullYear();
+
+    return [year, month.padStart(2, '0'), day.padStart(2, '0')].join('-');
+  }
 
   ngOnInit(): void {
     if (!this.healthFacilityId) {
@@ -120,15 +137,12 @@ export class StaffComponent implements OnInit, OnChanges {
   }
 
   add(form: any) {
-    const exists = this.staffList.some(
-      s => s.healthFacilityId === this.newStaff.healthFacilityId && s.branchId === this.newStaff.branchId
-    );
-    if (exists) {
-      this.swal.showWarning("Bu kurum için bu kadro zaten eklenmiş.");
-      return;
-    }
+ 
 
-    this.http.post('Staff/Add', this.newStaff).subscribe({
+    const model = { ...this.newStaff };
+    model.date = this.formatDate(model.date);
+
+    this.http.post('Staff/Add', model).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.swal.showSuccess("Başarıyla eklendi");
@@ -152,12 +166,18 @@ export class StaffComponent implements OnInit, OnChanges {
       code: item.code,
       branchId: item.branchId,
       healthFacilityId: item.healthFacilityId,
-      count: item.count
+      count: item.count,
+      staffNo: item.staffNo,
+      date: item.date ? new Date(item.date) : null,
+      reason: item.reason
     };
   }
 
   update(form: any) {
-    this.http.post('Staff/Update', this.updateStaff).subscribe({
+    const model = { ...this.updateStaff };
+    model.date = this.formatDate(model.date);
+
+    this.http.post('Staff/Update', model).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.swal.showSuccess("Başarıyla güncellendi");

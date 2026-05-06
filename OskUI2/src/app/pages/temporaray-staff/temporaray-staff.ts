@@ -16,6 +16,8 @@ import { ListBranchDto } from '../../dtos/branch/ListBranchDto';
 import { HfManagementListDto } from '../../dtos/healthFacility/hf-management-list.dto';
 import { ListPmTypeDto } from '../../dtos/pmType/list-pm-type.dto';
 
+import { ExcelService } from '../../services/excel.service';
+
 @Component({
   selector: 'app-temporaray-staff',
   standalone: true,
@@ -38,6 +40,7 @@ export class TemporarayStaffComponent implements OnInit, OnChanges {
 
   http = inject(HttpApiService);
   swal = inject(SwalService);
+  excel = inject(ExcelService);
 
   @ViewChild('dt') table!: Table;
   @ViewChild(Modal) modalCom: Modal | undefined;
@@ -203,5 +206,16 @@ export class TemporarayStaffComponent implements OnInit, OnChanges {
         }
       });
     });
+  }
+
+  exportToExcel() {
+    const dataToExport = this.tempStaffList.map(s => ({
+      'Kod': s.code,
+      'Kuruluş': s.healthFacilityName,
+      'Branş': s.branchName,
+      'Hareket Türü': s.pmTypeName,
+      'Sayı': s.count
+    }));
+    this.excel.exportToExcel(dataToExport, 'Gecici_Kadro_Listesi');
   }
 }

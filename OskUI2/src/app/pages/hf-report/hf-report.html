@@ -42,6 +42,7 @@
                 
                 <ng-template pTemplate="header">
                     <tr>
+                        <th style="width: 50px;">#</th>
                         <th>Kuruluş Adı</th>
                         <th>Tür</th>
                         <th>Şirket/Kurum</th>
@@ -51,8 +52,9 @@
                     </tr>
                 </ng-template>
 
-                <ng-template pTemplate="body" let-item>
+                <ng-template pTemplate="body" let-item let-i="rowIndex">
                     <tr>
+                        <td>{{ (page - 1) * pageSize + i + 1 }}</td>
                         <td>{{ item.name }}</td>
                         <td>{{ item.typeName }}</td>
                         <td>{{ item.corporationName }}</td>
@@ -68,7 +70,7 @@
 
                 <ng-template pTemplate="emptymessage">
                     <tr>
-                        <td colspan="6" class="text-center p-4">Kayıt bulunamadı. Lütfen filtreleri kullanarak arama yapın.</td>
+                        <td colspan="7" class="text-center p-4">Kayıt bulunamadı. Lütfen filtreleri kullanarak arama yapın.</td>
                     </tr>
                 </ng-template>
             </p-table>

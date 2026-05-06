@@ -3,12 +3,14 @@ import { SharedModule } from '../../modules/shared.module';
 import { HttpApiService } from '../../services/http-api-service';
 import { SwalService } from '../../services/swall.service';
 import { HealthFacilityTypeListDto } from '../../dtos/healthFacility/HealthFacilityTypeListDto';
-import { TableModule } from "primeng/table";
+import { CheckboxModule } from 'primeng/checkbox';
+import { TableModule } from 'primeng/table';
 import { Modal } from '../../components/modal/modal';
 
 @Component({
   selector: 'app-hf-type',
-  imports: [SharedModule, TableModule, Modal],
+  standalone: true,
+  imports: [SharedModule, TableModule, CheckboxModule, Modal],
   templateUrl: './hf-type.html',
   styleUrl: './hf-type.css',
 })

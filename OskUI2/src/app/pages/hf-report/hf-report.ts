@@ -112,7 +112,8 @@ export class HfReportComponent implements OnInit {
   }
 
   exportToExcel() {
-    const dataToExport = this.facilities.map(f => ({
+    const dataToExport = this.facilities.map((f, index) => ({
+      'Sıra No': (this.page - 1) * this.pageSize + index + 1,
       'Kuruluş Adı': f.name,
       'Tür': f.typeName,
       'Şirket/Kurum': f.corporationName,

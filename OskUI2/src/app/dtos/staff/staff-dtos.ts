@@ -3,6 +3,9 @@ export class CreateStaffDto {
     branchId: string = '';
     healthFacilityId: string = '';
     count: number = 0;
+    staffNo: number = 0;
+    date: any = null;
+    reason: string = '';
 }
 
 export class UpdateStaffDto {
@@ -11,6 +14,9 @@ export class UpdateStaffDto {
     branchId: string = '';
     healthFacilityId: string = '';
     count: number = 0;
+    staffNo: number = 0;
+    date: any = null;
+    reason: string = '';
 }
 
 export class ListStaffDto {
@@ -21,6 +27,9 @@ export class ListStaffDto {
     healthFacilityId: string = '';
     healthFacilityName: string = '';
     count: number = 0;
+    staffNo: number = 0;
+    date: any = null;
+    reason: string = '';
 }
 
 export class CreateTemporarayStaffDto {

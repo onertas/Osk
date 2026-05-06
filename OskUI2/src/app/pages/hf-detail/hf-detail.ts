@@ -33,11 +33,11 @@ export class HfDetailComponent implements OnInit {
 
   healthFacilityId: string = '';
   facility: HfManagementListDto = new HfManagementListDto();
-  isLoading: boolean = true;
   isAdmin: boolean = false;
   
   totalIcBeds: number = 0;
   isBedsLoaded: boolean = false;
+  activeTab: string = 'home';
 
   ngOnInit(): void {
     // Kullanıcı bilgisi yüklendiğinde isAdmin güncelle
@@ -54,22 +54,26 @@ export class HfDetailComponent implements OnInit {
   }
 
   loadFacility() {
-    this.isLoading = true;
+   
     this.http.get<HfManagementListDto>('HealthFacility/GetById', { id: this.healthFacilityId }).subscribe({
       next: (res) => {
         if (res.success && res.data) {
           this.facility = res.data;
+
+          console.log(res.data)
         }
-        this.isLoading = false;
-      },
-      error: () => {
-        this.isLoading = false;
+       
       }
+      
     });
   }
 
   onBedsLoaded(count: number) {
     this.totalIcBeds = count;
     this.isBedsLoaded = true;
+  }
+
+  selectTab(tab: string) {
+    this.activeTab = tab;
   }
 }

@@ -14,5 +14,10 @@ namespace OskApi.Dtos.HealthFacilities
         public Guid HealthFacilityTypeId { get; set; }
         public string TypeName { get; set; } = null!;
         public DateTime? OpeningDate { get; set; }
+        public bool ShowBed { get; set; }
+        public bool ShowDevice { get; set; }
+        public bool ShowStaff { get; set; }
+        public bool ShowTempStaff { get; set; }
+        public bool ShowPm { get; set; }
     }
 }

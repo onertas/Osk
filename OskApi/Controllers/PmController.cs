@@ -97,11 +97,38 @@ public class PmController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAllByHfId(Guid healthFacilityId, bool showSeparated = false)
+    {
+        var query = _pmService.GetAll()
+            .Include(i => i.PmType)
+            .Include(i => i.Branch)
+            .Include(i => i.HealthFacility)
+            .Include(i => i.Personnel)
+            .Where(i => i.HealthFacilityId == healthFacilityId);
+
+        if (!showSeparated)
+        {
+            var now = DateTime.Now;
+            query = query.Where(i => i.Finish == null);
+        }
+
+        var list = await query.ToListAsync();
+            
+        var mappedList = _mapper.Map<List<ListPersonelMovementDto>>(list);
+        
+        var result = Result<List<ListPersonelMovementDto>>.Ok(mappedList);
+        return Ok(result);
+    }
+
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> Update(UpdatePersonelMovementDto model)
     {
         model.Start = model.Start.ToLocalTime();
+        if (model.Finish.HasValue) model.Finish = model.Finish.Value.ToLocalTime();
+        if (model.ContractStart.HasValue) model.ContractStart = model.ContractStart.Value.ToLocalTime();
+        if (model.ContractFinish.HasValue) model.ContractFinish = model.ContractFinish.Value.ToLocalTime();
 
         var entity = await _pmService.GetAll().FirstOrDefaultAsync(i => i.Id == model.Id);
         if (entity == null)

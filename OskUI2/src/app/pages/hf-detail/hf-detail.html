@@ -1,67 +1,43 @@
-<app-blank>
+<app-blank title=" {{facility.typeName}}">
     <!-- Professional Header Summary -->
-    <div class="row mb-3 fontstil13 bg-white p-3 rounded shadow-sm mx-0">
-        <div class="col-md-7">
-            <div class="d-flex align-items-center mb-1">
-                <h4 class="mb-0 mr-3 font-weight-bold text-dark" style="letter-spacing: -0.5px;">{{ facility.name }}</h4>
-                <span class="badge badge-info px-2 py-1" style="font-size: 11px; font-weight: 500;">{{ facility.typeName }}</span>
-            </div>
-            <p class="text-muted mb-0 small"><i class="fas fa-map-marker-alt mr-1 text-danger"></i> {{ facility.address }}</p>
-        </div>
-        <div class="col-md-5">
-            <div class="row">
-                <div class="col-6">
-                    <div class="info-box bg-light shadow-none border mb-0" style="min-height: 50px;">
-                        <span class="info-box-icon bg-info" style="font-size: 0.9rem; width: 35px;"><i class="fas fa-procedures"></i></span>
-                        <div class="info-box-content p-1">
-                            <span class="info-box-text text-muted" style="font-size: 10px; text-transform: uppercase; font-weight: 600;">Toplam Yatak</span>
-                            <span class="info-box-number fontstil13 mb-0" style="font-weight: 700;">{{ facility.totalBedCount || 0 }}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="info-box bg-light shadow-none border mb-0" style="min-height: 50px;">
-                        <span class="info-box-icon bg-success" style="font-size: 0.9rem; width: 35px;"><i class="fas fa-bed"></i></span>
-                        <div class="info-box-content p-1">
-                            <span class="info-box-text text-muted" style="font-size: 10px; text-transform: uppercase; font-weight: 600;">YB Yatak</span>
-                            <span class="info-box-number fontstil13 mb-0" style="font-weight: 700;">{{ totalIcBeds }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card card-dark card-tabs shadow-sm fontstil13">
+   <app-section title="{{facility.name}}">
+     <div class="card card-dark card-tabs shadow-sm fontstil13">
         <div class="card-header p-0 pt-1">
             <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="home-tab" data-toggle="pill" href="#home" role="tab">
+                    <a class="nav-link" [class.active]="activeTab === 'home'" (click)="selectTab('home')" id="home-tab"
+                        data-toggle="pill" href="#home" role="tab">
                         <i class="fas fa-info-circle mr-1"></i> Genel Bilgiler
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="staff-tab" data-toggle="pill" href="#staff" role="tab">
+                <li class="nav-item" *ngIf="facility.showPm">
+                    <a class="nav-link" [class.active]="activeTab === 'staff'" (click)="selectTab('staff')"
+                        id="staff-tab" data-toggle="pill" href="#staff" role="tab">
                         <i class="fas fa-users mr-1"></i> Personel
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="kadro-tab" data-toggle="pill" href="#kadro" role="tab">
+                <li class="nav-item" *ngIf="facility.showStaff">
+                    <a class="nav-link" [class.active]="activeTab === 'kadro'" (click)="selectTab('kadro')"
+                        id="kadro-tab" data-toggle="pill" href="#kadro" role="tab">
                         <i class="fas fa-user-tie mr-1"></i> Kadro
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="gecici-kadro-tab" data-toggle="pill" href="#gecici-kadro" role="tab">
+                <li class="nav-item" *ngIf="facility.showTempStaff">
+                    <a class="nav-link" [class.active]="activeTab === 'gecici-kadro'"
+                        (click)="selectTab('gecici-kadro')" id="gecici-kadro-tab" data-toggle="pill"
+                        href="#gecici-kadro" role="tab">
                         <i class="fas fa-user-clock mr-1"></i> Geçici Kadro
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="bed-tab" data-toggle="pill" href="#bed" role="tab">
+                <li class="nav-item" *ngIf="facility.showBed">
+                    <a class="nav-link" [class.active]="activeTab === 'bed'" (click)="selectTab('bed')" id="bed-tab"
+                        data-toggle="pill" href="#bed" role="tab">
                         <i class="fas fa-procedures mr-1"></i> Yatak Yönetimi
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="testnotu-tab" data-toggle="pill" href="#testnotu" role="tab">
+                <li class="nav-item" *ngIf="facility.showDevice">
+                    <a class="nav-link" [class.active]="activeTab === 'testnotu'" (click)="selectTab('testnotu')"
+                        id="testnotu-tab" data-toggle="pill" href="#testnotu" role="tab">
                         <i class="fas fa-microscope mr-1"></i> Cihazlar
                     </a>
                 </li>
@@ -69,24 +45,26 @@
         </div>
         <div class="card-body">
             <!-- Mismatch Alert -->
-            <div *ngIf="!isLoading && isBedsLoaded && facility.totalBedCount !== totalIcBeds" class="alert alert-warning d-flex align-items-center p-2 mb-3 shadow-xs" role="alert">
+            <div *ngIf="isBedsLoaded && facility.totalBedCount !== totalIcBeds"
+                class="alert alert-warning d-flex align-items-center p-2 mb-3 shadow-xs" role="alert">
                 <i class="fas fa-exclamation-triangle mr-3"></i>
                 <div>
                     <h6 class="font-weight-bold mb-0 fontstil13">Yatak Sayısı Uyuşmazlığı!</h6>
-                    <span class="small">Kayıtlı toplam yatak sayısı ({{ facility.totalBedCount }}) ile sistemdeki aktif yoğun bakım yatakları ({{ totalIcBeds }}) uyuşmuyor.</span>
+                    <span class="small">Kayıtlı toplam yatak sayısı ({{ facility.totalBedCount }}) ile sistemdeki aktif
+                        yoğun bakım yatakları ({{ totalIcBeds }}) uyuşmuyor.</span>
                 </div>
             </div>
 
             <div class="tab-content" id="custom-tabs-one-tabContent">
                 <!-- GENEL BİLGİLER -->
-                <div class="tab-pane fade active show" id="home" role="tabpanel">
-                    <div *ngIf="isLoading" class="text-center py-5 text-muted">
-                        <i class="fas fa-spinner fa-spin fa-2x"></i><br>Veriler Yükleniyor...
-                    </div>
+                <div class="tab-pane fade" [class.show]="activeTab === 'home'" [class.active]="activeTab === 'home'"
+                    id="home" role="tabpanel">
 
-                    <div *ngIf="!isLoading" class="row">
+
+                    <div class="row">
                         <div class="col-md-6 border-right">
-                            <h6 class="text-primary border-bottom pb-1 mb-2 font-weight-bold"><i class="fas fa-id-card mr-2"></i>Kuruluş Kimlik Bilgileri</h6>
+                            <h6 class="text-primary border-bottom pb-1 mb-2 font-weight-bold"><i
+                                    class="fas fa-id-card mr-2"></i>Kuruluş Kimlik Bilgileri</h6>
                             <div class="row mb-2">
                                 <div class="col-sm-4 text-muted font-weight-bold">Tam Adı:</div>
                                 <div class="col-sm-8">{{ facility.name }}</div>
@@ -105,7 +83,8 @@
                             </div>
                         </div>
                         <div class="col-md-6 pl-md-4">
-                            <h6 class="text-primary border-bottom pb-1 mb-2 font-weight-bold"><i class="fas fa-address-book mr-2"></i>İletişim & Kapasite</h6>
+                            <h6 class="text-primary border-bottom pb-1 mb-2 font-weight-bold"><i
+                                    class="fas fa-address-book mr-2"></i>İletişim & Kapasite</h6>
                             <div class="row mb-2">
                                 <div class="col-sm-4 text-muted font-weight-bold">Telefon:</div>
                                 <div class="col-sm-8">{{ facility.phoneNumber || '-' }}</div>
@@ -120,35 +99,56 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-sm-4 text-muted font-weight-bold">Toplam Yatak:</div>
-                                <div class="col-sm-8"><span class="badge badge-dark fontstil12">{{ facility.totalBedCount || 0 }} Adet</span></div>
+                                <div class="col-sm-8"><span class="badge badge-dark fontstil12">{{
+                                        facility.totalBedCount || 0 }} Adet</span></div>
                             </div>
                         </div>
                         <div class="col-12 mt-2 p-2 bg-light rounded fontstil12">
-                            <i class="fas fa-map-marked-alt text-muted mr-2"></i><strong>Adres:</strong> {{ facility.address || '-' }}
+                            <i class="fas fa-map-marked-alt text-muted mr-2"></i><strong>Adres:</strong> {{
+                            facility.address || '-' }}
                         </div>
                     </div>
                 </div>
 
                 <!-- PERSONEL -->
-                <div class="tab-pane fade" id="staff" role="tabpanel">
-                    <app-personnel-movement [healthFacilityId]="healthFacilityId" [isAdmin]="isAdmin"></app-personnel-movement>
+                <div class="tab-pane fade" *ngIf="facility.showPm" [class.show]="activeTab === 'staff'" [class.active]="activeTab === 'staff'"
+                    id="staff" role="tabpanel">
+                    <app-personnel-movement *ngIf="activeTab === 'staff'"
+                        [healthFacilityId]="healthFacilityId"></app-personnel-movement>
                 </div>
 
                 <!-- KADRO -->
-                <div class="tab-pane fade" id="kadro" role="tabpanel">
-                    <app-staff [healthFacilityId]="healthFacilityId"></app-staff>
+                <div class="tab-pane fade" *ngIf="facility.showStaff" [class.show]="activeTab === 'kadro'"
+                    [class.active]="activeTab === 'kadro'" id="kadro" role="tabpanel">
+                    <app-staff *ngIf="activeTab === 'kadro'" [healthFacilityId]="healthFacilityId"></app-staff>
                 </div>
 
                 <!-- GEÇİCİ KADRO -->
-                <div class="tab-pane fade" id="gecici-kadro" role="tabpanel">
-                    <app-temporaray-staff [healthFacilityId]="healthFacilityId"></app-temporaray-staff>
+                <div class="tab-pane fade" *ngIf="facility.showTempStaff" [class.show]="activeTab === 'gecici-kadro'"
+                    [class.active]="activeTab === 'gecici-kadro'" id="gecici-kadro" role="tabpanel">
+                    <app-temporaray-staff *ngIf="activeTab === 'gecici-kadro'"
+                        [healthFacilityId]="healthFacilityId"></app-temporaray-staff>
                 </div>
 
                 <!-- YATAK -->
-                <div class="tab-pane fade" id="bed" role="tabpanel">
-                    <app-ic-bed [healthFacilityId]="healthFacilityId" [showFilters]="false" (totalBedsCount)="onBedsLoaded($event)"></app-ic-bed>
+                <div class="tab-pane fade" *ngIf="facility.showBed" [class.show]="activeTab === 'bed'"
+                    [class.active]="activeTab === 'bed'" id="bed" role="tabpanel">
+                    <app-ic-bed *ngIf="activeTab === 'bed'" [healthFacilityId]="healthFacilityId" [showFilters]="false"
+                        (totalBedsCount)="onBedsLoaded($event)"></app-ic-bed>
+                </div>
+
+                <!-- CIHAZLAR -->
+                <div class="tab-pane fade" *ngIf="facility.showDevice" [class.show]="activeTab === 'testnotu'"
+                    [class.active]="activeTab === 'testnotu'" id="testnotu" role="tabpanel">
+                    <div class="p-3 text-center text-muted">
+                        <i class="fas fa-microscope fa-3x mb-3"></i>
+                        <p>Cihaz yönetimi modülü yakında eklenecektir.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+   </app-section>
+
+   
 </app-blank>

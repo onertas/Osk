@@ -45,14 +45,14 @@ public class SeedData
             await userManager.AddToRoleAsync(user, "Admin");
         }
 
-        // 2. Hastane Türleri (Frontend 'OH' beklediği için kodları güncelledik)
+        // 2. Hastane Türleri
         if (!context.HealthFacilityTypes.Any())
         {
             context.HealthFacilityTypes.AddRange(
-                new HealthFacilityType { Name = "Özel Hastane", Code = "OH" },
-                new HealthFacilityType { Name = "Tıp Merkezi", Code = "TM" },
-                new HealthFacilityType { Name = "Poliklinik", Code = "PK" },
-                new HealthFacilityType { Name = "Muayenehane", Code = "MH" }
+                new HealthFacilityType { Name = "Özel Hastane", Code = "OH", ShowBed = true, ShowDevice = true, ShowStaff = true, ShowTempStaff = true, ShowPm = true },
+                new HealthFacilityType { Name = "Tıp Merkezi", Code = "TM", ShowBed = true, ShowDevice = true, ShowStaff = true, ShowTempStaff = true, ShowPm = true },
+                new HealthFacilityType { Name = "Poliklinik", Code = "PK", ShowBed = false, ShowDevice = true, ShowStaff = true, ShowTempStaff = true, ShowPm = true },
+                new HealthFacilityType { Name = "Muayenehane", Code = "MH", ShowBed = false, ShowDevice = false, ShowStaff = true, ShowTempStaff = true, ShowPm = true }
             );
             await context.SaveChangesAsync();
         }

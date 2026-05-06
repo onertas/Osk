@@ -98,7 +98,12 @@ public class HealthFacilityController : ControllerBase
             ObservationBedCount = entity.ObservationBedCount,
             TotalBedCount = entity.TotalBedCount,
             HealthFacilityTypeId = entity.HealthFacilityTypeId,
-            TypeName = entity.HealthFacilityType != null ? entity.HealthFacilityType.Name : ""
+            TypeName = entity.HealthFacilityType?.Name ?? "",
+            ShowBed = entity.HealthFacilityType?.ShowBed ?? false,
+            ShowDevice = entity.HealthFacilityType?.ShowDevice ?? false,
+            ShowStaff = entity.HealthFacilityType?.ShowStaff ?? false,
+            ShowTempStaff = entity.HealthFacilityType?.ShowTempStaff ?? false,
+            ShowPm = entity.HealthFacilityType?.ShowPm ?? false
         };
 
         return Ok(Result<HfManagementListDto>.Ok(dto, "Veri getirildi"));
@@ -130,25 +135,31 @@ public class HealthFacilityController : ControllerBase
 
         var totalCount = await query.CountAsync();
 
-        var items = await query
+        var itemsList = await query
             .OrderBy(o => o.Name)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(x => new HfManagementListDto
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Address = x.Address,
-                PhoneNumber = x.PhoneNumber,
-                Email = x.Email,
-                TaxNumber = x.TaxNumber,
-                CorporationName = x.CorporationName,
-                ObservationBedCount = x.ObservationBedCount,
-                TotalBedCount = x.TotalBedCount,
-                HealthFacilityTypeId = x.HealthFacilityTypeId,
-                TypeName = x.HealthFacilityType != null ? x.HealthFacilityType.Name : ""
-            })
             .ToListAsync();
+        
+        var items = itemsList.Select(x => new HfManagementListDto
+        {
+            Id = x.Id,
+            Name = x.Name,
+            Address = x.Address,
+            PhoneNumber = x.PhoneNumber,
+            Email = x.Email,
+            TaxNumber = x.TaxNumber,
+            CorporationName = x.CorporationName,
+            ObservationBedCount = x.ObservationBedCount,
+            TotalBedCount = x.TotalBedCount,
+            HealthFacilityTypeId = x.HealthFacilityTypeId,
+            TypeName = x.HealthFacilityType?.Name ?? "",
+            ShowBed = x.HealthFacilityType?.ShowBed ?? false,
+            ShowDevice = x.HealthFacilityType?.ShowDevice ?? false,
+            ShowStaff = x.HealthFacilityType?.ShowStaff ?? false,
+            ShowTempStaff = x.HealthFacilityType?.ShowTempStaff ?? false,
+            ShowPm = x.HealthFacilityType?.ShowPm ?? false
+        }).ToList();
 
         return Ok(Result<object>.Ok(new
         {

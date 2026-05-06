@@ -15,11 +15,12 @@ import { ListPersonnelMovementDto } from '../../dtos/personnelMovement/list-pers
 import { UpdatePersonnelMovementDto } from '../../dtos/personnelMovement/update-personnel-movement.dto';
 import { ListPmTypeDto } from '../../dtos/pmType/list-pm-type.dto';
 import { ExcelService } from '../../services/excel.service';
+import { TextareaModule } from 'primeng/textarea';
 
 @Component({
   selector: 'app-personnel-movement',
   standalone: true,
-  imports: [ButtonModule, DatePickerModule, InputTextModule, SelectModule, TableModule, SharedModule, Modal, CheckboxModule],
+  imports: [ButtonModule, DatePickerModule, InputTextModule, SelectModule, TableModule, SharedModule, Modal, CheckboxModule, TextareaModule],
   templateUrl: './personnel-movement.component.html'
 })
 export class PersonnelMovementComponent implements OnInit, OnChanges {
@@ -36,6 +37,7 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
   newMovement: CreatePersonnelMovementDto = new CreatePersonnelMovementDto();
   updateMovement: UpdatePersonnelMovementDto = new UpdatePersonnelMovementDto();
   movements: ListPersonnelMovementDto[] = [];
+  showSeparated: boolean = false;
 
   pmTypes: ListPmTypeDto[] = [];
   branches: any[] = [];
@@ -47,6 +49,11 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.GetPmTypes();
     this.GetBranches();
+    
+    if (this.healthFacilityId) {
+      this.GetAll();
+      this.newMovement.healthFacilityId = this.healthFacilityId;
+    }
 
     this.searchSubject.pipe(
       debounceTime(300),
@@ -71,14 +78,25 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
   GetAll() {
     if (!this.healthFacilityId) return;
 
-    this.http.get<ListPersonnelMovementDto[]>('Pm/GetAll').subscribe({
+    this.http.get<ListPersonnelMovementDto[]>('Pm/GetAllByHfId', { 
+      healthFacilityId: this.healthFacilityId,
+      showSeparated: this.showSeparated 
+    }).subscribe({
       next: (res) => {
         if (res.success && res.data) {
-          // Filter movements locally if backend doesn't filter by healthFacilityId
-          this.movements = res.data.filter(x => x.healthFacilityId === this.healthFacilityId);
+          this.movements = res.data;
         }
       }
     });
+  }
+
+  applyFilters() {
+    this.GetAll();
+  }
+
+  toggleSeparated() {
+    this.showSeparated = !this.showSeparated;
+    this.applyFilters();
   }
 
   GetPmTypes() {

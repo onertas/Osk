@@ -25,7 +25,7 @@ export class PersonnelSearchComponent {
   searchPerformed: boolean = false;
 
   onSearch() {
-    if (!this.searchText || this.searchText.length < 3) {
+    if (!this.searchText || this.searchText.trim().length < 3) {
       this.searchResults = [];
       return;
     }
@@ -34,14 +34,20 @@ export class PersonnelSearchComponent {
     this.personnelMovements = [];
     this.loadingSearch = true;
     this.searchPerformed = true;
-    this.http.get<any>(`Personnel/Search?query=${this.searchText}`).subscribe({
+
+    this.http.get<any[]>('Personnel/Search', { query: this.searchText }).subscribe({
       next: (res) => {
         if (res.success && res.data) {
           this.searchResults = res.data;
+        } else {
+          this.searchResults = [];
         }
         this.loadingSearch = false;
       },
-      error: () => (this.loadingSearch = false)
+      error: (err) => {
+        console.error('Search error:', err);
+        this.loadingSearch = false;
+      }
     });
   }
 
@@ -52,14 +58,19 @@ export class PersonnelSearchComponent {
 
   loadMovements(personnelId: string) {
     this.loadingDetails = true;
-    this.http.get<any>(`Pm/GetByPersonnelId?personnelId=${personnelId}`).subscribe({
+    this.http.get<any[]>('Pm/GetByPersonnelId', { personnelId: personnelId }).subscribe({
       next: (res) => {
         if (res.success && res.data) {
           this.personnelMovements = res.data;
+        } else {
+          this.personnelMovements = [];
         }
         this.loadingDetails = false;
       },
-      error: () => (this.loadingDetails = false)
+      error: (err) => {
+        console.error('Load movements error:', err);
+        this.loadingDetails = false;
+      }
     });
   }
 }

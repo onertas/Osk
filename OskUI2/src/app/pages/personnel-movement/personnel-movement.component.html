@@ -6,6 +6,10 @@
     <button (click)="exportToExcel()" class="btn btn-xs btn-success">
       <i class="fas fa-file-excel"></i> Excel'e Aktar
     </button>
+    <div class="d-flex align-items-center ms-3 border px-2 py-1 rounded bg-light" style="cursor: pointer;" (click)="toggleSeparated()">
+      <p-checkbox [binary]="true" [(ngModel)]="showSeparated" (onChange)="applyFilters()" (click)="$event.stopPropagation()"></p-checkbox>
+      <label class="mb-0 ms-2" style="cursor: pointer; font-size: 12px; font-weight: 500;">Ayrılanları Göster</label>
+    </div>
   </div>
   <input pInputText #globalFilter placeholder="Ara..." type="text" (input)="onGlobalFilter($event)"
     class="fontstil13" style="max-width:280px;" />
@@ -17,6 +21,7 @@
 
   <ng-template pTemplate="header">
     <tr>
+      <th style="width: 50px">#</th>
       <th pSortableColumn="personnel.firstName">Adı <p-sortIcon field="personnel.firstName"></p-sortIcon></th>
       <th pSortableColumn="personnel.lastName">Soyadı <p-sortIcon field="personnel.lastName"></p-sortIcon></th>
       <th pSortableColumn="pmType.name">Hareket Türü <p-sortIcon field="pmType.name"></p-sortIcon></th>
@@ -27,8 +32,9 @@
     </tr>
   </ng-template>
 
-  <ng-template pTemplate="body" let-pm>
+  <ng-template pTemplate="body" let-pm let-i="rowIndex">
     <tr>
+      <td>{{ i + 1 }}</td>
       <td>{{ pm.personnel?.firstName }}</td>
       <td>{{ pm.personnel?.lastName }}</td>
       <td>{{ pm.pmType?.name }}</td>
@@ -39,8 +45,8 @@
         <app-grup-menu-component>
           <a (click)="Edit(pm)" data-toggle="modal" data-target="#pmEditModal" class="dropdown-item pointer fontstil13"
             style="padding: 6px 12px; border-bottom: 1px solid #eee;">
-            <i style="width: 18px" class="fas fa-edit text-primary"></i>
-            Düzenle
+            <i style="width: 18px" class="fas fa-sign-out-alt text-danger"></i>
+            Ayrılış
           </a>
           <a *ngIf="isAdmin" (click)="Delete(pm.id)" class="dropdown-item pointer fontstil13" style="padding: 6px 12px;">
             <i style="width: 18px" class="fas fa-trash text-danger"></i>
@@ -53,7 +59,7 @@
 
   <ng-template pTemplate="emptymessage">
     <tr>
-      <td colspan="7">Kayıt bulunamadı.</td>
+      <td colspan="8">Kayıt bulunamadı.</td>
     </tr>
   </ng-template>
 </p-table>
@@ -149,95 +155,30 @@
   </form>
 </app-modal>
 
-<app-modal name="pmEditModal" title="Personel Hareketi Düzenle">
+<app-modal name="pmEditModal" title="Personel Ayrılış İşlemi">
   <form #editForm="ngForm" (ngSubmit)="Update(editForm)">
-
-    <div class="row">
-      <div class="col-md-6 form-group mb-2">
-        <label>Personel</label>
-        <p-select [options]="personnelList" [(ngModel)]="updateMovement.personnelId"
-          (onChange)="onPersonnelChange($event, true)" name="updPersonnelId" placeholder="Personel Seçin"
-          styleClass="w-100" [required]="true" optionValue="id" [filter]="true"
-          filterBy="firstName,lastName,identityNumber" optionLabel="firstName" (onFilter)="onPersonnelSearch($event)">
-          <ng-template let-person pTemplate="selectedItem">
-            <div *ngIf="person">
-              {{ person.firstName }} {{ person.lastName }}
-            </div>
-          </ng-template>
-          <ng-template let-person pTemplate="item">
-            <div>
-              <div class="font-weight-bold">{{ person.firstName }} {{ person.lastName }}</div>
-              <div style="font-size: 0.85em; color: gray;">{{ person.title?.name || person.title || 'Ünvan Yok' }}</div>
-            </div>
-          </ng-template>
-        </p-select>
-      </div>
-      <div class="col-md-6 form-group mb-2">
-        <label>Hareket Türü</label>
-        <p-select [options]="pmTypes" [(ngModel)]="updateMovement.pmTypeId" optionLabel="name" optionValue="id"
-          name="updPmTypeId" placeholder="Tür Seçin" styleClass="w-100" [required]="true" [filter]="true" filterBy="name">
-          <ng-template pTemplate="item" let-pm>
-            <div>
-              <div>{{ pm.name }}</div>
-              <div style="font-size: 0.8rem; color: gray;">{{ pm.description }}</div>
-            </div>
-          </ng-template>
-        </p-select>
-      </div>
+    <div class="alert alert-info py-2 px-3 mb-3">
+      <i class="fas fa-info-circle mr-2"></i>
+      <strong>Personel:</strong> {{ updateMovement.personnel?.firstName }} {{ updateMovement.personnel?.lastName }}
     </div>
 
-    <div class="row">
-      <div class="col-md-12 form-group mb-2">
-        <label>Branş</label>
-        <p-select [options]="filteredBranches" [(ngModel)]="updateMovement.branchId" optionLabel="name" optionValue="id"
-          name="updBranchId" placeholder="Branş Seçin" styleClass="w-100" [required]="true"></p-select>
-      </div>
+    <div class="form-group mb-3 d-flex flex-column">
+      <label class="font-weight-bold">Ayrılış (Bitiş) Tarihi</label>
+      <p-datepicker [(ngModel)]="updateMovement.finish" name="updFinish" styleClass="w-100" 
+        [showTime]="true" hourFormat="24" [required]="true" placeholder="Tarih ve Saat Seçiniz"></p-datepicker>
+      <small class="text-muted mt-1">Personelin kurumdan ayrıldığı tarih ve saati giriniz.</small>
     </div>
 
-    <div class="row">
-      <div class="col-md-6 form-group mb-2 d-flex flex-column">
-        <label>Başlangıç Tarihi</label>
-        <p-datepicker [(ngModel)]="updateMovement.start" name="updStart" styleClass="w-100" [required]="true"
-          [showTime]="true" hourFormat="24"></p-datepicker>
-      </div>
-      <div class="col-md-6 form-group mb-2 d-flex flex-column">
-        <label>Bitiş Tarihi</label>
-        <p-datepicker [(ngModel)]="updateMovement.finish" name="updFinish" styleClass="w-100" [showTime]="true"
-          hourFormat="24"></p-datepicker>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-6 form-group mb-2 d-flex flex-column">
-        <label>Sözleşme Başlangıç</label>
-        <p-datepicker [(ngModel)]="updateMovement.contractStart" name="updContractStart"
-          styleClass="w-100"></p-datepicker>
-      </div>
-      <div class="col-md-6 form-group mb-2 d-flex flex-column">
-        <label>Sözleşme Bitiş</label>
-        <p-datepicker [(ngModel)]="updateMovement.contractFinish" name="updContractFinish"
-          styleClass="w-100"></p-datepicker>
-      </div>
-    </div>
-
-    <div class="form-group mb-2 mt-2">
-      <div class="form-check">
-        <p-checkbox [(ngModel)]="updateMovement.isSgk" name="updIsSgk" binary="true"
-          inputId="updIsSgkCheck"></p-checkbox>
-        <label class="form-check-label ms-2" for="updIsSgkCheck">SGK'lı mı?</label>
-      </div>
-    </div>
-
-    <div class="form-group mb-2">
-      <label>Açıklama</label>
-      <input type="text" pInputText class="w-100" name="updDescription" [(ngModel)]="updateMovement.description">
+    <div class="form-group mb-3">
+      <label>Açıklama (Opsiyonel)</label>
+      <textarea pInputTextarea class="w-100 fontstil13" name="updDescription" [(ngModel)]="updateMovement.description" rows="2" placeholder="Ayrılış sebebi vb."></textarea>
     </div>
 
     <hr>
     <div class="text-right d-flex justify-content-end gap-2">
-      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
-      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!editForm.valid">
-        <i class="fa fa-save"></i> Güncelle
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Vazgeç</button>
+      <button type="submit" class="btn btn-danger btn-sm" [disabled]="!editForm.valid">
+        <i class="fas fa-check-circle"></i> Ayrılışı Kaydet
       </button>
     </div>
   </form>

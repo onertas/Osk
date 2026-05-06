@@ -11,4 +11,9 @@ export class HfManagementListDto {
   healthFacilityTypeId: string = '';
   typeName: string = '';
   openingDate?: Date;
+  showBed: boolean = false;
+  showDevice: boolean = false;
+  showStaff: boolean = false;
+  showTempStaff: boolean = false;
+  showPm: boolean = false;
 }

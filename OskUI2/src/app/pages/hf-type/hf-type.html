@@ -9,15 +9,27 @@
         <p-table styleClass="p-datatable-sm fontstil13" [value]="typelist">
             <ng-template pTemplate="header">
                 <tr>
+                    <th>#</th>
                     <th>Kurum Tipi Kodu</th>
                     <th>Kurum Tipi Adı</th>
+                    <th>Personel</th>
+                    <th>Kadrolar</th>
+                    <th>Geçici</th>
+                    <th>Yatak</th>
+                    <th>Cihaz</th>
                     <th style="text-align: right">İşlemler</th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-rowData>
+            <ng-template pTemplate="body" let-rowData let-i="rowIndex">
                 <tr>
+                    <td>{{ i + 1 }}</td>
                     <td>{{ rowData.code }}</td>
                     <td>{{ rowData.name }}</td>
+                    <td><i [class]="rowData.showPm ? 'fas fa-check-circle text-success' : 'fas fa-times-circle text-danger'"></i></td>
+                    <td><i [class]="rowData.showStaff ? 'fas fa-check-circle text-success' : 'fas fa-times-circle text-danger'"></i></td>
+                    <td><i [class]="rowData.showTempStaff ? 'fas fa-check-circle text-success' : 'fas fa-times-circle text-danger'"></i></td>
+                    <td><i [class]="rowData.showBed ? 'fas fa-check-circle text-success' : 'fas fa-times-circle text-danger'"></i></td>
+                    <td><i [class]="rowData.showDevice ? 'fas fa-check-circle text-success' : 'fas fa-times-circle text-danger'"></i></td>
                     <td style="text-align: right">
                         <app-grup-menu-component>
                             <a (click)="Edit(rowData)" data-toggle="modal" data-target="#editHfTypeModal" class="dropdown-item pointer fontstil13" style="padding: 6px 12px; border-bottom: 1px solid #eee;">
@@ -33,8 +45,8 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
-                <tr>
-                    <td colspan="3">Kayıt bulunamadı.</td>
+                <tr class="text-center">
+                    <td colspan="10">Kayıt bulunamadı.</td>
                 </tr>
             </ng-template>
         </p-table>
@@ -50,6 +62,29 @@
         <div class="form-group mb-2">
             <label>Ad</label>
             <input type="text" class="form-control" name="name" [(ngModel)]="newType.name" required>
+        </div>
+        
+        <div class="row mt-3">
+            <div class="col-6 mb-2">
+                <p-checkbox [(ngModel)]="newType.showPm" name="showPm" binary="true" inputId="addShowPm"></p-checkbox>
+                <label for="addShowPm" class="ms-2">Personel Hareketleri</label>
+            </div>
+            <div class="col-6 mb-2">
+                <p-checkbox [(ngModel)]="newType.showStaff" name="showStaff" binary="true" inputId="addShowStaff"></p-checkbox>
+                <label for="addShowStaff" class="ms-2">Kadro Yönetimi</label>
+            </div>
+            <div class="col-6 mb-2">
+                <p-checkbox [(ngModel)]="newType.showTempStaff" name="showTempStaff" binary="true" inputId="addShowTempStaff"></p-checkbox>
+                <label for="addShowTempStaff" class="ms-2">Geçici Kadro</label>
+            </div>
+            <div class="col-6 mb-2">
+                <p-checkbox [(ngModel)]="newType.showBed" name="showBed" binary="true" inputId="addShowBed"></p-checkbox>
+                <label for="addShowBed" class="ms-2">Yatak Yönetimi</label>
+            </div>
+            <div class="col-6 mb-2">
+                <p-checkbox [(ngModel)]="newType.showDevice" name="showDevice" binary="true" inputId="addShowDevice"></p-checkbox>
+                <label for="addShowDevice" class="ms-2">Cihaz Yönetimi</label>
+            </div>
         </div>
         <hr>
         <div class="text-right d-flex justify-content-end gap-2">
@@ -71,6 +106,29 @@
             <label>Ad</label>
             <input type="text" class="form-control" name="name" [(ngModel)]="updateType.name" required>
         </div>
+
+        <div class="row mt-3">
+            <div class="col-6 mb-2">
+                <p-checkbox [(ngModel)]="updateType.showPm" name="updShowPm" binary="true" inputId="updShowPm"></p-checkbox>
+                <label for="updShowPm" class="ms-2">Personel Hareketleri</label>
+            </div>
+            <div class="col-6 mb-2">
+                <p-checkbox [(ngModel)]="updateType.showStaff" name="updShowStaff" binary="true" inputId="updShowStaff"></p-checkbox>
+                <label for="updShowStaff" class="ms-2">Kadro Yönetimi</label>
+            </div>
+            <div class="col-6 mb-2">
+                <p-checkbox [(ngModel)]="updateType.showTempStaff" name="updShowTempStaff" binary="true" inputId="updShowTempStaff"></p-checkbox>
+                <label for="updShowTempStaff" class="ms-2">Geçici Kadro</label>
+            </div>
+            <div class="col-6 mb-2">
+                <p-checkbox [(ngModel)]="updateType.showBed" name="updShowBed" binary="true" inputId="updShowBed"></p-checkbox>
+                <label for="updShowBed" class="ms-2">Yatak Yönetimi</label>
+            </div>
+            <div class="col-6 mb-2">
+                <p-checkbox [(ngModel)]="updateType.showDevice" name="updShowDevice" binary="true" inputId="updShowDevice"></p-checkbox>
+                <label for="updShowDevice" class="ms-2">Cihaz Yönetimi</label>
+            </div>
+        </div>
         <hr>
         <div class="text-right d-flex justify-content-end gap-2">
             <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">İptal</button>
@@ -80,3 +138,5 @@
         </div>
     </form>
 </app-modal>
+
+

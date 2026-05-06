@@ -10,5 +10,6 @@ export class UpdatePersonnelMovementDto {
     healthFacilityId: string = '';
     afiliatedUnitId: string = '';
     personnelId: string = '';
+    personnel?: any;
     isSgk: boolean = true;
 }

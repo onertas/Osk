@@ -30,10 +30,16 @@ public class StaffController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Add(CreateStaffDto model)
     {
-        var exists = await _staffService.GetAll().AnyAsync(x => x.HealthFacilityId == model.HealthFacilityId && x.BranchId == model.BranchId);
-        if (exists) return BadRequest(Result.Fail("Bu kurum için bu kadro zaten eklenmiş."));
+     
 
         var entity = _mapper.Map<Staff>(model);
+        
+        var lastStaff = await _staffService.GetAll()
+            .OrderByDescending(s => s.StaffNo)
+            .FirstOrDefaultAsync();
+        
+        entity.StaffNo = (lastStaff?.StaffNo ?? 0) + 1;
+
         await _staffService.AddAsync(entity);
         await _unitOfWork.SaveChangesAsync();
         return Ok(Result.Ok("Eklendi"));

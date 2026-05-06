@@ -8,6 +8,9 @@ namespace OskApi.Dtos.Staff
         public Guid BranchId { get; set; }
         public Guid HealthFacilityId { get; set; }
         public int Count { get; set; }
+        public int StaffNo { get; set; }
+        public DateOnly Date { get; set; }
+        public string Reason { get; set; } = string.Empty;
     }
 
     public class UpdateStaffDto
@@ -17,6 +20,9 @@ namespace OskApi.Dtos.Staff
         public Guid BranchId { get; set; }
         public Guid HealthFacilityId { get; set; }
         public int Count { get; set; }
+        public int StaffNo { get; set; }
+        public DateOnly Date { get; set; }
+        public string Reason { get; set; } = string.Empty;
     }
 
     public class ListStaffDto
@@ -28,6 +34,9 @@ namespace OskApi.Dtos.Staff
         public Guid HealthFacilityId { get; set; }
         public string HealthFacilityName { get; set; } = string.Empty;
         public int Count { get; set; }
+        public int StaffNo { get; set; }
+        public DateOnly Date { get; set; }
+        public string Reason { get; set; } = string.Empty;
     }
 
     public class CreateTemporarayStaffDto

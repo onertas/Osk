@@ -11,11 +11,15 @@
 <ng-template #content>
 <div class="row">
     <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
-      <div class="d-flex gap-2">
+      <div class="d-flex gap-2 fontstil13">
         <button *ngIf="!isReadOnly" class="btn btn-xs btn-dark" data-toggle="modal" data-target="#addIcBedModal" (click)="resetCreateModel()">
           <i class="fa fa-plus"></i> Yeni Yatak Ekle
         </button>
+        <button (click)="exportToExcel()" class="btn btn-xs btn-success">
+          <i class="fas fa-file-excel"></i> Excel'e Aktar
+        </button>
       </div>
+      <input pInputText placeholder="Ara..." type="text" (input)="onGlobalFilter($event)" class="fontstil13" style="max-width:280px;" [value]="bedFilterModel.search" />
     </div>
   
   <!-- Advanced Filters -->
@@ -68,13 +72,9 @@
 
   <div class="col-md-12">
     <p-table #dt [value]="filteredBeds" styleClass="p-datatable-sm fontstil13" [responsiveLayout]="'scroll'">
-      <ng-template pTemplate="caption">
-        <div class="d-flex justify-content-end">
-          <button pButton label="Excel" icon="fas fa-file-excel" class="p-button-sm p-button-success" (click)="exportToExcel()"></button>
-        </div>
-      </ng-template>
       <ng-template pTemplate="header">
         <tr>
+          <th style="width: 50px">#</th>
           <th *ngIf="!healthFacilityId" pSortableColumn="healthFacilityName">Kuruluş <p-sortIcon field="healthFacilityName"></p-sortIcon></th>
           <th pSortableColumn="icBedName">Yatak Türü <p-sortIcon field="icBedName"></p-sortIcon></th>
           <th pSortableColumn="icBedTypeName">Tip <p-sortIcon field="icBedTypeName"></p-sortIcon></th>
@@ -86,8 +86,9 @@
           <th *ngIf="!isReadOnly" style="width: 80px; text-align: right">İşlemler</th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-bed>
+      <ng-template pTemplate="body" let-bed let-i="rowIndex">
         <tr [ngClass]="{'text-danger': !bed.isActive}">
+          <td>{{ i + 1 }}</td>
           <td *ngIf="!healthFacilityId">{{ bed.healthFacilityName }}</td>
           <td>{{ bed.icBedName }}</td>
           <td>{{ bed.icBedTypeName }}</td>
@@ -110,7 +111,7 @@
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td [attr.colspan]="healthFacilityId ? 8 : 9" class="text-center">Kayıtlı yoğun bakım yatağı bulunamadı.</td>
+          <td [attr.colspan]="healthFacilityId ? 9 : 10" class="text-center">Kayıtlı yoğun bakım yatağı bulunamadı.</td>
         </tr>
       </ng-template>
     </p-table>

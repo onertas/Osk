@@ -65,10 +65,11 @@ public class PmBusinessRules
 
             if (!isTargetMh)
             {
-                var staff = await _staffService.GetAll()
-                    .FirstOrDefaultAsync(s => s.HealthFacilityId == model.HealthFacilityId && s.BranchId == model.BranchId);
+                var staffCount = await _staffService.GetAll().Where(s => s.HealthFacilityId == model.HealthFacilityId && s.BranchId == model.BranchId)
+                    .SumAsync(x => x.Count);
+                    
 
-                if (staff == null)
+                if (staffCount == 0)
                     return Result<string>.Fail("İlgili tesis ve branş için kadro tanımlı değil.");
 
                 var activeCount = await _pmService.GetAll()
@@ -77,8 +78,8 @@ public class PmBusinessRules
                                    && pm.PmTypeId == model.PmTypeId
                                    && (pm.Finish == null || pm.Finish >= DateTime.Now));
 
-                if (activeCount >= staff.Count)
-                    return Result<string>.Fail($"Kadro yetersiz. (Kapasite: {staff.Count}, Mevcut: {activeCount})");
+                if (activeCount >= staffCount)
+                    return Result<string>.Fail($"Kadro yetersiz. (Kapasite: {staffCount}, Mevcut: {activeCount})");
             }
         }
 

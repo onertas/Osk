@@ -28,7 +28,12 @@ namespace OskApi.Shared.Mapping
 
             CreateMap<HealthFacility, CreateHealthFacilityDto>().ReverseMap();
             CreateMap<HealthFacility, UpdateHealthFacilityDto>().ReverseMap();
-            CreateMap<HealthFacility, HfManagementListDto>();
+            CreateMap<HealthFacility, HfManagementListDto>()
+                .ForMember(dest => dest.TypeName, opt => opt.MapFrom(src => src.HealthFacilityType != null ? src.HealthFacilityType.Name : ""))
+                .ForMember(dest => dest.ShowBed, opt => opt.MapFrom(src => src.HealthFacilityType != null && src.HealthFacilityType.ShowBed))
+                .ForMember(dest => dest.ShowDevice, opt => opt.MapFrom(src => src.HealthFacilityType != null && src.HealthFacilityType.ShowDevice))
+                .ForMember(dest => dest.ShowStaff, opt => opt.MapFrom(src => src.HealthFacilityType != null && src.HealthFacilityType.ShowStaff))
+                .ForMember(dest => dest.ShowTempStaff, opt => opt.MapFrom(src => src.HealthFacilityType != null && src.HealthFacilityType.ShowTempStaff));
             CreateMap<PersonnelMovement, CreatePersonelMovementDto>().ReverseMap();
             CreateMap<PersonnelMovement, ListPersonelMovementDto>().ReverseMap();
             CreateMap<PersonnelMovement, UpdatePersonelMovementDto>().ReverseMap();

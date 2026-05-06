@@ -87,6 +87,7 @@ export class IcBedComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['healthFacilityId']) {
+      this.bedFilterModel.healthFacilityId = this.healthFacilityId;
       this.GetAll();
     }
   }
@@ -98,7 +99,8 @@ export class IcBedComponent implements OnInit, OnChanges {
 
   onGlobalFilter(event: Event) {
     const value = (event.target as HTMLInputElement).value;
-    this.table.filterGlobal(value, 'contains');
+    this.bedFilterModel.search = value;
+    this.applyBedFilters();
   }
 
   exportToExcel() {
@@ -121,6 +123,7 @@ export class IcBedComponent implements OnInit, OnChanges {
     let url = 'IcBed/GetAll';
     if (this.healthFacilityId) {
       url = `IcBed/GetAllByHfId?healthFacilityId=${this.healthFacilityId}`;
+      this.bedFilterModel.healthFacilityId = this.healthFacilityId;
     }
 
     this.http.get<ListIcBedDto[]>(url).subscribe(res => {
