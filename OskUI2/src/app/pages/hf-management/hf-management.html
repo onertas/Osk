@@ -121,7 +121,7 @@
   <form #editForm="ngForm" (ngSubmit)="Update(editForm)">
 
     <div class="row">
-      <div class="col-md-8 form-group mb-2">
+      <div class="col-md-12 form-group mb-2">
         <label>Tesis Adı <span class="text-danger">*</span></label>
         <input
           type="text"
@@ -131,11 +131,20 @@
           required
         />
       </div>
-      <div class="col-md-4 form-group mb-2">
+    </div>
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
         <label>Kurum Türü</label>
         <div class="form-control-plaintext">
           <span class="badge bg-secondary">{{ updateModel.typeName }}</span>
         </div>
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Üst Kurum</label>
+        <select class="form-control" name="updUpperHf" [(ngModel)]="updateModel.upperHealthFacilityId">
+          <option value="00000000-0000-0000-0000-000000000000">Seçiniz (Yok)</option>
+          <option *ngFor="let hf of upperFacilities" [value]="hf.id">{{ hf.name }}</option>
+        </select>
       </div>
     </div>
 
@@ -205,7 +214,7 @@
   <form #addForm="ngForm" (ngSubmit)="Create(addForm)">
 
     <div class="row">
-      <div class="col-md-8 form-group mb-2">
+      <div class="col-md-12 form-group mb-2">
         <label>Tesis Adı <span class="text-danger">*</span></label>
         <input
           type="text"
@@ -215,11 +224,20 @@
           required
         />
       </div>
-      <div class="col-md-4 form-group mb-2">
+    </div>
+    <div class="row">
+      <div class="col-md-6 form-group mb-2">
         <label>Kurum Türü <span class="text-danger">*</span></label>
         <select class="form-control" name="addType" [(ngModel)]="createModel.healthFacilityTypeId" required>
           <option value="">Seçiniz...</option>
           <option *ngFor="let type of hfTypes" [value]="type.id">{{ type.name }}</option>
+        </select>
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Üst Kurum</label>
+        <select class="form-control" name="addUpperHf" [(ngModel)]="createModel.upperHealthFacilityId">
+          <option value="00000000-0000-0000-0000-000000000000">Seçiniz (Yok)</option>
+          <option *ngFor="let hf of upperFacilities" [value]="hf.id">{{ hf.name }}</option>
         </select>
       </div>
     </div>

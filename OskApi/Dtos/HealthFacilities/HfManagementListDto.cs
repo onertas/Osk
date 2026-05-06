@@ -19,5 +19,6 @@ namespace OskApi.Dtos.HealthFacilities
         public bool ShowStaff { get; set; }
         public bool ShowTempStaff { get; set; }
         public bool ShowPm { get; set; }
+        public Guid UpperHealthFacilityId { get; set; }
     }
 }

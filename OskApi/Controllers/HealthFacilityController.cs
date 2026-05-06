@@ -103,7 +103,8 @@ public class HealthFacilityController : ControllerBase
             ShowDevice = entity.HealthFacilityType?.ShowDevice ?? false,
             ShowStaff = entity.HealthFacilityType?.ShowStaff ?? false,
             ShowTempStaff = entity.HealthFacilityType?.ShowTempStaff ?? false,
-            ShowPm = entity.HealthFacilityType?.ShowPm ?? false
+            ShowPm = entity.HealthFacilityType?.ShowPm ?? false,
+            UpperHealthFacilityId = entity.UpperHealthFacilityId
         };
 
         return Ok(Result<HfManagementListDto>.Ok(dto, "Veri getirildi"));
@@ -158,7 +159,8 @@ public class HealthFacilityController : ControllerBase
             ShowDevice = x.HealthFacilityType?.ShowDevice ?? false,
             ShowStaff = x.HealthFacilityType?.ShowStaff ?? false,
             ShowTempStaff = x.HealthFacilityType?.ShowTempStaff ?? false,
-            ShowPm = x.HealthFacilityType?.ShowPm ?? false
+            ShowPm = x.HealthFacilityType?.ShowPm ?? false,
+            UpperHealthFacilityId = x.UpperHealthFacilityId
         }).ToList();
 
         return Ok(Result<object>.Ok(new
@@ -193,6 +195,7 @@ public class HealthFacilityController : ControllerBase
         entity.CorporationName = model.CorporationName;
         entity.ObservationBedCount = model.ObservationBedCount;
         entity.TotalBedCount = model.TotalBedCount;
+        entity.UpperHealthFacilityId = model.UpperHealthFacilityId;
 
         _healthFacilityService.Update(entity);
         await _unitOfWork.SaveChangesAsync();

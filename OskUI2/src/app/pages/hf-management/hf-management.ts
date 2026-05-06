@@ -65,9 +65,25 @@ export class HfManagementComponent implements OnInit {
   // Ekleme modeli
   createModel: CreateHealthFacilityDto = new CreateHealthFacilityDto();
 
+  // Üst Kurumlar (Tıp Merkezi ve Özel Hastaneler)
+  upperFacilities: HfManagementListDto[] = [];
+
   ngOnInit(): void {
     this.loadHfTypes();
     this.load();
+    this.loadUpperFacilities();
+  }
+
+  loadUpperFacilities() {
+    this.http.get<HfManagementListDto[]>('HealthFacility/GetAll').subscribe({
+      next: (res: any) => {
+        if (res.success && res.data) {
+          this.upperFacilities = res.data.filter((f: any) => 
+            f.typeName === 'Tıp Merkezi' || f.typeName === 'Özel Hastane'
+          );
+        }
+      },
+    });
   }
 
   load() {

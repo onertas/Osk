@@ -9,4 +9,5 @@ export class CreateHealthFacilityDto {
   observationBedCount: number = 0;
   totalBedCount: number = 0;
   openingDate?: Date;
+  upperHealthFacilityId: string = '00000000-0000-0000-0000-000000000000';
 }

@@ -16,4 +16,5 @@ export class HfManagementListDto {
   showStaff: boolean = false;
   showTempStaff: boolean = false;
   showPm: boolean = false;
+  upperHealthFacilityId: string = '00000000-0000-0000-0000-000000000000';
 }
