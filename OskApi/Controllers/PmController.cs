@@ -21,6 +21,7 @@ public class PmController : ControllerBase
     private readonly IStaffService _staffService;
     private readonly IMapper _mapper;
     private readonly OskApi.Rules.PmBusinessRules _pmBusinessRules;
+    private readonly IHealthFacilityService _healthFacilityService;
 
     public PmController(
         IUnitOfWork unitOfWork, 
@@ -28,7 +29,8 @@ public class PmController : ControllerBase
         IPmTypeService pmTypeService,
         IStaffService staffService,
         IMapper mapper,
-        OskApi.Rules.PmBusinessRules pmBusinessRules)
+        OskApi.Rules.PmBusinessRules pmBusinessRules,
+        IHealthFacilityService healthFacilityService)
     {
         _unitOfWork = unitOfWork;
         _pmService = pmService;
@@ -36,6 +38,7 @@ public class PmController : ControllerBase
         _staffService = staffService;
         _mapper = mapper;
         _pmBusinessRules = pmBusinessRules;
+        _healthFacilityService = healthFacilityService;
     }
 
     [HttpPost]
@@ -50,6 +53,18 @@ public class PmController : ControllerBase
 
         var entity = _mapper.Map<PersonnelMovement>(model);
         
+        // Alt kurumları ekle
+        if (model.SubFacilityIds != null && model.SubFacilityIds.Any())
+        {
+            foreach (var subFacilityId in model.SubFacilityIds)
+            {
+                entity.SubFacilities.Add(new PersonnelMovementSubFacility
+                {
+                    SubFacilityId = subFacilityId
+                });
+            }
+        }
+
         try
         {
             await _pmService.AddAsync(entity);
@@ -100,16 +115,28 @@ public class PmController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllByHfId(Guid healthFacilityId, bool showSeparated = false)
     {
+        var facility = await _healthFacilityService.GetAll().FirstOrDefaultAsync(i => i.Id == healthFacilityId);
+
         var query = _pmService.GetAll()
             .Include(i => i.PmType)
             .Include(i => i.Branch)
             .Include(i => i.HealthFacility)
             .Include(i => i.Personnel)
-            .Where(i => i.HealthFacilityId == healthFacilityId);
+            .AsQueryable();
+
+        if (facility != null && facility.UpperHealthFacilityId != Guid.Empty)
+        {
+            // Eğer bir alt kurumsa, sadece çoka çok tablodaki eşleşmeleri getir
+            query = query.Where(i => i.SubFacilities.Any(sf => sf.SubFacilityId == healthFacilityId));
+        }
+        else
+        {
+            // Eğer bir üst kurumsa (veya bağımsızsa), kendi hareketlerini getir
+            query = query.Where(i => i.HealthFacilityId == healthFacilityId);
+        }
 
         if (!showSeparated)
         {
-            var now = DateTime.Now;
             query = query.Where(i => i.Finish == null);
         }
 

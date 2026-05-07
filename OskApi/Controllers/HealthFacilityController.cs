@@ -221,6 +221,21 @@ public class HealthFacilityController : ControllerBase
 
         return Ok(Result.Ok("Silindi"));
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetByUpperId(Guid upperId)
+    {
+        var list = await _healthFacilityService.GetAll()
+            .Where(w => w.UpperHealthFacilityId == upperId)
+            .Select(x => new HealthFacilityListDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+                TypeName = x.HealthFacilityType != null ? x.HealthFacilityType.Name : ""
+            }).ToListAsync();
+
+        return Ok(Result<List<HealthFacilityListDto>>.Ok(list, "Alt Kurumlar Listelendi"));
+    }
 }
 
 

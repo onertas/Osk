@@ -1,6 +1,6 @@
 <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
   <div class="d-flex gap-2 fontstil13">
-    <button data-toggle="modal" data-target="#pmModal" class="btn btn-xs btn-dark">
+    <button *ngIf="!isSubFacility" data-toggle="modal" data-target="#pmModal" class="btn btn-xs btn-dark">
       <i class="fas fa-plus"></i> Yeni Personel
     </button>
     <button (click)="exportToExcel()" class="btn btn-xs btn-success">
@@ -106,6 +106,15 @@
         <label>Branş</label>
         <p-select [options]="filteredBranches" [(ngModel)]="newMovement.branchId" optionLabel="name" optionValue="id"
           name="branchId" placeholder="Branş Seçin" styleClass="w-100" [required]="true"></p-select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 form-group mb-2">
+        <label>Bağlı Alt Birimler / Kurumlar (Birden Fazla Seçilebilir)</label>
+        <p-multiselect [options]="subFacilities" [(ngModel)]="newMovement.subFacilityIds" optionLabel="name" optionValue="id"
+          name="subFacilityIds" placeholder="Alt Birim Seçin" styleClass="w-100" [filter]="true" filterBy="name"
+          display="chip"></p-multiselect>
       </div>
     </div>
 

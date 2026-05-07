@@ -35,6 +35,13 @@ public class PmBusinessRules
 
     public async Task<Result<string>> CheckRulesForCreateAsync(CreatePersonelMovementDto model)
     {
+        // Alt kurumlarda personel hareketi doğrudan eklenemez kuralı
+        var facility = await _healthFacilityService.GetAll().FirstOrDefaultAsync(hf => hf.Id == model.HealthFacilityId);
+        if (facility != null && facility.UpperHealthFacilityId != Guid.Empty)
+        {
+            return Result<string>.Fail("Alt kurumlarda personel hareketi doğrudan eklenemez. Lütfen üst kurum üzerinden ilgili alt birimleri seçerek ekleme yapınız.");
+        }
+
         var pmType = await _pmTypeService.GetAll().FirstOrDefaultAsync(t => t.Id == model.PmTypeId);
         if (pmType == null) return Result<string>.Fail("Hareket türü bulunamadı.");
 

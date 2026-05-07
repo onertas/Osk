@@ -1,4 +1,4 @@
-﻿using OskApi.Entities.HealthFacilities;
+using OskApi.Entities.HealthFacilities;
 using OskApi.Entities.Personnel;
 
 namespace OskApi.Dtos.PersonnelMovement
@@ -23,5 +23,7 @@ namespace OskApi.Dtos.PersonnelMovement
         public Guid PersonnelId { get; set; }
      
         public bool IsSgk { get; set; } = true;
+
+        public List<Guid> SubFacilityIds { get; set; } = new();
     }
 }

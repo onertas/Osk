@@ -34,7 +34,8 @@ namespace OskApi.Shared.Mapping
                 .ForMember(dest => dest.ShowDevice, opt => opt.MapFrom(src => src.HealthFacilityType != null && src.HealthFacilityType.ShowDevice))
                 .ForMember(dest => dest.ShowStaff, opt => opt.MapFrom(src => src.HealthFacilityType != null && src.HealthFacilityType.ShowStaff))
                 .ForMember(dest => dest.ShowTempStaff, opt => opt.MapFrom(src => src.HealthFacilityType != null && src.HealthFacilityType.ShowTempStaff));
-            CreateMap<PersonnelMovement, CreatePersonelMovementDto>().ReverseMap();
+            CreateMap<PersonnelMovement, CreatePersonelMovementDto>().ReverseMap()
+                .ForMember(dest => dest.SubFacilities, opt => opt.Ignore());
             CreateMap<PersonnelMovement, ListPersonelMovementDto>().ReverseMap();
             CreateMap<PersonnelMovement, UpdatePersonelMovementDto>().ReverseMap();
             CreateMap<PmType, OskApi.Dtos.PmType.CreatePmTypeDto>().ReverseMap();

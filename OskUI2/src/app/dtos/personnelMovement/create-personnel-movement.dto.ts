@@ -10,4 +10,5 @@ export class CreatePersonnelMovementDto {
     afiliatedUnitId: string = "00000000-0000-0000-0000-000000000000"; // default empty guid if required
     personnelId: string = '';
     isSgk: boolean = true;
+    subFacilityIds: string[] = [];
 }

@@ -1,4 +1,4 @@
-﻿using OskApi.Entities.HealthFacilities;
+using OskApi.Entities.HealthFacilities;
 
 namespace OskApi.Entities.Personnel;
 
@@ -27,6 +27,7 @@ public class PersonnelMovement : Entity
 
     public bool IsSgk { get; set; } = true;
 
+    public ICollection<PersonnelMovementSubFacility> SubFacilities { get; set; } = new List<PersonnelMovementSubFacility>();
 }
 
 

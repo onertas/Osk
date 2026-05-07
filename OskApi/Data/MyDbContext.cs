@@ -27,6 +27,7 @@ namespace OskApi.Data
         public DbSet<PersonnelBranch> PersonnelBranches { get; set; }
         public DbSet<Personnel> Personnel { get; set; }
         public DbSet<PersonnelMovement> PersonnelMovements { get; set; }
+        public DbSet<PersonnelMovementSubFacility> PersonnelMovementSubFacilities { get; set; }
         public DbSet<PmType> PmTypes { get; set; }
         public DbSet<Staff> Staff { get; set; }
         public DbSet<TemporarayStaff> TemporarayStaff { get; set; }

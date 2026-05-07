@@ -16,11 +16,12 @@ import { UpdatePersonnelMovementDto } from '../../dtos/personnelMovement/update-
 import { ListPmTypeDto } from '../../dtos/pmType/list-pm-type.dto';
 import { ExcelService } from '../../services/excel.service';
 import { TextareaModule } from 'primeng/textarea';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @Component({
   selector: 'app-personnel-movement',
   standalone: true,
-  imports: [ButtonModule, DatePickerModule, InputTextModule, SelectModule, TableModule, SharedModule, Modal, CheckboxModule, TextareaModule],
+  imports: [ButtonModule, DatePickerModule, InputTextModule, SelectModule, TableModule, SharedModule, Modal, CheckboxModule, TextareaModule, MultiSelectModule],
   templateUrl: './personnel-movement.component.html'
 })
 export class PersonnelMovementComponent implements OnInit, OnChanges {
@@ -43,6 +44,8 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
   branches: any[] = [];
   filteredBranches: any[] = [];
   personnelList: any[] = [];
+  subFacilities: any[] = [];
+  isSubFacility: boolean = false;
 
   private searchSubject = new Subject<string>();
 
@@ -52,6 +55,8 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
     
     if (this.healthFacilityId) {
       this.GetAll();
+      this.GetSubFacilities();
+      this.GetFacilityInfo();
       this.newMovement.healthFacilityId = this.healthFacilityId;
     }
 
@@ -66,6 +71,8 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['healthFacilityId'] && this.healthFacilityId) {
       this.GetAll();
+      this.GetSubFacilities();
+      this.GetFacilityInfo();
       this.newMovement.healthFacilityId = this.healthFacilityId;
     }
   }
@@ -115,6 +122,28 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
         if (res.success && res.data) {
           this.branches = res.data;
           this.filteredBranches = [];
+        }
+      }
+    });
+  }
+
+  GetFacilityInfo() {
+    if (!this.healthFacilityId) return;
+    this.http.get<any>('HealthFacility/GetById', { id: this.healthFacilityId }).subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          this.isSubFacility = !!res.data.upperHealthFacilityId && res.data.upperHealthFacilityId !== '00000000-0000-0000-0000-000000000000';
+        }
+      }
+    });
+  }
+
+  GetSubFacilities() {
+    if (!this.healthFacilityId) return;
+    this.http.get<any[]>('HealthFacility/GetByUpperId', { upperId: this.healthFacilityId }).subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          this.subFacilities = res.data;
         }
       }
     });
