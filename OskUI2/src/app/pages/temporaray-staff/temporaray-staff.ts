@@ -171,7 +171,7 @@ export class TemporarayStaffComponent implements OnInit, OnChanges {
       branchId: item.branchId,
       healthFacilityId: item.healthFacilityId,
       pmTypeId: item.pmTypeId,
-      count: item.count
+  
     };
   }
 
@@ -214,7 +214,7 @@ export class TemporarayStaffComponent implements OnInit, OnChanges {
       'Kuruluş': s.healthFacilityName,
       'Branş': s.branchName,
       'Hareket Türü': s.pmTypeName,
-      'Sayı': s.count
+      
     }));
     this.excel.exportToExcel(dataToExport, 'Gecici_Kadro_Listesi');
   }

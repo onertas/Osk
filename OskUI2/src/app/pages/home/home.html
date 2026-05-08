@@ -135,6 +135,114 @@
     </div>
   </div>
 
+  <!-- ═══════════════════ GEÇİCİ KADRO UYARILARI ═══════════════════ -->
+  @if (tempStaffAlerts.length > 0) {
+    <div class="alert-panel">
+      <div class="alert-panel__header">
+        <div class="alert-panel__header-left">
+          <div class="alert-icon-box">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div>
+            <h3 class="alert-panel__title">Geçici Kadro Silme Uyarıları</h3>
+            <p class="alert-panel__subtitle">Aktif personeli bulunmayan ve ayrılış tarihinin üzerinden 3 ay geçen geçici kadrolar</p>
+          </div>
+        </div>
+        <span class="alert-badge">{{ tempStaffAlerts.length }}</span>
+      </div>
+      <div class="alert-panel__body">
+        <table class="alert-table">
+          <thead>
+            <tr>
+              <th>Kuruluş</th>
+              <th>Branş</th>
+              <th>Hareket Tipi</th>
+              <th>Kadro Sayısı</th>
+              <th>Son Ayrılış</th>
+              <th>Geçen Süre</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of tempStaffAlerts; track item.tempStaffId) {
+              <tr>
+                <td>{{ item.healthFacilityName }}</td>
+                <td>{{ item.branchName }}</td>
+                <td><span class="chip-pmtype">{{ item.pmTypeName }}</span></td>
+                <td><span class="chip-count">{{ item.count }}</span></td>
+                <td>{{ item.lastFinishDate ? (item.lastFinishDate | date:'dd.MM.yyyy') : '—' }}</td>
+                <td>
+                  @if (item.daysSinceFinish == null) {
+                    <span class="alert-days new"><i class="fas fa-minus-circle"></i> Hiç personel atanmadı</span>
+                  } @else if (item.daysSinceFinish >= 180) {
+                    <span class="alert-days danger"><i class="fas fa-fire"></i> {{ item.daysSinceFinish }} gün</span>
+                  } @else {
+                    <span class="alert-days warning"><i class="fas fa-clock"></i> {{ item.daysSinceFinish }} gün</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+  <!-- ═══════════════════ SÖZLEŞME SÜRESİ DOLMUŞ UYARILARI ═══════════════════ -->
+  @if (expiredContractAlerts.length > 0) {
+    <div class="alert-panel alert-panel--violet">
+      <div class="alert-panel__header">
+        <div class="alert-panel__header-left">
+          <div class="alert-icon-box alert-icon-box--violet">
+            <i class="fas fa-file-contract"></i>
+          </div>
+          <div>
+            <h3 class="alert-panel__title" style="color:#5b21b6">Sözleşme Süresi Dolmuş Personeller</h3>
+            <p class="alert-panel__subtitle" style="color:#7c3aed">
+              Sözleşme bitiş tarihi geçmiş ancak ayrılış kaydı henüz işlenmemiş personel hareketleri
+            </p>
+          </div>
+        </div>
+        <span class="alert-badge alert-badge--violet">{{ expiredContractAlerts.length }}</span>
+      </div>
+      <div class="alert-panel__body">
+        <table class="alert-table">
+          <thead>
+            <tr>
+              <th>Personel</th>
+              <th>Kuruluş</th>
+              <th>Branş</th>
+              <th>Hareket Tipi</th>
+              <th>Sözleşme Başlangıç</th>
+              <th>Sözleşme Bitiş</th>
+              <th>Gecikme</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of expiredContractAlerts; track item.pmId) {
+              <tr>
+                <td>{{ item.personnelName }}</td>
+                <td>{{ item.healthFacilityName }}</td>
+                <td>{{ item.branchName }}</td>
+                <td><span class="chip-pmtype">{{ item.pmTypeName }}</span></td>
+                <td>{{ item.contractStart ? (item.contractStart | date:'dd.MM.yyyy') : '—' }}</td>
+                <td><span class="chip-expired">{{ item.contractFinish | date:'dd.MM.yyyy' }}</span></td>
+                <td>
+                  @if (item.daysOverdue >= 30) {
+                    <span class="alert-days danger"><i class="fas fa-fire"></i> {{ item.daysOverdue }} gün</span>
+                  } @else if (item.daysOverdue >= 7) {
+                    <span class="alert-days warning"><i class="fas fa-clock"></i> {{ item.daysOverdue }} gün</span>
+                  } @else {
+                    <span class="alert-days fresh"><i class="fas fa-exclamation-circle"></i> {{ item.daysOverdue }} gün</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
   <!-- ═══════════════════ GRAFİKLER ═══════════════════ -->
   <div class="chart-row">
 

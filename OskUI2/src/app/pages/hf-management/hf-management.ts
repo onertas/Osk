@@ -59,6 +59,15 @@ export class HfManagementComponent implements OnInit {
   // HF Tipleri (dropdown için)
   hfTypes: { id: string; name: string }[] = [];
 
+  // HF Durumları (SmartEnum'dan gelen sabitler)
+  hfStatuses = [
+    { value: 1, name: 'Aktif' },
+    { value: 0, name: 'Kapanma' },
+    { value: 3, name: 'Taşınma' },
+    { value: 4, name: 'Ruhsat Askı' },
+    { value: 5, name: 'Faaliyet Durdurma' }
+  ];
+
   // Düzenleme modeli
   updateModel: UpdateHealthFacilityDto = new UpdateHealthFacilityDto();
 
@@ -165,5 +174,31 @@ export class HfManagementComponent implements OnInit {
 
   resetCreateModel() {
     this.createModel = new CreateHealthFacilityDto();
+  }
+
+  Delete(id: string) {
+    this.swal.showConfirmation(
+      'Silmek istediğinize emin misiniz?',
+      'Bu kuruluşu sildiğinizde geri alamazsınız.',
+      () => {
+        this.http.post('HealthFacility/Delete', `"${id}"`).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.load();
+              this.swal.showSuccess('Başarıyla silindi');
+            } else {
+              this.swal.showError(res.message || 'Silinemedi');
+            }
+          },
+          error: (err: any) => {
+            if (err.error && err.error.message) {
+              this.swal.showError(err.error.message);
+            } else {
+              this.swal.showError('Kuruluş silinirken bir hata oluştu.');
+            }
+          }
+        });
+      }
+    );
   }
 }

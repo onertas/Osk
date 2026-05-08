@@ -34,7 +34,7 @@
           <th pSortableColumn="branchName">Branş <p-sortIcon field="branchName"></p-sortIcon></th>
           <th *ngIf="!healthFacilityId" pSortableColumn="healthFacilityName">Sağlık Tesisi <p-sortIcon field="healthFacilityName"></p-sortIcon></th>
           <th pSortableColumn="pmTypeName">Hareket Türü <p-sortIcon field="pmTypeName"></p-sortIcon></th>
-          <th pSortableColumn="count" style="width: 100px; text-align: center">Sayı <p-sortIcon field="count"></p-sortIcon></th>
+         
           <th style="width: 100px; text-align: right">İşlemler</th>
         </tr>
       </ng-template>
@@ -46,7 +46,7 @@
           <td>{{ item.branchName }}</td>
           <td *ngIf="!healthFacilityId">{{ item.healthFacilityName }}</td>
           <td>{{ item.pmTypeName }}</td>
-          <td style="text-align: center">{{ item.count }}</td>
+          
           <td style="text-align: right">
             <app-grup-menu-component>
               <a (click)="edit(item)" data-toggle="modal" data-target="#editTempStaffModal" class="dropdown-item pointer fontstil13" style="padding: 6px 12px; border-bottom: 1px solid #eee;">
@@ -112,10 +112,7 @@
       </p-select>
     </div>
 
-    <div class="form-group mb-3">
-      <label>Sayı</label>
-      <input type="number" class="form-control" name="count" [(ngModel)]="newTempStaff.count" required>
-    </div>
+ 
 
     <hr>
     <div class="text-right d-flex justify-content-end gap-2">
@@ -160,10 +157,7 @@
       </p-select>
     </div>
 
-    <div class="form-group mb-3">
-      <label>Sayı</label>
-      <input type="number" class="form-control" name="count" [(ngModel)]="updateTempStaff.count" required>
-    </div>
+ 
 
     <hr>
     <div class="text-right d-flex justify-content-end gap-2">

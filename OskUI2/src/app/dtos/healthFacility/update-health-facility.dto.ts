@@ -12,4 +12,5 @@ export class UpdateHealthFacilityDto {
   public totalBedCount: number = 0;
   public openingDate?: Date;
   public upperHealthFacilityId: string = '00000000-0000-0000-0000-000000000000';
+  public hfStatus: number = 1;
 }

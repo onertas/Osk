@@ -39,6 +39,7 @@
             Tesis Adı <p-sortIcon field="name"></p-sortIcon>
           </th>
           <th style="min-width:130px">Tür</th>
+          <th style="min-width:100px">Durum</th>
           <th style="min-width:150px">Şirket Adı</th>
           <th style="min-width:130px">Telefon</th>
           <th style="min-width:130px">E-Posta</th>
@@ -55,6 +56,13 @@
           <td>{{ item.name }}</td>
           <td>
             <span class="badge bg-secondary fontstil12">{{ item.typeName }}</span>
+          </td>
+          <td>
+            <span class="badge fontstil12" [ngClass]="{
+              'bg-success': item.hfStatus === 1,
+              'bg-danger': item.hfStatus === 0 || item.hfStatus === 5,
+              'bg-warning': item.hfStatus === 3 || item.hfStatus === 4
+            }">{{ item.hfStatusName || 'Bilinmiyor' }}</span>
           </td>
           <td>{{ item.corporationName || '—' }}</td>
           <td>{{ item.phoneNumber || '—' }}</td>
@@ -80,6 +88,14 @@
               >
                 <i style="width:18px" class="fas fa-edit text-primary"></i>
                 Düzenle
+              </a>
+              <a
+                (click)="Delete(item.id)"
+                class="dropdown-item pointer fontstil13 text-danger"
+                style="padding:6px 12px;"
+              >
+                <i style="width:18px" class="fas fa-trash"></i>
+                Sil
               </a>
             </app-grup-menu-component>
           </td>
@@ -186,6 +202,12 @@
         <label>Kurum Açılış Tarihi</label>
         <input type="date" class="form-control" name="updOpeningDate" [ngModel]="updateModel.openingDate | date:'yyyy-MM-dd'" (ngModelChange)="updateModel.openingDate = $event" />
       </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Tesis Durumu <span class="text-danger">*</span></label>
+        <select class="form-control" name="updStatus" [(ngModel)]="updateModel.hfStatus" required>
+          <option *ngFor="let s of hfStatuses" [value]="s.value">{{ s.name }}</option>
+        </select>
+      </div>
     </div>
 
     <div class="form-group mb-2">
@@ -279,6 +301,12 @@
       <div class="col-md-6 form-group mb-2">
         <label>Kurum Açılış Tarihi</label>
         <input type="date" class="form-control" name="addOpeningDate" [ngModel]="createModel.openingDate | date:'yyyy-MM-dd'" (ngModelChange)="createModel.openingDate = $event" />
+      </div>
+      <div class="col-md-6 form-group mb-2">
+        <label>Tesis Durumu <span class="text-danger">*</span></label>
+        <select class="form-control" name="addStatus" [(ngModel)]="createModel.hfStatus" required>
+          <option *ngFor="let s of hfStatuses" [value]="s.value">{{ s.name }}</option>
+        </select>
       </div>
     </div>
 

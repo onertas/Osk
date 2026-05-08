@@ -37,7 +37,7 @@ export class CreateTemporarayStaffDto {
     branchId: string = '';
     healthFacilityId: string = '';
     pmTypeId: string = '';
-    count: number = 0;
+   
 }
 
 export class UpdateTemporarayStaffDto {
@@ -46,7 +46,7 @@ export class UpdateTemporarayStaffDto {
     branchId: string = '';
     healthFacilityId: string = '';
     pmTypeId: string = '';
-    count: number = 0;
+   
 }
 
 export class ListTemporarayStaffDto {
@@ -58,5 +58,5 @@ export class ListTemporarayStaffDto {
     healthFacilityName: string = '';
     pmTypeId: string = '';
     pmTypeName: string = '';
-    count: number = 0;
+
 }

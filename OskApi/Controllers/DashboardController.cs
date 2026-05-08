@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OskApi.Entities.Beds;
 using OskApi.Services.Abstract;
+using OskApi.Entities.Staff;
 
 namespace OskApi.Controllers;
 
@@ -17,19 +18,22 @@ public class DashboardController : ControllerBase
     private readonly IPmService _pmService;
     private readonly IIcBedService _icBedService;
     private readonly IIcBedNameService _icBedNameService;
+    private readonly ITemporarayStaffService _tempStaffService;
 
     public DashboardController(
         IHealthFacilityService hfService,
         IHealthFacilityTypeService hfTypeService,
         IPmService pmService,
         IIcBedService icBedService,
-        IIcBedNameService icBedNameService)
+        IIcBedNameService icBedNameService,
+        ITemporarayStaffService tempStaffService)
     {
         _hfService = hfService;
         _hfTypeService = hfTypeService;
         _pmService = pmService;
         _icBedService = icBedService;
         _icBedNameService = icBedNameService;
+        _tempStaffService = tempStaffService;
     }
 
     [HttpGet]
@@ -82,5 +86,124 @@ public class DashboardController : ControllerBase
         };
 
         return Ok(Shared.Result.Result<object>.Ok(result, "Dashboard verileri getirildi"));
+    }
+
+    /// <summary>
+    /// Geçici kadro tablosunda tanımlı ama aktif personeli bulunmayan
+    /// ve son ayrılış tarihinden 3 ay geçmiş kadroları döndürür.
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> GetTempStaffAlerts()
+    {
+        var threeMonthsAgo = DateTime.UtcNow.AddMonths(-3);
+
+        // Tüm geçici kadroları çek
+        var tempStaffList = await _tempStaffService.GetAll()
+            .Where(t => t.IsDeteled == false)
+            .Include(t => t.HealthFacility)
+            .Include(t => t.Branch)
+            .Include(t => t.PmType)
+            .ToListAsync();
+
+        // Tüm personel hareketlerini çek (aktif + ayrılmış)
+        var allMovements = await _pmService.GetAll()
+            .Select(pm => new
+            {
+                pm.HealthFacilityId,
+                pm.BranchId,
+                pm.PmTypeId,
+                pm.Finish
+            })
+            .ToListAsync();
+
+        var alerts = new List<object>();
+
+        foreach (var ts in tempStaffList)
+        {
+            // Bu kadro için aktif (Finish == null) personel var mı?
+            var hasActive = allMovements.Any(pm =>
+                pm.HealthFacilityId == ts.HealthFacilityId &&
+                pm.BranchId == ts.BranchId &&
+                pm.PmTypeId == ts.PmTypeId &&
+                pm.Finish == null);
+
+            if (hasActive) continue; // Aktif personel varsa uyarı yok
+
+            // Bu kadroya ait en son ayrılış tarihini bul
+            var lastFinish = allMovements
+                .Where(pm =>
+                    pm.HealthFacilityId == ts.HealthFacilityId &&
+                    pm.BranchId == ts.BranchId &&
+                    pm.PmTypeId == ts.PmTypeId &&
+                    pm.Finish != null)
+                .Max(pm => (DateTime?)pm.Finish);
+
+            // Hiç hareket yoksa ya da son ayrılış 3 aydan uzun süre önceyse uyarı ver
+            if (lastFinish == null || lastFinish <= threeMonthsAgo)
+            {
+                alerts.Add(new
+                {
+                    tempStaffId = ts.Id,
+                    healthFacilityName = ts.HealthFacility!.Name,
+                    branchName = ts.Branch!.Name,
+                    pmTypeName = ts.PmType!.Name,
+                    lastFinishDate = lastFinish,
+                    daysSinceFinish = lastFinish.HasValue
+                        ? (int)(DateTime.UtcNow - lastFinish.Value).TotalDays
+                        : (int?)null
+                });
+            }
+        }
+
+        return Ok(Shared.Result.Result<object>.Ok(alerts, "Geçici kadro uyarıları getirildi"));
+    }
+
+    /// <summary>
+    /// Sözleşme bitiş tarihi girilmiş ve tarihi geçmiş,
+    /// ancak henüz ayrılış kaydı (Finish) işlenmemiş personel hareketlerini döndürür.
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> GetExpiredContractAlerts()
+    {
+        var today = DateTime.UtcNow;
+
+        // daysOverdue (DateTime farkı) EF Core tarafından SQL'e çevrilemiyor.
+        // Bu yüzden önce ham verileri çekiyoruz, sonra in-memory hesaplıyoruz.
+        var rawList = await _pmService.GetAll()
+            .Where(pm =>
+                pm.ContractFinish != null &&       // Sözleşme bitiş tarihi girilmiş
+                pm.ContractFinish < today  &&      // Tarihi geçmiş
+                pm.Finish == null)                 // Hâlâ aktif (ayrılış yapılmamış)
+            .Include(pm => pm.Personnel)
+            .Include(pm => pm.HealthFacility)
+            .Include(pm => pm.Branch)
+            .Include(pm => pm.PmType)
+            .OrderBy(pm => pm.ContractFinish)
+            .Select(pm => new
+            {
+                pmId               = pm.Id,
+                personnelName      = pm.Personnel!.FirstName + " " + pm.Personnel.LastName,
+                healthFacilityName = pm.HealthFacility!.Name,
+                branchName         = pm.Branch!.Name,
+                pmTypeName         = pm.PmType!.Name,
+                contractStart      = pm.ContractStart,
+                contractFinish     = pm.ContractFinish
+            })
+            .ToListAsync();
+
+        // daysOverdue'yi in-memory olarak hesapla
+        var expiredList = rawList.Select(pm => new
+        {
+            pm.pmId,
+            pm.personnelName,
+            pm.healthFacilityName,
+            pm.branchName,
+            pm.pmTypeName,
+            pm.contractStart,
+            pm.contractFinish,
+            daysOverdue = (int)(today - pm.contractFinish!.Value).TotalDays
+        }).ToList();
+
+        return Ok(Shared.Result.Result<object>.Ok(expiredList, "Sözleşme süresi dolmuş personeller getirildi"));
     }
 }

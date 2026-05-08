@@ -14,9 +14,7 @@ namespace OskApi.Entities.Staff
         public Guid PmTypeId { get; set; }
 
         public PmType? PmType { get; set; }
-
-
-        public int Count { get; set; }
+   
 
     }
 }

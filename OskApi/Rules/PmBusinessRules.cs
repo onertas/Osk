@@ -35,6 +35,16 @@ public class PmBusinessRules
 
     public async Task<Result<string>> CheckRulesForCreateAsync(CreatePersonelMovementDto model)
     {
+        // 0- Yasaklı personel kontrolü (en önce çalışır)
+        var personnel = await _personnelService.GetAll()
+            .FirstOrDefaultAsync(p => p.Id == model.PersonnelId);
+
+        if (personnel == null)
+            return Result<string>.Fail("Personel bulunamadı.");
+
+        if (personnel.IsBanned)
+            return Result<string>.Fail($"{personnel.FirstName} {personnel.LastName} adlı personel yasaklıdır ve personel hareketi eklenemez.");
+
         // Alt kurumlarda personel hareketi doğrudan eklenemez kuralı
         var facility = await _healthFacilityService.GetAll().FirstOrDefaultAsync(hf => hf.Id == model.HealthFacilityId);
         if (facility != null && facility.UpperHealthFacilityId != Guid.Empty)
@@ -153,11 +163,7 @@ public class PmBusinessRules
         // 7- OHY60 Kuralı: Eğer hareket türü OHY60 ise personelin yaşı 60 ve üstü olmalıdır.
         if (pmType.Code == "OHY24-60")
         {
-            var personnel = await _personnelService.GetAll()
-                .FirstOrDefaultAsync(p => p.Id == model.PersonnelId);
-
-            if (personnel == null)
-                return Result<string>.Fail("Personel bulunamadı.");
+            // personnel nesnesi kural-0'da zaten çekildi
 
             if (!personnel.BirthDate.HasValue)
                 return Result<string>.Fail("Personelin doğum tarihi bilgisi bulunmuyor. Lütfen önce doğum tarihini güncelleyiniz.");

@@ -14,5 +14,6 @@ namespace OskApi.Dtos.HealthFacilities
         public int TotalBedCount { get; set; }
         public DateTime? OpeningDate { get; set; }
         public Guid UpperHealthFacilityId { get; set; }
+        public int HfStatus { get; set; } = 1;
     }
 }

@@ -26,8 +26,15 @@ namespace OskApi.Shared.Mapping
                         src.PersonnelBranches == null ? new List<Guid>() :
                         src.PersonnelBranches.Select(pb => pb.BranchId).ToList()));
 
-            CreateMap<HealthFacility, CreateHealthFacilityDto>().ReverseMap();
-            CreateMap<HealthFacility, UpdateHealthFacilityDto>().ReverseMap();
+            CreateMap<CreateHealthFacilityDto, HealthFacility>()
+                .ForMember(dest => dest.HfStatus, opt => opt.MapFrom(src => HfStatus.FromValue(src.HfStatus)));
+            CreateMap<HealthFacility, CreateHealthFacilityDto>()
+                .ForMember(dest => dest.HfStatus, opt => opt.MapFrom(src => src.HfStatus.Value));
+
+            CreateMap<UpdateHealthFacilityDto, HealthFacility>()
+                .ForMember(dest => dest.HfStatus, opt => opt.MapFrom(src => HfStatus.FromValue(src.HfStatus)));
+            CreateMap<HealthFacility, UpdateHealthFacilityDto>()
+                .ForMember(dest => dest.HfStatus, opt => opt.MapFrom(src => src.HfStatus.Value));
             CreateMap<HealthFacility, HfManagementListDto>()
                 .ForMember(dest => dest.TypeName, opt => opt.MapFrom(src => src.HealthFacilityType != null ? src.HealthFacilityType.Name : ""))
                 .ForMember(dest => dest.ShowBed, opt => opt.MapFrom(src => src.HealthFacilityType != null && src.HealthFacilityType.ShowBed))

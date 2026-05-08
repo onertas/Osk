@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Blank } from '../../components/blank/blank';
 import { GenericHttpService } from '../../services/generic.http.service';
 import { ChartModule } from 'primeng/chart';
@@ -7,6 +7,7 @@ import { ChartModule } from 'primeng/chart';
 @Component({
   selector: 'app-home',
   imports: [CommonModule, Blank, ChartModule],
+  providers: [DatePipe],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -22,6 +23,8 @@ export class Home implements OnInit {
   facilityCounts: any[] = [];
   personnelCounts: any[] = [];
   icBedCounts: any[] = [];
+  tempStaffAlerts: any[] = [];
+  expiredContractAlerts: any[] = [];
 
   // Chart data
   facilityChartData: any;
@@ -55,6 +58,14 @@ export class Home implements OnInit {
       this.buildIcBedChart();
 
       setTimeout(() => (this.isLoaded = true), 100);
+    });
+
+    this.http.get<any>('Dashboard/GetTempStaffAlerts', {}, (res: any) => {
+      this.tempStaffAlerts = res.data ?? [];
+    });
+
+    this.http.get<any>('Dashboard/GetExpiredContractAlerts', {}, (res: any) => {
+      this.expiredContractAlerts = res.data ?? [];
     });
   }
 

@@ -18,12 +18,14 @@ public class HealthFacilityController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IHealthFacilityService _healthFacilityService;
+    private readonly IPmService _pmService;
 
-    public HealthFacilityController(IUnitOfWork unitOfWork, IHealthFacilityService healthFacilityService, IMapper mapper)
+    public HealthFacilityController(IUnitOfWork unitOfWork, IHealthFacilityService healthFacilityService, IMapper mapper, IPmService pmService)
     {
         _unitOfWork = unitOfWork;
         _healthFacilityService = healthFacilityService;
         _mapper = mapper;
+        _pmService = pmService;
     }
 
     [Authorize(Roles = "Admin")]
@@ -104,7 +106,9 @@ public class HealthFacilityController : ControllerBase
             ShowStaff = entity.HealthFacilityType?.ShowStaff ?? false,
             ShowTempStaff = entity.HealthFacilityType?.ShowTempStaff ?? false,
             ShowPm = entity.HealthFacilityType?.ShowPm ?? false,
-            UpperHealthFacilityId = entity.UpperHealthFacilityId
+            UpperHealthFacilityId = entity.UpperHealthFacilityId,
+            HfStatus = entity.HfStatus.Value,
+            HfStatusName = entity.HfStatus.Name
         };
 
         return Ok(Result<HfManagementListDto>.Ok(dto, "Veri getirildi"));
@@ -160,7 +164,9 @@ public class HealthFacilityController : ControllerBase
             ShowStaff = x.HealthFacilityType?.ShowStaff ?? false,
             ShowTempStaff = x.HealthFacilityType?.ShowTempStaff ?? false,
             ShowPm = x.HealthFacilityType?.ShowPm ?? false,
-            UpperHealthFacilityId = x.UpperHealthFacilityId
+            UpperHealthFacilityId = x.UpperHealthFacilityId,
+            HfStatus = x.HfStatus.Value,
+            HfStatusName = x.HfStatus.Name
         }).ToList();
 
         return Ok(Result<object>.Ok(new
@@ -196,6 +202,7 @@ public class HealthFacilityController : ControllerBase
         entity.ObservationBedCount = model.ObservationBedCount;
         entity.TotalBedCount = model.TotalBedCount;
         entity.UpperHealthFacilityId = model.UpperHealthFacilityId;
+        entity.HfStatus = HfStatus.FromValue(model.HfStatus);
 
         _healthFacilityService.Update(entity);
         await _unitOfWork.SaveChangesAsync();
@@ -215,6 +222,12 @@ public class HealthFacilityController : ControllerBase
 
         if (entity == null)
             return NotFound(Result.Fail("Kayıt bulunamadı"));
+
+        var hasActiveMovements = await _pmService.GetAll()
+            .AnyAsync(pm => pm.HealthFacilityId == id && (pm.Finish == null || pm.Finish >= DateTime.Now));
+
+        if (hasActiveMovements)
+            return BadRequest(Result.Fail("Bu kuruluşa ait aktif personel hareketleri bulunduğu için silinemez. Lütfen önce aktif kayıtları sonlandırın."));
 
         _healthFacilityService.Delete(entity);
         await _unitOfWork.SaveChangesAsync();

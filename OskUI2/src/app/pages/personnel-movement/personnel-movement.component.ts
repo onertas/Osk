@@ -154,6 +154,18 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
     const selectedPerson = this.personnelList.find(p => p.id === selectedPersonId);
     const movement = isUpdate ? this.updateMovement : this.newMovement;
 
+    // Yasaklı personel kontrolü
+    if (selectedPerson && selectedPerson.isBanned) {
+      this.swal.showError(
+        `${selectedPerson.firstName} ${selectedPerson.lastName} adlı personel yasaklıdır. Bu personel için hareket eklenemez.`
+      );
+      // Seçimi sıfırla
+      movement.personnelId = '';
+      movement.branchId = '';
+      this.filteredBranches = [];
+      return;
+    }
+
     if (selectedPerson && selectedPerson.branches && selectedPerson.branches.length > 0) {
       this.filteredBranches = this.branches.filter(b => selectedPerson.branches.includes(b.name));
     } else {
