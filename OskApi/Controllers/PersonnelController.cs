@@ -158,6 +158,8 @@ public class PersonnelController : ControllerBase
                     .ThenInclude(b => b.Title)
             .AsQueryable();
 
+     
+
         if (!string.IsNullOrWhiteSpace(search))
         {
             var s = search.ToLower();
