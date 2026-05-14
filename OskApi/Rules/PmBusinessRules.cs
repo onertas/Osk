@@ -137,6 +137,21 @@ public class PmBusinessRules
                 return Result<string>.Fail($"Bu hareket türü için personel kotası dolmuştur. (Kota: {pmType.StatusQuota}, Mevcut: {activePersonelCount})");
         }
 
+
+        if (pmType.Code == "OHY24" || pmType.Code == "OHY24-60" || pmType.Code == "OHY24-MUH" || pmType.Code == "OHY24-MAH")
+        {
+            var isMuayenehaneHekimi = await _pmService.GetAll()
+                .Include(pm => pm.HealthFacility)
+                .ThenInclude(hf => hf.HealthFacilityType)
+                .AnyAsync(pm => pm.PersonnelId == model.PersonnelId
+                             && pm.HealthFacility != null
+                             && pm.HealthFacility.HealthFacilityType != null
+                             && pm.HealthFacility.HealthFacilityType.Code == "MH"
+                             && pm.Finish == null);
+
+            if (!isMuayenehaneHekimi)
+                return Result<string>.Fail("Bu hareket türünü ekleyebilmek için personelin aktif bir Muayenehane (MH) kaydı bulunmalıdır.");
+        }
         // 6- OHY24 Kuralı: İlgili branştaki OHY24 sayısı, hastanenin ilgili branştaki kadrosunun 1/3'ünü geçemez
         if (pmType.Code == "OHY24")
         {

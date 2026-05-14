@@ -114,7 +114,7 @@
                 <div class="tab-pane fade" *ngIf="facility.showPm" [class.show]="activeTab === 'staff'" [class.active]="activeTab === 'staff'"
                     id="staff" role="tabpanel">
                     <app-personnel-movement *ngIf="activeTab === 'staff'"
-                        [healthFacilityId]="healthFacilityId"></app-personnel-movement>
+                        [healthFacilityId]="healthFacilityId" [isAdmin]="isAdmin"></app-personnel-movement>
                 </div>
 
                 <!-- KADRO -->
