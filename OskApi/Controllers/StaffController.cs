@@ -19,11 +19,14 @@ public class StaffController : ControllerBase
     private readonly IStaffService _staffService;
     private readonly IMapper _mapper;
 
-    public StaffController(IUnitOfWork unitOfWork, IStaffService staffService, IMapper mapper)
+    private readonly IPmService _pmService;
+
+    public StaffController(IUnitOfWork unitOfWork, IStaffService staffService, IMapper mapper, IPmService pmService)
     {
         _unitOfWork = unitOfWork;
         _staffService = staffService;
         _mapper = mapper;
+        _pmService = pmService;
     }
 
     [Authorize(Roles = "Admin")]
@@ -92,5 +95,40 @@ public class StaffController : ControllerBase
 
         var mappedList = _mapper.Map<List<ListStaffDto>>(list);
         return Ok(Result<List<ListStaffDto>>.Ok(mappedList));
+    }
+    [HttpGet]
+    public async Task<IActionResult> GetStaffSummaryByHfId([FromQuery] Guid id)
+    {
+        // 1) Branş bazlı toplam kadro sayıları (Staff tablosundan)
+        var staffQuotas = await _staffService.GetAll()
+            .Where(s => s.IsDeteled == false && s.HealthFacilityId == id)
+            .GroupBy(s => new { s.BranchId, s.Branch!.Name })
+            .Select(g => new StaffSummaryDto
+            {
+                BranchId = g.Key.BranchId,
+                BranchName = g.Key.Name,
+                TotalQuota = g.Sum(s => s.Count)
+            })
+            .ToListAsync();
+
+        // 2) Branş bazlı aktif personel sayıları (PersonnelMovement tablosundan)
+        var filledCounts = await _pmService.GetAll().Include(i=>i.PmType)
+            .Where(pm => pm.HealthFacilityId == id && pm.Finish == null && pm.PmType!.Code=="KAD")
+            .GroupBy(pm => pm.BranchId)
+            .Select(g => new
+            {
+                BranchId = g.Key,
+                Count = g.Count()
+            })
+            .ToListAsync();
+
+        // 3) Verileri birleştir
+        foreach (var item in staffQuotas)
+        {
+            var filled = filledCounts.FirstOrDefault(f => f.BranchId == item.BranchId);
+            item.FilledQuota = filled?.Count ?? 0;
+        }
+
+        return Ok(Result<List<StaffSummaryDto>>.Ok(staffQuotas));
     }
 }

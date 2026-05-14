@@ -1,18 +1,44 @@
-<div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:1rem;">
-  <div class="d-flex gap-2 fontstil13">
-    <button *ngIf="!isSubFacility" data-toggle="modal" data-target="#pmModal" class="btn btn-xs btn-dark">
-      <i class="fas fa-plus"></i> Yeni Personel
-    </button>
-    <button (click)="exportToExcel()" class="btn btn-xs btn-success">
-      <i class="fas fa-file-excel"></i> Excel'e Aktar
-    </button>
-    <div class="d-flex align-items-center ms-3 border px-2 py-1 rounded bg-light" style="cursor: pointer;" (click)="toggleSeparated()">
-      <p-checkbox [binary]="true" [(ngModel)]="showSeparated" (onChange)="applyFilters()" (click)="$event.stopPropagation()"></p-checkbox>
-      <label class="mb-0 ms-2" style="cursor: pointer; font-size: 12px; font-weight: 500;">Ayrılanları Göster</label>
+<div class="mb-3">
+  <!-- Birinci Satır: İşlem Butonları -->
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="d-flex gap-2">
+      <button *ngIf="!isSubFacility" data-toggle="modal" data-target="#pmModal" class="btn btn-xs btn-dark">
+        <i class="fas fa-plus"></i> Yeni Personel
+      </button>
+      <button (click)="exportToExcel()" class="btn btn-xs btn-success">
+        <i class="fas fa-file-excel"></i> Excel'e Aktar
+      </button>
     </div>
   </div>
-  <input pInputText #globalFilter placeholder="Ara..." type="text" (input)="onGlobalFilter($event)"
-    class="fontstil13" style="max-width:280px;" />
+
+  <!-- İkinci Satır: Filtreler ve Arama -->
+  <div class="d-flex justify-content-between align-items-center gap-2">
+    <div class="d-flex gap-2 fontstil13 align-items-center flex-wrap">
+      <!-- Ünvan Filtresi -->
+      <p-select [options]="titles" [(ngModel)]="filterTitleId" optionLabel="name" optionValue="id"
+        placeholder="Ünvan Seçin" (onChange)="applyFilters()" [showClear]="true" styleClass="p-inputtext-sm fontstil12"
+        [filter]="true" filterBy="name" [style]="{'min-width': '150px'}"></p-select>
+
+      <!-- Branş Filtresi -->
+      <p-select [options]="branches" [(ngModel)]="filterBranchId" optionLabel="name" optionValue="id"
+        placeholder="Branş Seçin" (onChange)="applyFilters()" [showClear]="true" styleClass="p-inputtext-sm fontstil12"
+        [filter]="true" filterBy="name" [style]="{'min-width': '150px'}"></p-select>
+
+      <!-- Hareket Türü Filtresi -->
+      <p-select [options]="pmTypes" [(ngModel)]="filterPmTypeId" optionLabel="name" optionValue="id"
+        placeholder="Hareket Türü" (onChange)="applyFilters()" [showClear]="true" styleClass="p-inputtext-sm fontstil12"
+        [filter]="true" filterBy="name" [style]="{'min-width': '150px'}"></p-select>
+
+      <!-- Ayrılanlar Kontrolü -->
+      <div class="d-flex align-items-center border px-2 py-1 rounded bg-light" style="cursor: pointer; height: 31px;" (click)="toggleSeparated()">
+        <p-checkbox [binary]="true" [(ngModel)]="showSeparated" (onChange)="applyFilters()" (click)="$event.stopPropagation()"></p-checkbox>
+        <label class="mb-0 ms-2" style="cursor: pointer; font-size: 11px; font-weight: 500;">Ayrılanlar</label>
+      </div>
+    </div>
+    
+    <input pInputText #globalFilter placeholder="Listede Ara..." type="text" (input)="onGlobalFilter($event)"
+      class="fontstil13" style="max-width:220px;" />
+  </div>
 </div>
 
 <p-table styleClass="p-datatable-sm fontstil13" #dt [value]="movements" [paginator]="true" [rows]="5"

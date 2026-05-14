@@ -70,4 +70,12 @@ namespace OskApi.Dtos.Staff
         public string PmTypeName { get; set; } = string.Empty;
         public int Count { get; set; }
     }
+    public class StaffSummaryDto
+    {
+        public Guid BranchId { get; set; }
+        public string BranchName { get; set; } = string.Empty;
+        public int TotalQuota { get; set; }
+        public int FilledQuota { get; set; }
+        public int EmptyQuota => TotalQuota - FilledQuota;
+    }
 }

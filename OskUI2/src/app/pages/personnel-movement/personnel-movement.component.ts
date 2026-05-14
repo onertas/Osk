@@ -39,8 +39,12 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
   updateMovement: UpdatePersonnelMovementDto = new UpdatePersonnelMovementDto();
   movements: ListPersonnelMovementDto[] = [];
   showSeparated: boolean = false;
+  filterBranchId: string = '';
+  filterPmTypeId: string = '';
+  filterTitleId: string = '';
 
   pmTypes: ListPmTypeDto[] = [];
+  titles: any[] = [];
   branches: any[] = [];
   filteredBranches: any[] = [];
   personnelList: any[] = [];
@@ -51,6 +55,7 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.GetPmTypes();
+    this.GetTitles();
     this.GetBranches();
     
     if (this.healthFacilityId) {
@@ -87,7 +92,10 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
 
     this.http.get<ListPersonnelMovementDto[]>('Pm/GetAllByHfId', { 
       healthFacilityId: this.healthFacilityId,
-      showSeparated: this.showSeparated 
+      showSeparated: this.showSeparated,
+      branchId: this.filterBranchId,
+      pmTypeId: this.filterPmTypeId,
+      titleId: this.filterTitleId
     }).subscribe({
       next: (res) => {
         if (res.success && res.data) {
@@ -111,6 +119,16 @@ export class PersonnelMovementComponent implements OnInit, OnChanges {
       next: (res) => {
         if (res.success && res.data) {
           this.pmTypes = res.data.sort((a, b) => a.order - b.order);
+        }
+      }
+    });
+  }
+
+  GetTitles() {
+    this.http.get<any[]>('Title/GetAll').subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          this.titles = res.data;
         }
       }
     });

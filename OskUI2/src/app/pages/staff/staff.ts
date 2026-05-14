@@ -46,6 +46,7 @@ export class StaffComponent implements OnInit, OnChanges {
   @ViewChild(Modal) modalCom: Modal | undefined;
 
   staffList: ListStaffDto[] = [];
+  staffSummary: any[] = [];
   branches: ListBranchDto[] = [];
   facilities: HfManagementListDto[] = [];
 
@@ -78,6 +79,7 @@ export class StaffComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['healthFacilityId'] && this.healthFacilityId) {
       this.getByFacilityId();
+      this.getSummary();
       this.newStaff.healthFacilityId = this.healthFacilityId;
     }
   }
@@ -90,6 +92,17 @@ export class StaffComponent implements OnInit, OnChanges {
             ...item,
             code: item.code || ''
           }));
+        }
+      }
+    });
+  }
+
+  getSummary() {
+    if (!this.healthFacilityId) return;
+    this.http.get<any[]>('Staff/GetStaffSummaryByHfId', { id: this.healthFacilityId }).subscribe({
+      next: (res: any) => {
+        if (res.success && res.data) {
+          this.staffSummary = res.data;
         }
       }
     });
@@ -152,6 +165,7 @@ export class StaffComponent implements OnInit, OnChanges {
           if (this.healthFacilityId) {
             this.newStaff.healthFacilityId = this.healthFacilityId;
             this.getByFacilityId();
+            this.getSummary();
           } else {
             this.getAll();
           }
@@ -184,6 +198,7 @@ export class StaffComponent implements OnInit, OnChanges {
           this.modalCom?.close('editStaffModal');
           if (this.healthFacilityId) {
             this.getByFacilityId();
+            this.getSummary();
           } else {
             this.getAll();
           }
@@ -200,6 +215,7 @@ export class StaffComponent implements OnInit, OnChanges {
             this.swal.showSuccess("Başarıyla silindi");
             if (this.healthFacilityId) {
               this.getByFacilityId();
+              this.getSummary();
             } else {
               this.getAll();
             }

@@ -113,7 +113,7 @@ public class PmController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllByHfId(Guid healthFacilityId, bool showSeparated = false)
+    public async Task<IActionResult> GetAllByHfId(Guid healthFacilityId, bool showSeparated = false, Guid? branchId = null, Guid? pmTypeId = null, Guid? titleId = null)
     {
         var facility = await _healthFacilityService.GetAll().FirstOrDefaultAsync(i => i.Id == healthFacilityId);
 
@@ -138,6 +138,21 @@ public class PmController : ControllerBase
         if (!showSeparated)
         {
             query = query.Where(i => i.Finish == null);
+        }
+
+        if (branchId.HasValue)
+        {
+            query = query.Where(i => i.BranchId == branchId.Value);
+        }
+
+        if (pmTypeId.HasValue)
+        {
+            query = query.Where(i => i.PmTypeId == pmTypeId.Value);
+        }
+
+        if (titleId.HasValue)
+        {
+            query = query.Where(i => i.Branch!.TitleId == titleId.Value);
         }
 
         var list = await query.ToListAsync();

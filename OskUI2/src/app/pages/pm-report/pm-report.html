@@ -80,6 +80,7 @@
       
       <ng-template pTemplate="header">
         <tr>
+          <th>#</th>
           <th>Personel</th>
           <th>TC Kimlik No</th>
           <th>Kurum / Tür</th>
@@ -91,8 +92,9 @@
         </tr>
       </ng-template>
 
-      <ng-template pTemplate="body" let-m>
+      <ng-template pTemplate="body" let-m let-i="rowIndex">
         <tr>
+          <td style="width:5%;">{{i+1}}</td>
           <td><strong>{{ m.personnel?.firstName }} {{ m.personnel?.lastName }}</strong></td>
           <td>{{ m.personnel?.identityNumber }}</td>
           <td>

@@ -93,17 +93,31 @@ export class MainSidebar {
 
   menuac(event: Event): void {
     event.preventDefault();
+    event.stopPropagation();
 
-    const link = event.currentTarget as HTMLElement; // <a> elementini verir
+    const link = event.currentTarget as HTMLElement;
     const nextElement = link.nextElementSibling as HTMLElement | null;
 
     if (nextElement && nextElement.tagName === 'UL') {
       const isHidden = nextElement.style.display === 'none' || !nextElement.style.display;
 
+      // Diğer tüm açık menüleri kapat
+      const allTreeviews = this.document.querySelectorAll('.nav-treeview');
+      allTreeviews.forEach((treeview: any) => {
+        if (treeview !== nextElement) {
+          this.renderer.setStyle(treeview, 'display', 'none');
+          // Eğer üst li elementinde 'menu-open' gibi bir class varsa onu da kaldırabilirsiniz
+          this.renderer.removeClass(treeview.parentElement, 'menu-open');
+        }
+      });
+
+      // Tıklanan menüyü aç veya kapat
       if (isHidden) {
         this.renderer.setStyle(nextElement, 'display', 'block');
+        this.renderer.addClass(link.parentElement, 'menu-open');
       } else {
         this.renderer.setStyle(nextElement, 'display', 'none');
+        this.renderer.removeClass(link.parentElement, 'menu-open');
       }
     }
   }

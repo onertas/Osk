@@ -70,6 +70,54 @@
         </tr>
       </ng-template>
     </p-table>
+
+    <!-- Dolu-Boş Kadro Özeti -->
+    <div *ngIf="healthFacilityId && staffSummary.length > 0" class="mt-4">
+      <h6 class="text-primary font-weight-bold mb-3">
+        <i class="fas fa-chart-pie mr-2"></i> Branş Bazlı Dolu/Boş Kadro Durumu
+      </h6>
+      <p-table [value]="staffSummary" styleClass="p-datatable-sm fontstil13" [responsiveLayout]="'scroll'">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 50px">#</th>
+            <th>Branş</th>
+            <th style="width: 100px; text-align: center">Kadro</th>
+            <th style="width: 100px; text-align: center">Dolu</th>
+            <th style="width: 100px; text-align: center">Boş</th>
+            <th style="width: 150px">Doluluk Oranı</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-summary let-i="rowIndex">
+          <tr>
+            <td>{{ i + 1 }}</td>
+            <td class="font-weight-bold">{{ summary.branchName }}</td>
+            <td style="text-align: center">
+              <span class="badge badge-info">{{ summary.totalQuota }}</span>
+            </td>
+            <td style="text-align: center">
+              <span class="badge badge-success">{{ summary.filledQuota }}</span>
+            </td>
+            <td style="text-align: center">
+              <span class="badge" [class.badge-danger]="summary.emptyQuota > 0" [class.badge-secondary]="summary.emptyQuota <= 0">
+                {{ summary.emptyQuota }}
+              </span>
+            </td>
+            <td>
+              <div class="progress" style="height: 10px;">
+                <div class="progress-bar" role="progressbar" 
+                  [style.width.%]="(summary.filledQuota / summary.totalQuota) * 100"
+                  [class.bg-success]="(summary.filledQuota / summary.totalQuota) < 1"
+                  [class.bg-danger]="(summary.filledQuota / summary.totalQuota) >= 1"
+                  [attr.aria-valuenow]="(summary.filledQuota / summary.totalQuota) * 100" 
+                  aria-valuemin="0" aria-valuemax="100">
+                </div>
+              </div>
+              <small class="text-muted">{{ ((summary.filledQuota / summary.totalQuota) * 100) | number:'1.0-0' }}%</small>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
   </ng-template>
 </ng-template>
 
