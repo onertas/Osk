@@ -13,4 +13,6 @@ export class UpdateHealthFacilityDto {
   public openingDate?: Date;
   public upperHealthFacilityId: string = '00000000-0000-0000-0000-000000000000';
   public hfStatus: number = 1;
+  public statusDate?: Date;
+  public suspensionEndDate?: Date;
 }

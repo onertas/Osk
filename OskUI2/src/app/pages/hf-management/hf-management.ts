@@ -150,6 +150,15 @@ export class HfManagementComponent implements OnInit {
 
   Update(form: any) {
     if (form.invalid) return;
+    
+    // Temizlik: Durum aktif/taşınma vb. ise tarihleri temizle
+    if (this.updateModel.hfStatus !== 0 && this.updateModel.hfStatus !== 4 && this.updateModel.hfStatus !== 5) {
+      this.updateModel.statusDate = undefined;
+      this.updateModel.suspensionEndDate = undefined;
+    } else if (this.updateModel.hfStatus === 0) {
+      this.updateModel.suspensionEndDate = undefined;
+    }
+
     this.http.post('HealthFacility/Update', this.updateModel).subscribe({
       next: () => {
         this.modalCom?.close('editHfModal');
@@ -161,6 +170,15 @@ export class HfManagementComponent implements OnInit {
 
   Create(form: any) {
     if (form.invalid) return;
+
+    // Temizlik: Durum aktif/taşınma vb. ise tarihleri temizle
+    if (this.createModel.hfStatus !== 0 && this.createModel.hfStatus !== 4 && this.createModel.hfStatus !== 5) {
+      this.createModel.statusDate = undefined;
+      this.createModel.suspensionEndDate = undefined;
+    } else if (this.createModel.hfStatus === 0) {
+      this.createModel.suspensionEndDate = undefined;
+    }
+
     this.http.post('HealthFacility/Add', this.createModel).subscribe({
       next: () => {
         this.modalCom?.close('addHfModal');

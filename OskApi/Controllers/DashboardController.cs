@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OskApi.Entities.Beds;
 using OskApi.Services.Abstract;
+using OskApi.Entities.HealthFacilities;
 using OskApi.Entities.Staff;
 
 namespace OskApi.Controllers;
@@ -205,5 +206,43 @@ public class DashboardController : ControllerBase
         }).ToList();
 
         return Ok(Shared.Result.Result<object>.Ok(expiredList, "Sözleşme süresi dolmuş personeller getirildi"));
+    }
+
+    /// <summary>
+    /// Askı süresi dolmuş (Ruhsat Askı veya Faaliyet Durdurma durumunda olan ve bitiş tarihi geçmiş)
+    /// sağlık tesislerini döndürür.
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> GetSuspendedFacilityAlerts()
+    {
+        var today = DateTime.Today;
+
+        var rawList = await _hfService.GetAll()
+            .Where(x => (x.HfStatus == HfStatus.RuhsatAski || x.HfStatus == HfStatus.FaaliyetDurdurma)
+                        && x.SuspensionEndDate != null
+                        && x.SuspensionEndDate < today)
+            .Select(x => new
+            {
+                id = x.Id,
+                name = x.Name,
+                statusValue = x.HfStatus.Value,
+                statusName = x.HfStatus.Name,
+                statusDate = x.StatusDate,
+                suspensionEndDate = x.SuspensionEndDate
+            })
+            .ToListAsync();
+
+        var alerts = rawList.Select(x => new
+        {
+            x.id,
+            x.name,
+            x.statusValue,
+            x.statusName,
+            x.statusDate,
+            x.suspensionEndDate,
+            daysOverdue = (int)(today - x.suspensionEndDate!.Value).TotalDays
+        }).ToList();
+
+        return Ok(Shared.Result.Result<object>.Ok(alerts, "Askı süresi dolmuş sağlık tesisleri getirildi"));
     }
 }

@@ -58,11 +58,25 @@
             <span class="badge bg-secondary fontstil12">{{ item.typeName }}</span>
           </td>
           <td>
-            <span class="badge fontstil12" [ngClass]="{
-              'bg-success': item.hfStatus === 1,
-              'bg-danger': item.hfStatus === 0 || item.hfStatus === 5,
-              'bg-warning': item.hfStatus === 3 || item.hfStatus === 4
-            }">{{ item.hfStatusName || 'Bilinmiyor' }}</span>
+            <div class="d-flex flex-column gap-1">
+              <span class="badge fontstil12 text-center" [ngClass]="{
+                'bg-success': item.hfStatus === 1,
+                'bg-danger': item.hfStatus === 0 || item.hfStatus === 5,
+                'bg-warning': item.hfStatus === 3 || item.hfStatus === 4
+              }">{{ item.hfStatusName || 'Bilinmiyor' }}</span>
+              
+              @if (item.hfStatus === 0 && item.statusDate) {
+                <small class="text-danger fontstil11" style="font-size: 11px;">
+                  Kapalı: {{ item.statusDate | date:'dd.MM.yyyy' }}
+                </small>
+              }
+              @if ((item.hfStatus === 4 || item.hfStatus === 5) && (item.statusDate || item.suspensionEndDate)) {
+                <small class="text-warning fontstil11" style="font-size: 11px; white-space: nowrap;">
+                  @if (item.statusDate) { {{ item.statusDate | date:'dd.MM.yyyy' }} }
+                  @if (item.suspensionEndDate) { - {{ item.suspensionEndDate | date:'dd.MM.yyyy' }} }
+                </small>
+              }
+            </div>
           </td>
           <td>{{ item.corporationName || '—' }}</td>
           <td>{{ item.phoneNumber || '—' }}</td>
@@ -205,10 +219,31 @@
       <div class="col-md-6 form-group mb-2">
         <label>Tesis Durumu <span class="text-danger">*</span></label>
         <select class="form-control" name="updStatus" [(ngModel)]="updateModel.hfStatus" required>
-          <option *ngFor="let s of hfStatuses" [value]="s.value">{{ s.name }}</option>
+          <option *ngFor="let s of hfStatuses" [ngValue]="s.value">{{ s.name }}</option>
         </select>
       </div>
     </div>
+
+    @if (updateModel.hfStatus == 0) {
+      <div class="row">
+        <div class="col-md-12 form-group mb-2">
+          <label>Kapanma Tarihi <span class="text-danger">*</span></label>
+          <input type="date" class="form-control" name="updStatusDate" [ngModel]="updateModel.statusDate | date:'yyyy-MM-dd'" (ngModelChange)="updateModel.statusDate = $event" required />
+        </div>
+      </div>
+    }
+    @if (updateModel.hfStatus == 4 || updateModel.hfStatus == 5) {
+      <div class="row">
+        <div class="col-md-6 form-group mb-2">
+          <label>Askı Başlangıç Tarihi <span class="text-danger">*</span></label>
+          <input type="date" class="form-control" name="updStatusDate" [ngModel]="updateModel.statusDate | date:'yyyy-MM-dd'" (ngModelChange)="updateModel.statusDate = $event" required />
+        </div>
+        <div class="col-md-6 form-group mb-2">
+          <label>Askı Bitiş Tarihi <span class="text-danger">*</span></label>
+          <input type="date" class="form-control" name="updSuspensionEndDate" [ngModel]="updateModel.suspensionEndDate | date:'yyyy-MM-dd'" (ngModelChange)="updateModel.suspensionEndDate = $event" required />
+        </div>
+      </div>
+    }
 
     <div class="form-group mb-2">
       <label>Adres</label>
@@ -305,10 +340,31 @@
       <div class="col-md-6 form-group mb-2">
         <label>Tesis Durumu <span class="text-danger">*</span></label>
         <select class="form-control" name="addStatus" [(ngModel)]="createModel.hfStatus" required>
-          <option *ngFor="let s of hfStatuses" [value]="s.value">{{ s.name }}</option>
+          <option *ngFor="let s of hfStatuses" [ngValue]="s.value">{{ s.name }}</option>
         </select>
       </div>
     </div>
+
+    @if (createModel.hfStatus == 0) {
+      <div class="row">
+        <div class="col-md-12 form-group mb-2">
+          <label>Kapanma Tarihi <span class="text-danger">*</span></label>
+          <input type="date" class="form-control" name="addStatusDate" [ngModel]="createModel.statusDate | date:'yyyy-MM-dd'" (ngModelChange)="createModel.statusDate = $event" required />
+        </div>
+      </div>
+    }
+    @if (createModel.hfStatus == 4 || createModel.hfStatus == 5) {
+      <div class="row">
+        <div class="col-md-6 form-group mb-2">
+          <label>Askı Başlangıç Tarihi <span class="text-danger">*</span></label>
+          <input type="date" class="form-control" name="addStatusDate" [ngModel]="createModel.statusDate | date:'yyyy-MM-dd'" (ngModelChange)="createModel.statusDate = $event" required />
+        </div>
+        <div class="col-md-6 form-group mb-2">
+          <label>Askı Bitiş Tarihi <span class="text-danger">*</span></label>
+          <input type="date" class="form-control" name="addSuspensionEndDate" [ngModel]="createModel.suspensionEndDate | date:'yyyy-MM-dd'" (ngModelChange)="createModel.suspensionEndDate = $event" required />
+        </div>
+      </div>
+    }
 
     <div class="form-group mb-2">
       <label>Adres</label>

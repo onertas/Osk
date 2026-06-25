@@ -15,5 +15,7 @@ namespace OskApi.Dtos.HealthFacilities
         public DateTime? OpeningDate { get; set; }
         public Guid UpperHealthFacilityId { get; set; }
         public int HfStatus { get; set; } = 1;
+        public DateTime? StatusDate { get; set; }
+        public DateTime? SuspensionEndDate { get; set; }
     }
 }

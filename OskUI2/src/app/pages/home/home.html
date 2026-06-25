@@ -243,6 +243,58 @@
     </div>
   }
 
+  <!-- ═══════════════════ ASKI SÜRESİ DOLMUŞ SAĞLIK TESİSLERİ ═══════════════════ -->
+  @if (suspendedFacilityAlerts.length > 0) {
+    <div class="alert-panel alert-panel--rose">
+      <div class="alert-panel__header">
+        <div class="alert-panel__header-left">
+          <div class="alert-icon-box alert-icon-box--rose">
+            <i class="fas fa-hospital-alt"></i>
+          </div>
+          <div>
+            <h3 class="alert-panel__title" style="color:#be123c">Askı Süresi Dolan Sağlık Tesisleri</h3>
+            <p class="alert-panel__subtitle" style="color:#e11d48">
+              Ruhsat askı veya faaliyet durdurma süresi dolmuş ancak henüz aktif edilmemiş sağlık tesisleri
+            </p>
+          </div>
+        </div>
+        <span class="alert-badge alert-badge--rose">{{ suspendedFacilityAlerts.length }}</span>
+      </div>
+      <div class="alert-panel__body">
+        <table class="alert-table">
+          <thead>
+            <tr>
+              <th>Kuruluş Adı</th>
+              <th>Durum</th>
+              <th>Askı Başlangıç Tarihi</th>
+              <th>Askı Bitiş Tarihi</th>
+              <th>Gecikme Süresi</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of suspendedFacilityAlerts; track item.id) {
+              <tr>
+                <td>{{ item.name }}</td>
+                <td><span class="badge bg-warning fontstil12">{{ item.statusName }}</span></td>
+                <td>{{ item.statusDate ? (item.statusDate | date:'dd.MM.yyyy') : '—' }}</td>
+                <td><span class="chip-expired" style="background:#ffe4e6; color:#be123c;">{{ item.suspensionEndDate | date:'dd.MM.yyyy' }}</span></td>
+                <td>
+                  @if (item.daysOverdue >= 30) {
+                    <span class="alert-days danger"><i class="fas fa-fire"></i> {{ item.daysOverdue }} gün</span>
+                  } @else if (item.daysOverdue >= 7) {
+                    <span class="alert-days warning"><i class="fas fa-clock"></i> {{ item.daysOverdue }} gün</span>
+                  } @else {
+                    <span class="alert-days fresh" style="color:#e11d48;"><i class="fas fa-exclamation-circle"></i> {{ item.daysOverdue }} gün</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
   <!-- ═══════════════════ GRAFİKLER ═══════════════════ -->
   <div class="chart-row">
 

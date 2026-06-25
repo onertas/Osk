@@ -11,4 +11,6 @@ export class CreateHealthFacilityDto {
   openingDate?: Date;
   upperHealthFacilityId: string = '00000000-0000-0000-0000-000000000000';
   hfStatus: number = 1;
+  statusDate?: Date;
+  suspensionEndDate?: Date;
 }

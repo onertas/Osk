@@ -19,4 +19,6 @@ export class HfManagementListDto {
   upperHealthFacilityId: string = '00000000-0000-0000-0000-000000000000';
   hfStatus: number = 0;
   hfStatusName: string = '';
+  statusDate?: Date;
+  suspensionEndDate?: Date;
 }

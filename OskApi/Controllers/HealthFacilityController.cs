@@ -108,7 +108,9 @@ public class HealthFacilityController : ControllerBase
             ShowPm = entity.HealthFacilityType?.ShowPm ?? false,
             UpperHealthFacilityId = entity.UpperHealthFacilityId,
             HfStatus = entity.HfStatus.Value,
-            HfStatusName = entity.HfStatus.Name
+            HfStatusName = entity.HfStatus.Name,
+            StatusDate = entity.StatusDate,
+            SuspensionEndDate = entity.SuspensionEndDate
         };
 
         return Ok(Result<HfManagementListDto>.Ok(dto, "Veri getirildi"));
@@ -166,7 +168,9 @@ public class HealthFacilityController : ControllerBase
             ShowPm = x.HealthFacilityType?.ShowPm ?? false,
             UpperHealthFacilityId = x.UpperHealthFacilityId,
             HfStatus = x.HfStatus.Value,
-            HfStatusName = x.HfStatus.Name
+            HfStatusName = x.HfStatus.Name,
+            StatusDate = x.StatusDate,
+            SuspensionEndDate = x.SuspensionEndDate
         }).ToList();
 
         return Ok(Result<object>.Ok(new
@@ -203,6 +207,8 @@ public class HealthFacilityController : ControllerBase
         entity.TotalBedCount = model.TotalBedCount;
         entity.UpperHealthFacilityId = model.UpperHealthFacilityId;
         entity.HfStatus = HfStatus.FromValue(model.HfStatus);
+        entity.StatusDate = model.StatusDate;
+        entity.SuspensionEndDate = model.SuspensionEndDate;
 
         _healthFacilityService.Update(entity);
         await _unitOfWork.SaveChangesAsync();

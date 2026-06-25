@@ -511,6 +511,54 @@
   font-weight: 600;
 }
 
+/* ── Rose (Askı Süresi) panel variant ── */
+.alert-panel--rose {
+  border-color: #fecdd3;
+  box-shadow: 0 1px 4px rgba(225, 29, 72, 0.1);
+}
+
+.alert-panel--rose .alert-panel__header {
+  background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+  border-bottom-color: #fecdd3;
+}
+
+.alert-panel--rose .alert-panel__body::-webkit-scrollbar-track {
+  background: #fff1f2;
+}
+.alert-panel--rose .alert-panel__body::-webkit-scrollbar-thumb {
+  background: #fda4af;
+  border-radius: 4px;
+}
+
+.alert-panel--rose .alert-table thead th {
+  background: #ffe4e6;
+  color: #be123c;
+  border-bottom-color: #fda4af;
+}
+
+.alert-panel--rose .alert-table tbody tr {
+  border-bottom-color: #fff1f2;
+}
+
+.alert-panel--rose .alert-table tbody tr:hover {
+  background: #fff5f5;
+}
+
+.alert-icon-box--rose {
+  background: #ffe4e6;
+  color: #e11d48;
+}
+
+.alert-badge--rose {
+  background: #e11d48;
+  animation: pulse-badge-rose 2s infinite;
+}
+
+@keyframes pulse-badge-rose {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.4); }
+  50%       { box-shadow: 0 0 0 6px rgba(225, 29, 72, 0); }
+}
+
 
 /* ═══════════════ RESPONSIVE ═══════════════ */
 @media (max-width: 1024px) {

@@ -25,6 +25,7 @@ export class Home implements OnInit {
   icBedCounts: any[] = [];
   tempStaffAlerts: any[] = [];
   expiredContractAlerts: any[] = [];
+  suspendedFacilityAlerts: any[] = [];
 
   // Chart data
   facilityChartData: any;
@@ -66,6 +67,10 @@ export class Home implements OnInit {
 
     this.http.get<any>('Dashboard/GetExpiredContractAlerts', {}, (res: any) => {
       this.expiredContractAlerts = res.data ?? [];
+    });
+
+    this.http.get<any>('Dashboard/GetSuspendedFacilityAlerts', {}, (res: any) => {
+      this.suspendedFacilityAlerts = res.data ?? [];
     });
   }
 
