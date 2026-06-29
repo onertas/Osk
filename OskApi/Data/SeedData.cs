@@ -99,5 +99,42 @@ public class SeedData
             );
             await context.SaveChangesAsync();
         }
+
+        // 4. Personel Tipleri
+        if (!context.Titles.Any())
+        {
+            context.Titles.AddRange(
+                new Title
+                {
+                     Name = "Uzman Hekim",
+                     Code = "T-01",
+                      
+                    IsDoctor = true,
+                                         
+                },
+                new Title
+                  {
+                     Name = "Pra. Hekim",
+                     Code = "T-01",
+                      
+                    IsDoctor = true,
+                                         
+                },
+                new Title
+                {
+                    Name = "Diş Hekimi",
+                    Code = "T-02",
+                    IsDoctor = true,
+                },
+                new Title
+                {
+                    Name = "Sağlık Personeli",
+                    Code = "T-03",
+                    IsDoctor = false,
+                }
+               
+            );
+            await context.SaveChangesAsync();
+        }
     }
 }
