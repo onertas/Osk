@@ -76,7 +76,7 @@ public class StaffController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var list = await _staffService.GetAll().Where(i=>i.IsDeteled==false)
+        var list = await _staffService.GetAll().Where(i => i.IsDeleted == false)
             .Include(i => i.Branch)
             .Include(i => i.HealthFacility)
             .ToListAsync();
@@ -88,7 +88,7 @@ public class StaffController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetByHealthFacilityId([FromQuery] Guid id)
     {
-        var list = await _staffService.GetAll().Where(i => i.IsDeteled == false && i.HealthFacilityId == id)
+        var list = await _staffService.GetAll().Where(i => i.IsDeleted == false && i.HealthFacilityId == id)
             .Include(i => i.Branch)
             .Include(i => i.HealthFacility)
             .ToListAsync();
@@ -101,7 +101,7 @@ public class StaffController : ControllerBase
     {
         // 1) Branş bazlı toplam kadro sayıları (Staff tablosundan)
         var staffQuotas = await _staffService.GetAll()
-            .Where(s => s.IsDeteled == false && s.HealthFacilityId == id)
+            .Where(s => s.IsDeleted == false && s.HealthFacilityId == id)
             .GroupBy(s => new { s.BranchId, s.Branch!.Name })
             .Select(g => new StaffSummaryDto
             {

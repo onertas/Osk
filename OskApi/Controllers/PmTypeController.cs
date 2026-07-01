@@ -50,7 +50,7 @@ public class PmTypeController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var list = await _pmTypeService.GetAll()
-            .Where(i => i.IsDeteled == false)
+            .Where(i => i.IsDeleted == false)
             .OrderBy(i => i.Order)
             .ToListAsync();
         var mappedList = _mapper.Map<List<ListPmTypeDto>>(list);

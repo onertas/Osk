@@ -100,7 +100,7 @@ public class DashboardController : ControllerBase
 
         // Tüm geçici kadroları çek
         var tempStaffList = await _tempStaffService.GetAll()
-            .Where(t => t.IsDeteled == false)
+            .Where(t => t.IsDeleted == false)
             .Include(t => t.HealthFacility)
             .Include(t => t.Branch)
             .Include(t => t.PmType)

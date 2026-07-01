@@ -67,7 +67,7 @@ public class TemporarayStaffController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var list = await _temporarayStaffService.GetAll().Where(i => i.IsDeteled == false)
+        var list = await _temporarayStaffService.GetAll().Where(i => i.IsDeleted == false)
             .Include(i => i.Branch)
             .Include(i => i.HealthFacility)
             .Include(i => i.PmType)
@@ -80,7 +80,7 @@ public class TemporarayStaffController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetByHealthFacilityId([FromQuery] Guid id)
     {
-        var list = await _temporarayStaffService.GetAll().Where(i => i.IsDeteled == false && i.HealthFacilityId == id)
+        var list = await _temporarayStaffService.GetAll().Where(i => i.IsDeleted == false && i.HealthFacilityId == id)
             .Include(i => i.Branch)
             .Include(i => i.HealthFacility)
             .Include(i => i.PmType)
