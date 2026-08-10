@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OskApi.Data;
+using OskApi.Entities.Beds;
 using OskApi.Entities.HealthFacilities;
 using OskApi.Entities.Personnel;
 using OskApi.Entities.User;
@@ -136,5 +137,60 @@ public class SeedData
             );
             await context.SaveChangesAsync();
         }
+
+
+          if (!context.IcBedNames.Any())
+        {
+            context.IcBedNames.AddRange(
+                new IcBedName
+                {
+                    Name = "Dahili",
+                    Code = "DHL",
+                    IcBedType = IcBedType.Eriskin
+                },
+                new IcBedName
+                {
+                    Name = "Cerrahi",
+                    Code = "CER",
+                    IcBedType = IcBedType.Eriskin
+                },
+                new IcBedName
+                {
+                    Name = "Koroner",
+                    Code = "KOR",
+                    IcBedType = IcBedType.Eriskin
+                },
+                new IcBedName
+                {
+                    Name = "KVC",
+                    Code = "KVC",
+                    IcBedType = IcBedType.Eriskin
+                },
+                new IcBedName
+                {
+                    Name = "Genel",
+                    Code = "GNL",
+                    IcBedType = IcBedType.Eriskin
+                },
+                new IcBedName
+                {
+                    Name = "Çocuk",
+                    Code = "COC",
+                    IcBedType = IcBedType.Cocuk
+                },
+                new IcBedName
+                {
+                    Name = "Yenidoğan",
+                    Code = "YND",
+                    IcBedType = IcBedType.Yenidogan
+                }
+                
+            );
+            await context.SaveChangesAsync();
+        }
+                   
+               
+          
+        
     }
 }
