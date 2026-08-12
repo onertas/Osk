@@ -162,12 +162,33 @@ public class PersonnelController : ControllerBase
 
         if (!string.IsNullOrWhiteSpace(search))
         {
-            var s = search.ToLower();
+            var s = search.Trim();
+            var sLower = s.ToLower();
+            var sLowerTr = s.ToLower(new System.Globalization.CultureInfo("tr-TR"));
+
             query = query.Where(w =>
-                w.FirstName.ToLower().Contains(s) ||
-                w.LastName.ToLower().Contains(s) ||
+                EF.Functions.Like(w.FirstName, $"%{s}%") ||
+                EF.Functions.Like(w.LastName, $"%{s}%") ||
+                EF.Functions.Like(w.FirstName + " " + w.LastName, $"%{s}%") ||
+                w.FirstName.ToLower().Contains(sLower) ||
+                w.LastName.ToLower().Contains(sLower) ||
+                (w.FirstName + " " + w.LastName).ToLower().Contains(sLower) ||
+                w.FirstName.ToLower().Contains(sLowerTr) ||
+                w.LastName.ToLower().Contains(sLowerTr) ||
+                (w.FirstName + " " + w.LastName).ToLower().Contains(sLowerTr) ||
                 (w.IdentityNumber != null && w.IdentityNumber.Contains(s)) ||
-                (w.Email != null && w.Email.ToLower().Contains(s))
+                (w.PhoneNumber != null && w.PhoneNumber.Contains(s)) ||
+                (w.Email != null && (w.Email.ToLower().Contains(sLower) || w.Email.ToLower().Contains(sLowerTr))) ||
+                (w.PersonnelBranches != null && w.PersonnelBranches.Any(pb => pb.Branch != null && (
+                    EF.Functions.Like(pb.Branch.Name, $"%{s}%") ||
+                    pb.Branch.Name.ToLower().Contains(sLower) ||
+                    pb.Branch.Name.ToLower().Contains(sLowerTr) ||
+                    (pb.Branch.Title != null && (
+                        EF.Functions.Like(pb.Branch.Title.Name, $"%{s}%") ||
+                        pb.Branch.Title.Name.ToLower().Contains(sLower) ||
+                        pb.Branch.Title.Name.ToLower().Contains(sLowerTr)
+                    ))
+                )))
             );
         }
 

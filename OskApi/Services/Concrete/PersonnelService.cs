@@ -20,12 +20,23 @@ public class PersonnelService : Repository<Personnel, MyDbContext>, IPersonnelSe
                     .ThenInclude(b => b.Title)
             .AsQueryable();
 
-        if (!string.IsNullOrEmpty(query))
+        if (!string.IsNullOrWhiteSpace(query))
         {
-            query = query.ToLower();
-            result = result.Where(x => 
-                x.FirstName.ToLower().Contains(query) || 
-                x.LastName.ToLower().Contains(query));
+            var s = query.Trim();
+            var sLower = s.ToLower();
+            var sLowerTr = s.ToLower(new System.Globalization.CultureInfo("tr-TR"));
+
+            result = result.Where(x =>
+                EF.Functions.Like(x.FirstName, $"%{s}%") ||
+                EF.Functions.Like(x.LastName, $"%{s}%") ||
+                EF.Functions.Like(x.FirstName + " " + x.LastName, $"%{s}%") ||
+                x.FirstName.ToLower().Contains(sLower) ||
+                x.LastName.ToLower().Contains(sLower) ||
+                (x.FirstName + " " + x.LastName).ToLower().Contains(sLower) ||
+                x.FirstName.ToLower().Contains(sLowerTr) ||
+                x.LastName.ToLower().Contains(sLowerTr) ||
+                (x.FirstName + " " + x.LastName).ToLower().Contains(sLowerTr)
+            );
         }
 
         return result;

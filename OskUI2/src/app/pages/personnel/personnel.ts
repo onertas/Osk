@@ -41,6 +41,7 @@ export class Personnel implements OnInit {
   loading: boolean = true;
   lastTableLazyLoadEvent: any;
   searchQuery: string = "";
+  searchTimeout: any;
 
   branches: any[] = [];
   titles: any[] = [];
@@ -66,31 +67,51 @@ export class Personnel implements OnInit {
 
   loadPersonnel(event?: any) {
     this.loading = true;
-    this.lastTableLazyLoadEvent = event || this.lastTableLazyLoadEvent;
-    
-    const page = (this.lastTableLazyLoadEvent?.first / this.lastTableLazyLoadEvent?.rows) + 1 || 1;
-    const pageSize = this.lastTableLazyLoadEvent?.rows || 10;
+    if (event) {
+      this.lastTableLazyLoadEvent = event;
+    }
+
+    const first = this.lastTableLazyLoadEvent?.first || 0;
+    const rows = this.lastTableLazyLoadEvent?.rows || 10;
+    const page = Math.floor(first / rows) + 1;
+    const pageSize = rows;
     
     this.http.get<any>('personnel/GetAllPaged', {
       page: page,
       pageSize: pageSize,
-      search: this.searchQuery
+      search: this.searchQuery ? this.searchQuery.trim() : ''
     }).subscribe({
       next: (res) => {
         if (res.success && res.data) {
           this.personnel = res.data.items;
           this.totalRecords = res.data.totalCount;
+        } else {
+          this.personnel = [];
+          this.totalRecords = 0;
         }
         this.loading = false;
       },
       error: () => {
+        this.personnel = [];
+        this.totalRecords = 0;
         this.loading = false;
       }
     });
   }
 
   onSearchChange() {
-    this.loadPersonnel();
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+    this.searchTimeout = setTimeout(() => {
+      if (this.table) {
+        this.table.first = 0;
+      }
+      if (this.lastTableLazyLoadEvent) {
+        this.lastTableLazyLoadEvent.first = 0;
+      }
+      this.loadPersonnel();
+    }, 300);
   }
   Add(form: any) {
     if (!this.newPersonnel.personnelBranches || this.newPersonnel.personnelBranches.length == 0) {

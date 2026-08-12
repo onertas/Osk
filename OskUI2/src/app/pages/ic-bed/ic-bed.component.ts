@@ -55,6 +55,15 @@ export class IcBedComponent implements OnInit, OnChanges {
   newBed: CreateIcBedDto = new CreateIcBedDto();
   updateBed: UpdateIcBedDto = new UpdateIcBedDto();
 
+  bedSummary = {
+    eriskin: 0,
+    cocuk: 0,
+    yenidogan: 0,
+    ybToplam: 0,
+    servis: 0,
+    genelToplam: 0
+  };
+
   // Filters
   bedFilterModel = {
     healthFacilityId: null as string | null,
@@ -94,6 +103,7 @@ export class IcBedComponent implements OnInit, OnChanges {
 
   resetCreateModel() {
     this.newBed = new CreateIcBedDto();
+    this.newBed.isActive = true;
     this.filteredBedNames = [];
   }
 
@@ -152,11 +162,37 @@ export class IcBedComponent implements OnInit, OnChanges {
       return matchHf && matchType && matchName && matchLevel && matchRegType && matchActive && matchSearch;
     });
 
+    this.calculateBedSummary();
+
     // Aktif yatakların toplam adedini hesapla (tüm data üzerinden)
     const totalActiveCount = this.allBeds
       .filter(b => b.isActive)
       .reduce((sum, current) => sum + (current.quantity || 0), 0);
     this.totalBedsCount.emit(totalActiveCount);
+  }
+
+  calculateBedSummary() {
+    const activeBeds = this.filteredBeds.filter(b => b.isActive);
+
+    this.bedSummary.eriskin = activeBeds
+      .filter(b => b.icBedType === 1 || b.icBedTypeName?.toLocaleLowerCase('tr-TR').includes('erişkin'))
+      .reduce((sum, b) => sum + (b.quantity || 0), 0);
+
+    this.bedSummary.cocuk = activeBeds
+      .filter(b => b.icBedType === 2 || b.icBedTypeName?.toLocaleLowerCase('tr-TR').includes('çocuk'))
+      .reduce((sum, b) => sum + (b.quantity || 0), 0);
+
+    this.bedSummary.yenidogan = activeBeds
+      .filter(b => b.icBedType === 3 || b.icBedTypeName?.toLocaleLowerCase('tr-TR').includes('yenidoğan') || b.icBedTypeName?.toLocaleLowerCase('tr-TR').includes('yenidogan'))
+      .reduce((sum, b) => sum + (b.quantity || 0), 0);
+
+    this.bedSummary.ybToplam = this.bedSummary.eriskin + this.bedSummary.cocuk + this.bedSummary.yenidogan;
+
+    this.bedSummary.servis = activeBeds
+      .filter(b => b.icBedType === 4 || b.icBedTypeName?.toLocaleLowerCase('tr-TR').includes('servis'))
+      .reduce((sum, b) => sum + (b.quantity || 0), 0);
+
+    this.bedSummary.genelToplam = this.bedSummary.ybToplam + this.bedSummary.servis;
   }
 
   resetBedFilters() {
@@ -196,11 +232,30 @@ export class IcBedComponent implements OnInit, OnChanges {
       ? event.value
       : Number(event);
 
+    if (!typeValue) {
+      this.filteredBedNames = [];
+      if (mode === 'add') {
+        this.newBed.icBedNameId = '';
+      }
+      return;
+    }
+
     this.http.get<any[]>(`IcBed/GetIcBedNames?typeValue=${typeValue}`).subscribe(res => {
-      if (res.success && res.data) {
+      if (res.success && res.data && res.data.length > 0) {
         this.filteredBedNames = res.data;
+        if (mode === 'add') {
+          this.newBed.icBedNameId = this.filteredBedNames[0].id;
+        } else if (mode === 'edit') {
+          const exists = this.filteredBedNames.some(item => item.id === this.updateBed.icBedNameId);
+          if (!exists) {
+            this.updateBed.icBedNameId = this.filteredBedNames[0].id;
+          }
+        }
       } else {
         this.filteredBedNames = [];
+        if (mode === 'add') {
+          this.newBed.icBedNameId = '';
+        }
       }
     });
   }
@@ -209,6 +264,8 @@ export class IcBedComponent implements OnInit, OnChanges {
     if (this.healthFacilityId) {
       this.newBed.healthFacilityId = this.healthFacilityId;
     }
+
+    this.newBed.isActive = true;
 
     if (!this.newBed.icBedNameId) {
       this.swal.showError('Lütfen önce Yatak Tipi seçiniz.');
@@ -220,6 +277,7 @@ export class IcBedComponent implements OnInit, OnChanges {
         this.modalCom?.close('addIcBedModal');
         form.resetForm();
         this.newBed = new CreateIcBedDto();
+        this.newBed.isActive = true;
         this.filteredBedNames = [];
         this.GetAll();
         this.swal.showSuccess('Eklendi');
@@ -268,6 +326,21 @@ export class IcBedComponent implements OnInit, OnChanges {
         if (res.success) {
           this.GetAll();
           this.swal.showSuccess('Silindi');
+        }
+      });
+    });
+  }
+
+  cancelRegistration() {
+    this.swal.showConfirmation('Tescil İptal', 'Bu yatağın tescilini iptal etmek istediğinize emin misiniz?', () => {
+      this.updateBed.isActive = false;
+      this.http.post('IcBed/Update', this.updateBed).subscribe(res => {
+        if (res.success) {
+          this.modalCom?.close('editIcBedModal');
+          this.GetAll();
+          this.swal.showSuccess('Tescil iptal edildi');
+        } else {
+          this.swal.showError(res.message || 'Tescil iptal işlemi başarısız oldu.');
         }
       });
     });
